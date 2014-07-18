@@ -2,7 +2,6 @@
 
 import os
 import subprocess
-# import mmap
 
 all_possible_models = {
     "JC" : ["1rate", "equal"],
@@ -49,22 +48,38 @@ if os.getcwd() != "/home/lab/Edwin/garli-2.01":
 
 # Write to garli.conf file.
 ofprefix = raw_input("What would you like ths run to be called? ")
+no_bootstrapreps = raw_input("How many bootstrap replications would you like to perform? ")
 with open("garli.conf", "r+") as garli_conf:
-    for line in garli_conf:
-        if "dataframe" in line:
-            garli_conf.write("dataframe = sequence_file")
-        if "ofprefix" in line:
-            garli_conf.write("ofprefix = $s" % ofprefix)
-        if "bootstrapreps" in line:
-            garli_conf.write("bootstrapreps = 1000")
-        if "datatype" in line and "+I" in str(model_selected):
-            garli_conf.write("datatype = nucleotide")
-        if "ratematrix" in line:
-            garli_conf.write("ratematrix = %s" % all_possible_models[str(model_selected)][0]
-        if "statefrequencies" in line:
-            garli_conf.write("statefrequencies = %s" % all_possible_models[str(model_selected)][1]
-        if "ratehetmodel" in line:
+    configuration = garli_conf.readlines()
+    for i,value in enumerate(configuration):
+        if value.find("datafname") != -1:
+             configuration[i] = "datafname = %s\n" % sequence_file
+        if value.find("ofprefix") != -1:
+            configuration[i] = "ofprefix = %s\n" % ofprefix
+        if value.find("bootstrapreps") != -1:
+            configuration[i] = "bootstrapreps = %s\n" % no_bootstrapreps
+        if value.find("datatype") != -1:
+            configuration("datatype = nucleotide\n")
+        if value.find("ratematrix") != -1:
+            configuration[i] = "ratematrix = %s\n" % all_possible_models[str(model_selected)][0]
+        if value.find("statefrequencies") != -1:
+            configuration[i] = ("statefrequencies = %s\n" % all_possible_models[str(model_selected)][1]
+        if value.find("ratehetmodel") != -1:
             if "+G" in str(model_selected):
-                garli_conf.write("ratehetmodel = gamma")
+                configuration[i] = "ratehetmodel = gamma\n"
             else:
-                garli_conf.write("ratehetmodel = none")
+                configuration[i] = "ratehetmodel = none\n"
+        if value.find("numratecats") != -1:
+            if "+G" in str(model_selected):
+                configuration[i] = "numratecats = 4\n"
+            else:
+                configuration[i] = "numratecats = 1\n"
+        if value.find("invariantsites") != -1:
+            if "+I" in str(model_selected):
+                configuration[i] = "invariantsites = estimate\n"
+            else:
+                configuration[i] = "invariantsites = none\n"
+
+# Code to run garli here.
+
+# Code to configure and run beast here.
