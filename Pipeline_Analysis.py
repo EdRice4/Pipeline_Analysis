@@ -48,7 +48,23 @@ if os.getcwd() != "/home/lab/Edwin/garli-2.01":
     os.chdir("/home/lab/Edwin/garli-2.01")
 
 # Write to garli.conf file.
+ofprefix = raw_input("What would you like ths run to be called? ")
 with open("garli.conf", "r+") as garli_conf:
     for line in garli_conf:
         if "dataframe" in line:
-            garli_conf.write()
+            garli_conf.write("dataframe = sequence_file")
+        if "ofprefix" in line:
+            garli_conf.write("ofprefix = $s" % ofprefix)
+        if "bootstrapreps" in line:
+            garli_conf.write("bootstrapreps = 1000")
+        if "datatype" in line and "+I" in str(model_selected):
+            garli_conf.write("datatype = nucleotide")
+        if "ratematrix" in line:
+            garli_conf.write("ratematrix = %s" % all_possible_models[str(model_selected)][0]
+        if "statefrequencies" in line:
+            garli_conf.write("statefrequencies = %s" % all_possible_models[str(model_selected)][1]
+        if "ratehetmodel" in line:
+            if "+G" in str(model_selected):
+                garli_conf.write("ratehetmodel = gamma")
+            else:
+                garli_conf.write("ratehetmodel = none")
