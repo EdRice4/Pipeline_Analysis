@@ -63,7 +63,7 @@ with open("garli.conf", "r+") as garli_conf:
         if value.find("ratematrix") != -1:
             configuration[i] = "ratematrix = %s\n" % all_possible_models[str(model_selected)][0]
         if value.find("statefrequencies") != -1:
-            configuration[i] = ("statefrequencies = %s\n" % all_possible_models[str(model_selected)][1]
+            configuration[i] = "statefrequencies = %s\n" % all_possible_models[str(model_selected)][1]
         if value.find("ratehetmodel") != -1:
             if "+G" in str(model_selected):
                 configuration[i] = "ratehetmodel = gamma\n"
