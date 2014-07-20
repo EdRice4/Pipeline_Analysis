@@ -41,6 +41,8 @@ with open(str(os.getcwd()) + "/jModelTest_%s_.out" % sequence_file, "r") as jMod
     for line in jModelTest_output:
         if "Model = " in line:
             model_selected = line.rpartition(" ")[-1]
+
+# Molecular clock test?
             
 # Ensure you are in directory containing garli.conf file.
 if os.getcwd() != "/home/lab/Edwin/garli-2.01":
@@ -80,6 +82,7 @@ with open("garli.conf", "r+") as garli_conf:
             else:
                 configuration[i] = "invariantsites = none\n"
 
-# Code to run garli here.
+# Run garli. Best to put garli in /usr/local/bin.
+subprocess.call("garli")
 
 # Code to configure and run beast here.
