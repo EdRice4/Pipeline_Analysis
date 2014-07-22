@@ -43,7 +43,7 @@ name="alignment"/>
         <parameter id="mutationRate.s:PUT_NAME_OF_FILE_SANS_NEX_HERE" name="stateNode">1.0</parameter>
     </state>
 
-    <init estimate="false" id"RandomTree.t:PUT_NAME_OF_FILE_SANS_NEX_HERE" initial="@Tree.t:PUT_NAME_OF_FILE_SANS_NEX_HERE" spec="beast.evolution.tree.RandomTree" taxa="@PUT_NAME_OF_FILE_SANS_NEX_HERE">
+    <init estimate="false" id="RandomTree.t:PUT_NAME_OF_FILE_SANS_NEX_HERE" initial="@Tree.t:PUT_NAME_OF_FILE_SANS_NEX_HERE" spec="beast.evolution.tree.RandomTree" taxa="@PUT_NAME_OF_FILE_SANS_NEX_HERE">
     	<populationModel id="ConstantPopulation0.t:PUT_NAME_OF_FILE_SANS_NEX_HERE" spec="ConstantPopulation">
             <parameter id="randomPopSize.t:PUT_NAME_OF_FILE_SANS_NEX_HERE" name="popSize">1.0</parameter>
         </populationModel>
