@@ -5,7 +5,7 @@ import os
 from shutil import copy, move, make_archive
 import subprocess
 import linecache
-import xml.etree.ElementTree as ET
+from lxml import etree as ET
 from random import randrange
 
 # Will need this later to read output of jModelTest.
@@ -108,7 +108,14 @@ def w_garli_conf(garli_file):
 
 # Will need this later to replce values in XML value with desired values.
 def w_beast_xml(xml_file):
+    taxon_name = sequence_name.replace('.nex', '')
     beast_xml = xml_file.readlines()
+    for num,item in enumerate(beast_xml):
+        item = item.replace('PUT_NAME_OF_FILE_SANS_NEX_HERE', str(taxon_name))
+        beast_xml[num] = item
+    beast_xml = ''.join(beast_xml)
+    beast_xml = ET.XML(beast_xml)
+    output.write(ET.tostring(beast_xml, pretty_print=True))
 
 # Will need this later to provide boundaries on sequences in nexus file.
 def get_range(seq_file):
