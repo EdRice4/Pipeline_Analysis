@@ -13,10 +13,11 @@ def r_jModelTest_model(jModelTest_file):
     for line in jModelTest_file:
         if 'Model = ' in line:
             model_selected = line.rpartition(' ')[-1]
-    return model_selected
+    return model_selected.replace('\n', '')
 
 # Will need this later to read output of jModelTest
 def r_jModelTest_parameters(jModelTest_file):
+    parameters = []
     for line in jModelTest_file:
         if 'freqA' in line:
             freqA = line.rpartition(' ')[-1]
@@ -40,40 +41,74 @@ def r_jModelTest_parameters(jModelTest_file):
             Rf = line.rpartition(' ')[-1]
         if 'gamma shape' in line:
             gamma_shape = line.rpartition(' ')[-1]
+    parameters.append(freqA)
+    parameters.append(freqC)
+    parameters.append(freqG)
+    parameters.append(freqT)
+    parameters.append(Ra)
+    parameters.append(Rb)
+    parameters.append(Rc)
+    parameters.append(Rd)
+    parameters.append(Re)
+    parameters.append(Rf)
+    parameters.append(gamma_shape)
+    for num,item in enumerate(parameters):
+        item = item.replace('\n', '')
+        parameters[num] = item
+    return parameters
 
 # Will need this later to read and write garli.conf file.
+# Better to provide pInv?
+# Run multiple threaded version?
 def w_garli_conf(garli_file):
     configuration = garli_conf.readlines()
     model_selected = r_jModelTest_model(garli_file)
-    for i,value in enumerate(configuration):
-        if value.find('datafname') != -1:
-             configuration[i] = 'datafname = %s\n' % output_id
-        if value.find('ofprefix') != -1:
-            configuration[i] = 'ofprefix = %s\n' % identifier
-        if value.find('bootstrapreps') != -1:
-            configuration[i] = 'bootstrapreps = %s\n' % no_bootstrapreps
-        if value.find('datatype') != -1:
-            configuration('datatype = nucleotide\n')
-        if value.find('ratematrix') != -1:
-            configuration[i] = 'ratematrix = %s\n' % all_possible_models[str(model_selected)][0]
-        if value.find('statefrequencies') != -1:
-            configuration[i] = 'statefrequencies = %s\n' % all_possible_models[str(model_selected)][1]
-        if value.find('ratehetmodel') != -1:
+    no_bootstrapreps = raw_input('How many bootstrap replications would you like to perform? ')
+    for num,item in enumerate(configuration):
+        if item.find('datafname') != -1:
+            item = 'datafname = %s\n' % sequence_name
+            configuration[num] = item
+        if item.find('ofprefix') != -1:
+            item = 'ofprefix = %s\n' % identifier
+            configuration[num] = item
+        if item.find('bootstrapreps') != -1:
+            item = 'bootstrapreps = %s\n' % no_bootstrapreps
+            configuration[num] = item
+        if item.find('datatype') != -1:
+            item = 'datatype = nucleotide\n'
+            configuration[num] = item
+        if item.find('ratematrix') != -1:
+            item = 'ratematrix = %s\n' % all_possible_models[str(model_selected)][0]
+            configuration[num] = item
+        if item.find('statefrequencies') != -1:
+            item = 'statefrequencies = %s\n' % all_possible_models[str(model_selected)][1]
+            configuration[num] = item
+        if item.find('ratehetmodel') != -1:
             if '+G' in str(model_selected):
-                configuration[i] = 'ratehetmodel = gamma\n'
+                item = 'ratehetmodel = gamma\n'
+                configuration[num] = item
             else:
-                configuration[i] = 'ratehetmodel = none\n'
-        if value.find('numratecats') != -1:
+                item = 'ratehetmodel = none\n'
+                configuration[num] = item
+        if item.find('numratecats') != -1:
             if '+G' in str(model_selected):
-                configuration[i] = 'numratecats = 4\n'
+                item = 'numratecats = 4\n'
+                configuration[num] = item
             else:
-                configuration[i] = 'numratecats = 1\n'
-        if value.find('invariantsites') != -1:
+                item = 'numratecats = 1\n'
+                configuration[num] = item
+        if item.find('invariantsites') != -1:
             if '+I' in str(model_selected):
-                configuration[i] = 'invariantsites = estimate\n'
+                item = 'invariantsites = estimate\n'
+                configuration[num] = item
             else:
-                configuration[i] = 'invariantsites = none\n'
+                item = 'invariantsites = none\n'
+                configuration[num] = item
     output.write(str(configuration))
+
+# Will need this later to replce values in XML value with desired values.
+def w_beast_xml(xml_file):
+    beast_xml = xml_file.readlines()
 
 # Will need this later to provide boundaries on sequences in nexus file.
 def get_range(seq_file):
@@ -100,8 +135,16 @@ def identify_taxon_and_seq(seq_file):
                 data.append(sequence)
                 output.write('Standard_%s_.xml' % identifier)
 
-# Will need this later to replce values in XML value with desired values.
-def replace_values_xml(xml_file):
+# Will need this later to clean up dump folder.
+def clean_up():
+    move("*" + str(identifier) + "*", str(identifier))
+    copy(str(path_to_sequence), str(identifier))
+    os.chdir(str(identifier))
+    os.rename(str(sequence_name), str(identifier))
+    os.chdir("..")
+    archive_name = os.path.expanduser(os.path.join('~', str(identifier)))
+    root_dir = os.path.expanduser(os.path.join('~', str(identifier)))
+    make_archive(archive_name, 'gztar', root_dir)
 
 # Define models for reference.
 all_possible_models = {
@@ -121,7 +164,7 @@ all_possible_models = {
     'GTR' : ['6rate', 'estimate']
 }
 
-# Ensure you are in home dir.
+# Ensure you are in home dir; if all files are dumped in one directory, easy to clean and organize.
 home_dir = os.path.expanduser('~')
 while os.getcwd() != home_dir:
     os.chdir(home_dir)
@@ -141,7 +184,6 @@ subprocess.call(jModelTest.split())
 # Molecular clock test?
 
 # Write to garli.conf file.
-no_bootstrapreps = raw_input('How many bootstrap replications would you like to perform? ')
 with open('garli.conf', 'r+') as garli_conf:
     output = open("garli_%s_.conf" % identifier, 'w')
     w_garli_conf(garli_conf)
@@ -152,6 +194,11 @@ with open('garli.conf', 'r+') as garli_conf:
 subprocess.call('garli')
 
 # Prepare BEAST XML file for desired run.
+with open('Standard.xml', 'r+') as beast_xml:
+    output = open('BEAST_XML_%s.xml' % identifier, 'w')
+    w_beast_xml(beast_xml)
+    while output.closed != True:
+        output.close()
 
 # Read sequence file and write to BEAST XML file.
 with open(str(path_to_sequence), 'r') as seq_file:
@@ -162,11 +209,4 @@ with open(str(path_to_sequence), 'r') as seq_file:
         seq_file.close()
 
 # Copy and rename sequence file then clean up folder, creating directory and archive of latest run.
-move("*" + str(identifier) + "*", str(identifier))
-copy(str(path_to_sequence), str(identifier))
-os.chdir(str(identifier))
-os.rename(str(sequence_name), str(identifier))
-os.chdir("..")
-archive_name = os.path.expanduser(os.path.join('~', str(identifier)))
-root_dir = os.path.expanduser(os.path.join('~', str(identifier)))
-make_archive(archive_name, 'gztar', root_dir)
+clean_up()
