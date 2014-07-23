@@ -60,9 +60,11 @@ def r_jModelTest_parameters(jModelTest_file):
 # Will need this later to read and write garli.conf file.
 # Better to provide pInv?
 # Run multiple threaded version?
-def w_garli_conf(garli_file):
+# Could use regular expressions.
+# Could make standard.
+def w_garli_conf(jModelTest_file, garli_file):
     configuration = garli_conf.readlines()
-    model_selected = r_jModelTest_model(garli_file)
+    model_selected = r_jModelTest_model(jModelTest_file)
     no_bootstrapreps = raw_input('How many bootstrap replications would you like to perform? ')
     for num,item in enumerate(configuration):
         if item.find('datafname') != -1:
@@ -107,7 +109,13 @@ def w_garli_conf(garli_file):
     output.write(str(configuration))
 
 # Will need this later to replce values in XML value with desired values.
-def w_beast_xml(xml_file):
+# Do I have all necessary parameters?
+# Could use regular expressions.
+def w_beast_xml(jModelTest_file, xml_file):
+    (freqA, freqC, freqG, freqT, Ra, Rb, Rc, Rd, Re, Rf, gamma_shape = 
+    r_jModelTest_parameters(jModelTest_file))
+    chain_length = raw_input("How long would you like to run the chain? ")
+    store_every = raw_input("How often would you like the chain to sample? ")
     taxon_name = sequence_name.replace('.nex', '')
     beast_xml = xml_file.readlines()
     for num,item in enumerate(beast_xml):
@@ -130,9 +138,9 @@ def get_range(seq_file):
 
 # Will need this later to read sequences in nexus file and write to XML file.
 def identify_taxon_and_seq(seq_file):
-    seq_file = seq_file.readlines()
     sequence_start, sequence_end = get_range(seq_file)
     sequence_start += 1
+    seq_file = seq_file.readlines()
     for line in seq_file:
         while sequence_start <= sequence_end:
                 species_id = linecache.getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[0]
@@ -177,8 +185,10 @@ while os.getcwd() != home_dir:
     os.chdir(home_dir)
 
 # User input to find sequence file and jModelTest, respectively.
+# Could use system arguments.
 path_to_sequence = raw_input('Path to sequence file: ')
 path_to_jModelTest = raw_input('Path to jModelTest.jar: ')
+path_to_beast = raw_input('Path to BEAST.jar: ')
 
 # Generate random identifier tag for run.
 sequence_name = path_to_sequence.rpartition("/")[-1]
@@ -192,8 +202,11 @@ subprocess.call(jModelTest.split())
 
 # Write to garli.conf file.
 with open('garli.conf', 'r+') as garli_conf:
-    output = open("garli_%s_.conf" % identifier, 'w')
-    w_garli_conf(garli_conf)
+    jModelTest_file = open('jModelTest_%s_.out' % identifier, 'r')
+    output = open("garli_%s_.conf" % identifier, 'w') 
+    w_garli_conf(jModelTest_file, garli_conf)
+    while jModelTest_file.closed != True:
+        jModelTest_file.close()
     while output.closed != True:
         output.close()
 
@@ -202,8 +215,11 @@ subprocess.call('garli')
 
 # Prepare BEAST XML file for desired run.
 with open('Standard.xml', 'r+') as beast_xml:
+    jModelTest_file = open('jModelTest_%s_.out' % identifier, 'r')
     output = open('BEAST_XML_%s.xml' % identifier, 'w')
-    w_beast_xml(beast_xml)
+    w_beast_xml(jModelTest_file, beast_xml)
+    while jModelTest_file.closed != True:
+        jModelTest_file.close()
     while output.closed != True:
         output.close()
 
@@ -214,6 +230,13 @@ with open(str(path_to_sequence), 'r') as seq_file:
     identify_taxon_and_seq(seq_file)
     while seq_file.closed != True:
         seq_file.close()
+
+# Run BEAST.
+beast_xml = 'BEAST_XML_%s.xml' % identifier
+BEAST = 'java -jar %s %s -prefix -beagle -seed %s' % (path_to_beast, beast_xml, str(randrange(0, 999999)))
+subprocess.call(BEAST.split())
+
+# Run bGMYC.
 
 # Copy and rename sequence file then clean up folder, creating directory and archive of latest run.
 clean_up()
