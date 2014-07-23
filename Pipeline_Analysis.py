@@ -38,6 +38,8 @@ def r_jModelTest_parameters(jModelTest_file):
             Re = line.rpartition(' ')[-1]
         if 'R(f)' in line:
             Rf = line.rpartition(' ')[-1]
+        if 'gamma shape' in line:
+            gamma_shape = line.rpartition(' ')[-1]
 
 # Will need this later to read and write garli.conf file.
 def w_garli_conf(garli_file):
