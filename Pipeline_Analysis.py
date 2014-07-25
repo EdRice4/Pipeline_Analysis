@@ -7,6 +7,7 @@ import subprocess
 import linecache
 from lxml import etree as ET
 from random import randrange
+import pyper
 
 # Will need this later to read output of jModelTest.
 def r_jModelTest_model(jModelTest_file):
@@ -161,6 +162,22 @@ def clean_up():
     root_dir = os.path.expanduser(os.path.join('~', str(identifier)))
     make_archive(archive_name, 'gztar', root_dir)
 
+# To run bGMYC, must install PypeR.
+def bGMYC():
+    mcmc = raw_input("How long would you like to run the chain? ")
+    burnin = raw_input("What would you like the burnin to be? ")
+    thinning = raw_input("What would you like the thinning to be? ")
+    r = pyper.R()
+    r('library(bGMYC)')
+    r('trees <- read.nexus("%s.trees")' % identifier)
+    r('result.multi <- bgmyc.multiphylo(trees, mcmc=%s, burnin=%s, thinning=%s)' % (mcmc, burnin, thinning))
+    # Checkpoint?
+    r('result.spec <- bgmyc.spec(result.multi, filename=%s.txt)' % identifier)
+    r('result.probmat <- spec.probmat(result.mult)')
+    r('graphics.off()')
+    r('pdf(result.probmat.%s)' % identifier)
+    r('plot(result.probmat, trees[[1]])')
+
 # Define models for reference.
 all_possible_models = {
     'JC' : ['1rate', 'equal'],
@@ -231,12 +248,13 @@ with open(str(path_to_sequence), 'r') as seq_file:
     while seq_file.closed != True:
         seq_file.close()
 
-# Run BEAST.
+# Run BEAST. Need beagle library isntalled (easily modified).
 beast_xml = 'BEAST_XML_%s.xml' % identifier
-BEAST = 'java -jar %s %s -prefix -beagle -seed %s' % (path_to_beast, beast_xml, str(randrange(0, 999999)))
+BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s' % (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
 subprocess.call(BEAST.split())
 
 # Run bGMYC.
+bGMYC()
 
 # Copy and rename sequence file then clean up folder, creating directory and archive of latest run.
 clean_up()
