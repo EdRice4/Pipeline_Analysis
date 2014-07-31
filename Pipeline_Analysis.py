@@ -3,111 +3,158 @@
 # Import modules.
 import os
 from shutil import copy, move, make_archive
+from sys import argv
 import subprocess
 import linecache
 from lxml import etree as ET
 from random import randrange
 import pyper
+from numpy import array, std
 
-# Will need this later to read output of jModelTest.
-def r_jModelTest_model(jModelTest_file):
-    for line in jModelTest_file:
-        if 'Model = ' in line:
-            model_selected = line.rpartition(' ')[-1]
-    return model_selected.replace('\n', '')
+# Need to understand syntax of classes better.
+class NexusFile(object):
 
-# Will need this later to read output of jModelTest
-def r_jModelTest_parameters(jModelTest_file):
-    parameters = []
-    for line in jModelTest_file:
-        if 'freqA' in line:
-            freqA = line.rpartition(' ')[-1]
-        if 'freqC' in line:
-            freqC = line.rpartition(' ')[-1]
-        if 'freqG' in line:
-            freqG = line.rpartition(' ')[-1]
-        if 'freqT' in line:
-            freqT = line.rpartition(' ')[-1]
-        if 'R(a) [AC]' in line:
-            Ra = line.rpartition(' ')[-1]
-        if 'R(b)' in line:
-            Rb = line.rpartition(' ')[-1]
-        if 'R(c)' in line:
-            Rc = line.rpartition(' ')[-1]
-        if 'R(d)' in line:
-            Rd = line.rpartition(' ')[-1]
-        if 'R(e)' in line:
-            Re = line.rpartition(' ')[-1]
-        if 'R(f)' in line:
-            Rf = line.rpartition(' ')[-1]
-        if 'gamma shape' in line:
-            gamma_shape = line.rpartition(' ')[-1]
-    parameters.append(freqA)
-    parameters.append(freqC)
-    parameters.append(freqG)
-    parameters.append(freqT)
-    parameters.append(Ra)
-    parameters.append(Rb)
-    parameters.append(Rc)
-    parameters.append(Rd)
-    parameters.append(Re)
-    parameters.append(Rf)
-    parameters.append(gamma_shape)
-    for num,item in enumerate(parameters):
-        item = item.replace('\n', '')
-        parameters[num] = item
-    return parameters
+    """A class in which we will store the parameters associated with the given nexus file."""
+
+    def __init__(self, path_to_sequence):
+        self.sequence_name = path_to_sequence.rpartition("/")[-1]
+        self.identifier = str(self.sequence_name) + '_' + str(randrange(0, 999999999))
+        # list = file.readlines()
+
+    def get_range(seq_file):
+        sequence_start = 0
+        sequence_end = 0
+        for num, line in enumerate(sequence_file, start=1):
+            if 'matrix' in line.lower():
+                sequence_start = num
+            if line == '\n':
+                sequence_end = num
+        return sequence_start, sequence_end
+
+class Contains(object):
+
+    """Creates list that checks item against iterable and returns matches."""
+
+    def contains(item, iterable):
+        matching = []
+        if isinstance(item, list) == True:
+            for x in item:
+                matching.extend(i for i in iterable if x in i)
+        else:
+            matching.extend(i for i in iterable if item in i)
+        return matching
+
+class jModelTest(Contains):
+
+    """A class in which we will run and store parameters associate with jModelTest output."""
+
+    def r_jModelTest_model(jModelTest_file):
+        for line in jModelTest_file:
+            if 'Model = ' in line:
+                model_selected = line.rpartition(' ')[-1]
+        return model_selected.strip([' ', '\n'])
+
+    # Probably a better way to do this.
+    def r_jModelTest_parameters(jModelTest_file):
+        search = ['freqA = ', 'freqC = ', 'freqG = ', 'freqT = ', 'R(a) = ',
+                  'R(b) = ', 'R(c) = ', 'R(d) = ', 'R(e) = ', 'R(f) = ',
+                  'p-inv = ', 'gamma shape = ']
+        jModelTest_file = enumerate(jModelTest_file.readlines())
+        model = [i for i in jModelTest_file if "Model selected:" in i][0]
+        parameters = filter((lambda num: num > model) and contains(search,
+                             jModelTest_file), jModelTest_file)
+        # parameters = contains(search, jModelTest_file)
+        for num, item in enumerate(parameters):
+            item = item.strip([' ', '\n']) # replace('\n', '')
+            parameters[num] = item
+        return parameters
 
 # Will need this later to read and write garli.conf file.
-# Better to provide pInv?
 # Run multiple threaded version?
-# Could use regular expressions.
 # Could make standard.
-def w_garli_conf(jModelTest_file, garli_file):
-    configuration = garli_conf.readlines()
-    model_selected = r_jModelTest_model(jModelTest_file)
-    no_bootstrapreps = raw_input('How many bootstrap replications would you like to perform? ')
-    for num,item in enumerate(configuration):
-        if item.find('datafname') != -1:
-            item = 'datafname = %s\n' % sequence_name
-            configuration[num] = item
-        if item.find('ofprefix') != -1:
-            item = 'ofprefix = %s\n' % identifier
-            configuration[num] = item
-        if item.find('bootstrapreps') != -1:
-            item = 'bootstrapreps = %s\n' % no_bootstrapreps
-            configuration[num] = item
-        if item.find('datatype') != -1:
-            item = 'datatype = nucleotide\n'
-            configuration[num] = item
-        if item.find('ratematrix') != -1:
-            item = 'ratematrix = %s\n' % all_possible_models[str(model_selected)][0]
-            configuration[num] = item
-        if item.find('statefrequencies') != -1:
-            item = 'statefrequencies = %s\n' % all_possible_models[str(model_selected)][1]
-            configuration[num] = item
-        if item.find('ratehetmodel') != -1:
-            if '+G' in str(model_selected):
-                item = 'ratehetmodel = gamma\n'
+class GarliConf(jModelTest):
+
+    def w_garli_conf(jModelTest_file, garli_file):
+        all_possible_models = {
+            'JC' : ['1rate', 'equal'],
+            'F81' : ['1rate', 'estimate'],
+            'K80' : ['2rate', 'equal'],
+            'HKY' : ['2rate', 'estimate'],
+            'trNef' : ['0 1 0 0 2 0', 'equal'],
+            'TrN' : ['0 1 0 0 2 0', 'estimate'],
+            'K81' : ['0 1 2 2 1 0', 'equal'],
+            'K3Puf' : ['0 1 2 2 1 0', 'estimate'],
+            'TIMef' : ['0 1 2 2 3 0', 'equal'],
+            'TIM' : ['0 1 2 2 3 0', 'estimate'],
+            'TVMef' : ['0 1 2 3 1 4', 'equal'],
+            'TVM' : ['0 1 2 3 1 4', 'estimate'],
+            'SYM' : ['6rate', 'equal'],
+            'GTR' : ['6rate', 'estimate']
+        }
+        configuration = garli_conf.readlines()
+        model_selected = r_jModelTest_model(jModelTest_file)
+        no_bootstrapreps = raw_input('How many bootstrap replications would you like to perform? ')
+        for num,item in enumerate(configuration):
+            if item.find('datafname') != -1:
+                item = 'datafname = %s\n' % sequence_name
                 configuration[num] = item
-            else:
-                item = 'ratehetmodel = none\n'
+            if item.find('ofprefix') != -1:
+                item = 'ofprefix = %s\n' % identifier
                 configuration[num] = item
-        if item.find('numratecats') != -1:
-            if '+G' in str(model_selected):
-                item = 'numratecats = 4\n'
+            if item.find('bootstrapreps') != -1:
+                item = 'bootstrapreps = %s\n' % no_bootstrapreps
                 configuration[num] = item
-            else:
-                item = 'numratecats = 1\n'
+            if item.find('datatype') != -1:
+                item = 'datatype = nucleotide\n'
                 configuration[num] = item
-        if item.find('invariantsites') != -1:
-            if '+I' in str(model_selected):
-                item = 'invariantsites = estimate\n'
+            if item.find('ratematrix') != -1:
+                item = 'ratematrix = %s\n' % all_possible_models[str(model_selected)][0]
                 configuration[num] = item
-            else:
-                item = 'invariantsites = none\n'
+            if item.find('statefrequencies') != -1:
+                item = 'statefrequencies = %s\n' % all_possible_models[str(model_selected)][1]
                 configuration[num] = item
-    output.write(str(configuration))
+            if item.find('ratehetmodel') != -1:
+                if '+G' in str(model_selected):
+                    item = 'ratehetmodel = gamma\n'
+                    configuration[num] = item
+                else:
+                    item = 'ratehetmodel = none\n'
+                    configuration[num] = item
+            if item.find('numratecats') != -1:
+                if '+G' in str(model_selected):
+                    item = 'numratecats = 4\n'
+                    configuration[num] = item
+                else:
+                    item = 'numratecats = 1\n'
+                    configuration[num] = item
+            if item.find('invariantsites') != -1:
+                if '+I' in str(model_selected):
+                    item = 'invariantsites = estimate\n'
+                    configuration[num] = item
+                else:
+                    item = 'invariantsites = none\n'
+                    configuration[num] = item
+        output.write(str(configuration))
+
+class ToleranceCheck(object):
+
+    """A class that can calculate statistics of data in a file separated into columns."""
+
+    def __init__(self, data_file):
+        self.data_file = (open(data_file, 'r')).readlines()
+        # data = self.data_file.readlines()
+        data = [line.split() for line in self.data_file if line[:1] != '#']
+        cat_data = zip(*data)
+        # store current sample/length
+        # store previous as well
+
+    def calculate_statistics(data):
+        st_dev = []
+        for i in data:
+            parameter = i.pop([0])
+            i = array(i)
+            st_dev.extend[std(i)]
+        return parameter, st_dev
 
 # Will need this later to replce values in XML value with desired values.
 # Do I have all necessary parameters?
@@ -115,27 +162,16 @@ def w_garli_conf(jModelTest_file, garli_file):
 def w_beast_xml(jModelTest_file, xml_file):
     (freqA, freqC, freqG, freqT, Ra, Rb, Rc, Rd, Re, Rf, gamma_shape = 
     r_jModelTest_parameters(jModelTest_file))
-    chain_length = raw_input("How long would you like to run the chain? ")
-    store_every = raw_input("How often would you like the chain to sample? ")
-    taxon_name = sequence_name.replace('.nex', '')
+    chain_length = raw_input("How long would you like to run the chain? ") # Make this standard.
+    store_every = raw_input("How often would you like the chain to sample? ") # Make this standard.
+    taxon_name = sequence_name.strip('.nex')
     beast_xml = xml_file.readlines()
     for num,item in enumerate(beast_xml):
         item = item.replace('PUT_NAME_OF_FILE_SANS_NEX_HERE', str(taxon_name))
         beast_xml[num] = item
-    beast_xml = ''.join(beast_xml)
-    beast_xml = ET.XML(beast_xml)
-    output.write(ET.tostring(beast_xml, pretty_print=True))
-
-# Will need this later to provide boundaries on sequences in nexus file.
-def get_range(seq_file):
-    sequence_start = 0
-    sequence_end = 0
-    for num,line in enumerate(sequence_file, start=1):
-        if 'matrix' in line.lower():
-            sequence_start = num
-        if line == '\n':
-            sequence_end = num
-    return sequence_start, sequence_end
+    # beast_xml = ''.join(beast_xml)
+    beast_xml = ET.XML((''.join(beast_xml)))
+    output.write(ET.tostring(beast_xml, pretty_print = True))
 
 # Will need this later to read sequences in nexus file and write to XML file.
 def identify_taxon_and_seq(seq_file):
@@ -151,16 +187,28 @@ def identify_taxon_and_seq(seq_file):
                 data.append(sequence)
                 output.write('Standard_%s_.xml' % identifier)
 
-# Will need this later to clean up dump folder.
-def clean_up():
-    move("*" + str(identifier) + "*", str(identifier))
-    copy(str(path_to_sequence), str(identifier))
-    os.chdir(str(identifier))
-    os.rename(str(sequence_name), str(identifier))
-    os.chdir("..")
-    archive_name = os.path.expanduser(os.path.join('~', str(identifier)))
-    root_dir = os.path.expanduser(os.path.join('~', str(identifier)))
-    make_archive(archive_name, 'gztar', root_dir)
+class Beast(ToleranceCheck):
+
+    """A class in which we will run beast and perform regular tolernace checks if specified by user."""
+
+    def run_beast(tolerance = False):
+        beast_xml = 'BEAST_XML_%s.xml' % identifier
+        BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s' % (path_to_beast,
+                beast_xml, identifier, str(randrange(0, 999999))) # Do I need str function here?
+        subprocess.call(BEAST.split())
+        if tolerance == True:
+            resume_beast('NAME OF BEAST LOG FILE')
+
+    # Could be function of sample rather than time.
+    def resume_beast(BEAST_log_file):
+        ToleranceCheck(BEAST_log_file)
+        BEAST_log_file.calculate_statistics()
+        for i in st_dev:
+            if i > tolerance:
+                BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s -resume' % 
+                (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
+            else:
+                break
 
 # To run bGMYC, must install PypeR.
 def bGMYC():
@@ -177,24 +225,18 @@ def bGMYC():
     r('graphics.off()')
     r('pdf(result.probmat.%s)' % identifier)
     r('plot(result.probmat, trees[[1]])')
+    r('dev.off()')
 
-# Define models for reference.
-all_possible_models = {
-    'JC' : ['1rate', 'equal'],
-    'F81' : ['1rate', 'estimate'],
-    'K80' : ['2rate', 'equal'],
-    'HKY' : ['2rate', 'estimate'],
-    'trNef' : ['0 1 0 0 2 0', 'equal'],
-    'TrN' : ['0 1 0 0 2 0', 'estimate'],
-    'K81' : ['0 1 2 2 1 0', 'equal'],
-    'K3Puf' : ['0 1 2 2 1 0', 'estimate'],
-    'TIMef' : ['0 1 2 2 3 0', 'equal'],
-    'TIM' : ['0 1 2 2 3 0', 'estimate'],
-    'TVMef' : ['0 1 2 3 1 4', 'equal'],
-    'TVM' : ['0 1 2 3 1 4', 'estimate'],
-    'SYM' : ['6rate', 'equal'],
-    'GTR' : ['6rate', 'estimate']
-}
+# Will need this later to clean up dump folder.
+def clean_up():
+    move("*" + str(identifier) + "*", str(identifier))
+    copy(str(path_to_sequence), str(identifier))
+    os.chdir(str(identifier))
+    os.rename(str(sequence_name), str(identifier))
+    os.chdir("..")
+    archive_name = os.path.expanduser(os.path.join('~', str(identifier)))
+    root_dir = os.path.expanduser(os.path.join('~', str(identifier)))
+    make_archive(archive_name, 'gztar', root_dir)
 
 # Ensure you are in home dir; if all files are dumped in one directory, easy to clean and organize.
 home_dir = os.path.expanduser('~')
@@ -202,14 +244,10 @@ while os.getcwd() != home_dir:
     os.chdir(home_dir)
 
 # User input to find sequence file and jModelTest, respectively.
-# Could use system arguments.
-path_to_sequence = raw_input('Path to sequence file: ')
-path_to_jModelTest = raw_input('Path to jModelTest.jar: ')
-path_to_beast = raw_input('Path to BEAST.jar: ')
-
-# Generate random identifier tag for run.
-sequence_name = path_to_sequence.rpartition("/")[-1]
-identifier = str(sequence_name) + '_' + str(randrange(0, 999999999))
+script, path_to_sequence, path_to_jModelTest, path_to_beast = argv
+# path_to_sequence = raw_input('Path to sequence file: ')
+# path_to_jModelTest = raw_input('Path to jModelTest.jar: ')
+# path_to_beast = raw_input('Path to BEAST.jar: ')
 
 # Run jModelTest and create output file, jModelTest.out.
 jModelTest = 'java -jar %s -d %s -t fixed -o jModelTest_%s_.out -s 11 -i -g 4 -f -tr 1' % (path_to_jModelTest, path_to_sequence, identifier)
@@ -248,10 +286,8 @@ with open(str(path_to_sequence), 'r') as seq_file:
     while seq_file.closed != True:
         seq_file.close()
 
-# Run BEAST. Need beagle library isntalled (easily modified).
-beast_xml = 'BEAST_XML_%s.xml' % identifier
-BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s' % (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
-subprocess.call(BEAST.split())
+# Run BEAST. Need beagle library installed (easily modified).
+run_beast()
 
 # Run bGMYC.
 bGMYC()
