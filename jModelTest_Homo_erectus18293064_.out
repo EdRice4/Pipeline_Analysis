@@ -1,0 +1,57 @@
+------------------------------- jModeltest 2.1.5 -------------------------------
+(c) 2011-onwards D. Darriba, G.L. Taboada, R. Doallo and D. Posada,
+(1) Department of Biochemistry, Genetics and Immunology
+    University of Vigo, 36310 Vigo, Spain.
+(2) Department of Electronics and Systems
+    University of A Coruna, 15071 A Coruna, Spain.
+e-mail: ddarriba@udc.es, dposada@uvigo.es
+--------------------------------------------------------------------------------
+ 
+Fri Aug 01 15:26:58 EDT 2014
+Windows 8.1 6.3, arch: x86, bits: 32, numcores: 4
+ 
+--------------------------------------------------------------------------------
+Citation: Darriba D, Taboada GL, Doallo R and Posada D. 2012.
+          "jModelTest 2: more models, new heuristics and parallel computing".
+          Nature Methods 9(8), 772.
+--------------------------------------------------------------------------------
+ 
+jModelTest 2.1.5
+Copyright (C) 2011 D. Darriba, G.L. Taboada, R. Doallo and D. Posada
+This program comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it under certain conditions
+ 
+Notice: This program may contain errors. Please inspect results carefully.
+ 
+ 
+Arguments = -d Cerapachys_ULTIMATE_NOTRM_UNDERSCORE.nex -t fixed -o jModelTest_Homo_erectus18293064_.out -s 11 -i -g 4 -f -tr 1
+
+Reading data file "Cerapachys_ULTIMATE_NOTRM_UNDERSCORE.nex"... OK.
+  number of sequences: 502
+  number of sites: 435
+ 
+ 
+---------------------------------------------------------------
+*                                                             *
+*        COMPUTATION OF LIKELIHOOD SCORES WITH PHYML          *
+*                                                             *
+---------------------------------------------------------------
+ 
+::Settings::
+ 
+ Phyml version = 3.0
+ Phyml binary = PhyML_3.0_win32.exe
+ Phyml path = G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\
+ Candidate models = 88
+   number of substitution schemes = 11
+   including models with equal/unequal base frequencies (+F)
+   including models with/without a proportion of invariable sites (+I)
+   including models with/without rate variation among sites (+G) (nCat = 4)
+ Optimized free parameters (K) = substitution parameters + 1001 branch lengths 
+ Base tree for likelihood calculations = fixed BIONJ-JC tree topology
+ 
+ 
+Estimating a BIONJ-JC tree ... 
+Cannot run the Phyml command line for some reason: log\Cerapachys_ULTIMATE_NOTRM_UNDERSCORE.nex.phyml.20140801152658.log (The system cannot find the path specified)
+ 
+Computation of likelihood scores discontinued ...

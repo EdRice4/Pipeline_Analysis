@@ -11,42 +11,56 @@ from random import randrange
 import pyper
 from numpy import array, std
 
-# Need to understand syntax of classes better.
+script, path_to_sequence, path_to_jModelTest, path_to_beast = argv
+
 class NexusFile(object):
 
-    """A class in which we will store the parameters associated with the given nexus file."""
+    """A class in which we will store the name and unique associated with the
+       given nexus file."""
 
-    def __init__(self, path_to_sequence):
-        self.sequence_name = path_to_sequence.rpartition("/")[-1]
-        self.identifier = str(self.sequence_name) + '_' + str(randrange(0, 999999999))
-        # list = file.readlines()
+    def __init__(self, seq_file):
+        self.path = str(seq_file)
+        self.sequence_name = seq_file.rpartition("/")[-1]
+        self.identifier = str(self.sequence_name) + '_' + 
+                          str(randrange(0, 999999999))
 
-    def get_range(seq_file):
-        sequence_start = 0
-        sequence_end = 0
-        for num, line in enumerate(sequence_file, start=1):
-            if 'matrix' in line.lower():
-                sequence_start = num
-            if line == '\n':
-                sequence_end = num
-        return sequence_start, sequence_end
+class GetRange(NexusFile):
+
+    """A class that will return a range of line numbers in a file
+       between a user specified start and end sequence"""
+
+    def __init__(self, range_file):
+        NexusFile.__init__(self, range_file)
+
+    # Must have empty line at end of sequences to work.
+    def get_range(self, start, end):
+        with open(self.path, 'r') as range_file:
+            range_file = range_file.readlines()
+            range_start = 0
+            range_end = 0
+            for num, line in enumerate(range_file, start=1):
+                if start == line.lower():
+                    range_start = num
+                if end == line.lower():
+                    range_end = num
+            return range_start, range_end
 
 class Contains(object):
 
-    """Creates list that checks item against iterable and returns matches."""
+    """Creates list that checks list against iterable and returns matches."""
 
     def contains(item, iterable):
         matching = []
-        if isinstance(item, list) == True:
-            for x in item:
-                matching.extend(i for i in iterable if x in i)
-        else:
-            matching.extend(i for i in iterable if item in i)
+        for x in item:
+            matching.extend(i for i in iterable if x in i)
         return matching
+
+class Replace(GetRange, Contains)
 
 class jModelTest(Contains):
 
-    """A class in which we will run and store parameters associate with jModelTest output."""
+    """A class in which we will run and store parameters associate with
+       jModelTest output."""
 
     def r_jModelTest_model(jModelTest_file):
         for line in jModelTest_file:
@@ -60,7 +74,7 @@ class jModelTest(Contains):
                   'R(b) = ', 'R(c) = ', 'R(d) = ', 'R(e) = ', 'R(f) = ',
                   'p-inv = ', 'gamma shape = ']
         jModelTest_file = enumerate(jModelTest_file.readlines())
-        model = [i for i in jModelTest_file if "Model selected:" in i][0]
+        model = jModelTest_file.index(' Model selected: \n') # [i for i in jModelTest_file if "Model selected:" in i][0]
         parameters = filter((lambda num: num > model) and contains(search,
                              jModelTest_file), jModelTest_file)
         # parameters = contains(search, jModelTest_file)
@@ -93,7 +107,8 @@ class GarliConf(jModelTest):
         }
         configuration = garli_conf.readlines()
         model_selected = r_jModelTest_model(jModelTest_file)
-        no_bootstrapreps = raw_input('How many bootstrap replications would you like to perform? ')
+        no_bootstrapreps = raw_input('How many bootstrap replications would \
+                                     you like to perform? ')
         for num,item in enumerate(configuration):
             if item.find('datafname') != -1:
                 item = 'datafname = %s\n' % sequence_name
@@ -138,12 +153,13 @@ class GarliConf(jModelTest):
 
 class ToleranceCheck(object):
 
-    """A class that can calculate statistics of data in a file separated into columns."""
+    """A class that can calculate statistics of data in a file separated into
+       columns."""
 
     def __init__(self, data_file):
         self.data_file = (open(data_file, 'r')).readlines()
         # data = self.data_file.readlines()
-        data = [line.split() for line in self.data_file if line[:1] != '#']
+        data = [line.split() for line in self.data_file if isinstance(line[:1], num) == True]
         cat_data = zip(*data)
         # store current sample/length
         # store previous as well
@@ -189,9 +205,10 @@ def identify_taxon_and_seq(seq_file):
 
 class Beast(ToleranceCheck):
 
-    """A class in which we will run beast and perform regular tolernace checks if specified by user."""
+    """A class in which we will run beast and perform regular tolernace checks
+       if specified by user."""
 
-    def run_beast(tolerance = False):
+    def run_beast(tolerance):
         beast_xml = 'BEAST_XML_%s.xml' % identifier
         BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s' % (path_to_beast,
                 beast_xml, identifier, str(randrange(0, 999999))) # Do I need str function here?
@@ -207,8 +224,6 @@ class Beast(ToleranceCheck):
             if i > tolerance:
                 BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s -resume' % 
                 (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
-            else:
-                break
 
 # To run bGMYC, must install PypeR.
 def bGMYC():
