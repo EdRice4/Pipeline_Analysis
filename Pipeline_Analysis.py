@@ -5,7 +5,7 @@ import os
 from shutil import copy, move, make_archive
 from sys import argv
 import subprocess
-import linecache
+from linecache import getline
 from lxml import etree as ET
 from random import randrange
 import pyper
@@ -20,7 +20,7 @@ class NexusFile(object):
 
     def __init__(self, seq_file):
         self.path = str(seq_file)
-        self.sequence_name = seq_file.rpartition("/")[-1]
+        self.sequence_name = self.path.rpartition("/")[-1]
         self.identifier = str(self.sequence_name) + '_' + 
                           str(randrange(0, 999999999))
 
@@ -32,7 +32,7 @@ class GetRange(NexusFile):
     def __init__(self, range_file):
         NexusFile.__init__(self, range_file)
 
-    # Must have empty line at end of sequences to work.
+    # Must have empty line at end of sequences for this to work.
     def get_range(self, start, end):
         with open(self.path, 'r') as range_file:
             range_file = range_file.readlines()
@@ -45,9 +45,12 @@ class GetRange(NexusFile):
                     range_end = num
             return range_start, range_end
 
-class Contains(object):
+class Matching(GetRange):
 
     """Creates list that checks list against iterable and returns matches."""
+
+    def __init__(self):
+        GetRange.__init__(self)
 
     def contains(item, iterable):
         matching = []
@@ -55,12 +58,20 @@ class Contains(object):
             matching.extend(i for i in iterable if x in i)
         return matching
 
-class Replace(GetRange, Contains)
+class Replace(Matching)
 
-class jModelTest(Contains):
+    """A class which will replace values of a list with a user specified list"""
+
+    def __init__(self):
+        Matching.__init__(self)
+
+class jModelTest(Replace):
 
     """A class in which we will run and store parameters associate with
        jModelTest output."""
+
+    def __init__(self):
+        Replace.__init__(self_)
 
     def r_jModelTest_model(jModelTest_file):
         for line in jModelTest_file:
@@ -75,7 +86,7 @@ class jModelTest(Contains):
                   'p-inv = ', 'gamma shape = ']
         jModelTest_file = enumerate(jModelTest_file.readlines())
         model = jModelTest_file.index(' Model selected: \n') # [i for i in jModelTest_file if "Model selected:" in i][0]
-        parameters = filter((lambda num: num > model) and contains(search,
+        parameters = filter((lambda num: num > model) and matching(search,
                              jModelTest_file), jModelTest_file)
         # parameters = contains(search, jModelTest_file)
         for num, item in enumerate(parameters):
@@ -86,9 +97,13 @@ class jModelTest(Contains):
 # Will need this later to read and write garli.conf file.
 # Run multiple threaded version?
 # Could make standard.
-class GarliConf(jModelTest):
+class GarliConf(Replace):
+
+    def __init__(self):
+        Replace.__init__(self)
 
     def w_garli_conf(jModelTest_file, garli_file):
+
         all_possible_models = {
             'JC' : ['1rate', 'equal'],
             'F81' : ['1rate', 'estimate'],
@@ -105,6 +120,7 @@ class GarliConf(jModelTest):
             'SYM' : ['6rate', 'equal'],
             'GTR' : ['6rate', 'estimate']
         }
+
         configuration = garli_conf.readlines()
         model_selected = r_jModelTest_model(jModelTest_file)
         no_bootstrapreps = raw_input('How many bootstrap replications would \
@@ -196,8 +212,8 @@ def identify_taxon_and_seq(seq_file):
     seq_file = seq_file.readlines()
     for line in seq_file:
         while sequence_start <= sequence_end:
-                species_id = linecache.getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[0]
-                species_sequence = linecache.getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[-1]
+                species_id = getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[0]
+                species_sequence = getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[-1]
                 data = root.find('data')
                 sequence = ET.Element('sequence', id='%s' % species_id, taxon='%s' % species_id, totalcount='4', value='%s' % species_sequence)
                 data.append(sequence)
@@ -233,7 +249,7 @@ def bGMYC():
     r = pyper.R()
     r('library(bGMYC)')
     r('trees <- read.nexus("%s.trees")' % identifier)
-    r('result.multi <- bgmyc.multiphylo(trees, mcmc=%s, burnin=%s, thinning=%s)' % (mcmc, burnin, thinning))
+    r('result.multi <- bgmyc.multiphylo(trees, mcmc=%s, burnin=%s, thinning=%s)') % (mcmc, burnin, thinning))
     # Checkpoint?
     r('result.spec <- bgmyc.spec(result.multi, filename=%s.txt)' % identifier)
     r('result.probmat <- spec.probmat(result.mult)')

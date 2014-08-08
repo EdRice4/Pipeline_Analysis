@@ -1,0 +1,892 @@
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>                                 ..........................                                      
+PHYML(2)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(2)>                                 ..........................                                      
+PHYML(2)>
+PHYML(2)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(2)>                . Data type:					 dna
+PHYML(2)>                . Alphabet size:				 4
+PHYML(2)>                . Sequence format:				 interleaved
+PHYML(2)>                . Number of data sets:				 1
+PHYML(2)>                . Nb of bootstrapped data sets:			 0
+PHYML(2)>                . Model name:					 Custom
+PHYML(2)>                . Proportion of invariable sites:		 0.000000
+PHYML(2)>                . Number of subst. rate categs:			 1
+PHYML(2)>                . Nucleotide equilibrium frequencies:		 user-defined
+PHYML(2)>                . Optimise tree topology:			 no
+PHYML(2)>                . Evaluated tree:				 file "BioNJ"
+PHYML(2)>                . Optimise branch lengths:			 yes
+PHYML(2)>                . Optimise substitution model parameters:	 yes
+PHYML(2)>                . Run ID:					 JC
+PHYML(2)>                . Random seed:					 1407527771
+PHYML(2)>                . Subtree patterns aliasing:			 no
+PHYML(2)>                . Version:					 20130103
+PHYML(2)>
+PHYML(2)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>
+PHYML(2)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(2)>
+PHYML(2)>. 394 sites without polymorphism (83.65%).
+PHYML(2)>
+PHYML(2)>. Computing pairwise distances...
+PHYML(2)>
+PHYML(2)>. Building BioNJ tree...
+PHYML(2)>. (    0 sec) [     -1406.1341] [Branch lengths     ]
+PHYML(2)>. (    0 sec) [     -1383.1128] [Branch lengths     ]
+PHYML(2)>. (    0 sec) [     -1379.4884] [Branch lengths     ]
+PHYML(2)>. (    0 sec) [     -1378.3450] [Branch lengths     ]
+PHYML(2)>. (    0 sec) [     -1378.2996] [Branch lengths     ]
+PHYML(2)>. (    0 sec) [     -1378.2958] [Branch lengths     ]
+PHYML(2)>
+PHYML(2)>. Log likelihood of the current tree: -1378.295542.
+PHYML(2)>
+PHYML(2)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_JC.txt'...
+PHYML(2)>
+PHYML(2)>. Time used 0h0m0s
+PHYML(2)>
+PHYML(2)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 2:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id JC -m 000000 -f 0.25,0.25,0.25,0.25 -c 1 --no_memory_check -o lr
+ 
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>                                 ..........................                                      
+PHYML(4)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(4)>                                 ..........................                                      
+PHYML(4)>
+PHYML(4)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(4)>                . Data type:					 dna
+PHYML(4)>                . Alphabet size:				 4
+PHYML(4)>                . Sequence format:				 interleaved
+PHYML(4)>                . Number of data sets:				 1
+PHYML(4)>                . Nb of bootstrapped data sets:			 0
+PHYML(4)>                . Model name:					 Custom
+PHYML(4)>                . Proportion of invariable sites:		 estimated
+PHYML(4)>                . Number of subst. rate categs:			 4
+PHYML(4)>                . Gamma distribution parameter:			 estimated
+PHYML(4)>                . 'Middle' of each rate class:			 mean
+PHYML(4)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(4)>                . Optimise tree topology:			 no
+PHYML(4)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(4)>                . Optimise branch lengths:			 yes
+PHYML(4)>                . Optimise substitution model parameters:	 yes
+PHYML(4)>                . Run ID:					 F81+I+G
+PHYML(4)>                . Random seed:					 1407527771
+PHYML(4)>                . Subtree patterns aliasing:			 no
+PHYML(4)>                . Version:					 20130103
+PHYML(4)>
+PHYML(4)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>
+PHYML(4)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(4)>
+PHYML(4)>. 394 sites without polymorphism (83.65%).
+PHYML(4)>
+PHYML(4)>. Reading tree...
+PHYML(4)>
+PHYML(4)>. This analysis requires at least 2 Mo of memory space.
+PHYML(4)>
+PHYML(4)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(4)>. (    1 sec) [     -1327.0110] [Alpha              ][  0.228780]
+PHYML(4)>. (    1 sec) [     -1327.0110] [P-inv              ][  0.198372]
+PHYML(4)>. (    1 sec) [     -1326.3355] [Nucleotide freqs.  ]
+PHYML(4)>. (    1 sec) [     -1326.3355] [Branch lengths     ]
+PHYML(4)>. (    3 sec) [     -1326.3233] [Alpha              ][  0.269623]
+PHYML(4)>. (    3 sec) [     -1326.3233] [P-inv              ][  0.255220]
+PHYML(4)>. (    3 sec) [     -1326.3233] [Nucleotide freqs.  ]
+PHYML(4)>. (    3 sec) [     -1326.3233] [Branch lengths     ]
+PHYML(4)>. (    3 sec) [     -1326.3191] [Alpha              ][  0.269069]
+PHYML(4)>. (    3 sec) [     -1326.3191] [P-inv              ][  0.255220]
+PHYML(4)>. (    3 sec) [     -1326.3191] [Nucleotide freqs.  ]
+PHYML(4)>. (    3 sec) [     -1326.3191] [Branch lengths     ]
+PHYML(4)>. (    4 sec) [     -1326.3191] [Alpha              ][  0.269069]
+PHYML(4)>. (    4 sec) [     -1326.3191] [P-inv              ][  0.255220]
+PHYML(4)>. (    4 sec) [     -1326.3191] [Nucleotide freqs.  ]
+PHYML(4)>. (    4 sec) [     -1326.3191] [Alpha              ][  0.269069]
+PHYML(4)>. (    4 sec) [     -1326.3191] [P-inv              ][  0.255220]
+PHYML(4)>. (    4 sec) [     -1326.3191] [Nucleotide freqs.  ]
+PHYML(4)>
+PHYML(4)>. Log likelihood of the current tree: -1326.319099.
+PHYML(4)>
+PHYML(4)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_F81+I+G.txt'...
+PHYML(4)>
+PHYML(4)>. Time used 0h0m4s
+PHYML(4)>
+PHYML(4)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 4:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id F81+I+G -m 000000 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>                                 ..........................                                      
+PHYML(6)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(6)>                                 ..........................                                      
+PHYML(6)>
+PHYML(6)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(6)>                . Data type:					 dna
+PHYML(6)>                . Alphabet size:				 4
+PHYML(6)>                . Sequence format:				 interleaved
+PHYML(6)>                . Number of data sets:				 1
+PHYML(6)>                . Nb of bootstrapped data sets:			 0
+PHYML(6)>                . Model name:					 Custom
+PHYML(6)>                . Proportion of invariable sites:		 estimated
+PHYML(6)>                . Number of subst. rate categs:			 4
+PHYML(6)>                . Gamma distribution parameter:			 estimated
+PHYML(6)>                . 'Middle' of each rate class:			 mean
+PHYML(6)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(6)>                . Optimise tree topology:			 no
+PHYML(6)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(6)>                . Optimise branch lengths:			 yes
+PHYML(6)>                . Optimise substitution model parameters:	 yes
+PHYML(6)>                . Run ID:					 HKY+I+G
+PHYML(6)>                . Random seed:					 1407527775
+PHYML(6)>                . Subtree patterns aliasing:			 no
+PHYML(6)>                . Version:					 20130103
+PHYML(6)>
+PHYML(6)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>
+PHYML(6)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(6)>
+PHYML(6)>. 394 sites without polymorphism (83.65%).
+PHYML(6)>
+PHYML(6)>. Reading tree...
+PHYML(6)>
+PHYML(6)>. This analysis requires at least 2 Mo of memory space.
+PHYML(6)>
+PHYML(6)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(6)>. (    0 sec) [     -1332.2627] [GTR parameters     ]
+PHYML(6)>. (    1 sec) [     -1324.7152] [Alpha              ][  0.230081]
+PHYML(6)>. (    1 sec) [     -1324.7152] [P-inv              ][  0.198668]
+PHYML(6)>. (    1 sec) [     -1324.0664] [Nucleotide freqs.  ]
+PHYML(6)>. (    1 sec) [     -1324.0664] [Branch lengths     ]
+PHYML(6)>. (    1 sec) [     -1323.9974] [GTR parameters     ]
+PHYML(6)>. (    2 sec) [     -1323.9895] [Alpha              ][  0.294757]
+PHYML(6)>. (    2 sec) [     -1323.9895] [P-inv              ][  0.290029]
+PHYML(6)>. (    3 sec) [     -1323.9888] [Nucleotide freqs.  ]
+PHYML(6)>. (    3 sec) [     -1323.9888] [Branch lengths     ]
+PHYML(6)>. (    3 sec) [     -1323.9830] [GTR parameters     ]
+PHYML(6)>. (    4 sec) [     -1323.9815] [Alpha              ][  0.297005]
+PHYML(6)>. (    4 sec) [     -1323.9815] [P-inv              ][  0.287451]
+PHYML(6)>. (    4 sec) [     -1323.9815] [Nucleotide freqs.  ]
+PHYML(6)>. (    4 sec) [     -1323.9815] [Branch lengths     ]
+PHYML(6)>. (    4 sec) [     -1323.9814] [GTR parameters     ]
+PHYML(6)>. (    5 sec) [     -1323.9811] [Alpha              ][  0.295327]
+PHYML(6)>. (    5 sec) [     -1323.9811] [P-inv              ][  0.285518]
+PHYML(6)>. (    5 sec) [     -1323.9811] [Nucleotide freqs.  ]
+PHYML(6)>. (    5 sec) [     -1323.9811] [GTR parameters     ]
+PHYML(6)>. (    6 sec) [     -1323.9808] [Alpha              ][  0.293875]
+PHYML(6)>. (    6 sec) [     -1323.9808] [P-inv              ][  0.283841]
+PHYML(6)>. (    6 sec) [     -1323.9808] [Nucleotide freqs.  ]
+PHYML(6)>
+PHYML(6)>. Log likelihood of the current tree: -1323.980761.
+PHYML(6)>
+PHYML(6)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_HKY+I+G.txt'...
+PHYML(6)>
+PHYML(6)>. Time used 0h0m6s
+PHYML(6)>
+PHYML(6)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 6:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id HKY+I+G -m 010010 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>                                 ..........................                                      
+PHYML(8)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(8)>                                 ..........................                                      
+PHYML(8)>
+PHYML(8)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(8)>                . Data type:					 dna
+PHYML(8)>                . Alphabet size:				 4
+PHYML(8)>                . Sequence format:				 interleaved
+PHYML(8)>                . Number of data sets:				 1
+PHYML(8)>                . Nb of bootstrapped data sets:			 0
+PHYML(8)>                . Model name:					 Custom
+PHYML(8)>                . Proportion of invariable sites:		 estimated
+PHYML(8)>                . Number of subst. rate categs:			 4
+PHYML(8)>                . Gamma distribution parameter:			 estimated
+PHYML(8)>                . 'Middle' of each rate class:			 mean
+PHYML(8)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(8)>                . Optimise tree topology:			 no
+PHYML(8)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(8)>                . Optimise branch lengths:			 yes
+PHYML(8)>                . Optimise substitution model parameters:	 yes
+PHYML(8)>                . Run ID:					 TrN+I+G
+PHYML(8)>                . Random seed:					 1407527781
+PHYML(8)>                . Subtree patterns aliasing:			 no
+PHYML(8)>                . Version:					 20130103
+PHYML(8)>
+PHYML(8)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>
+PHYML(8)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(8)>
+PHYML(8)>. 394 sites without polymorphism (83.65%).
+PHYML(8)>
+PHYML(8)>. Reading tree...
+PHYML(8)>
+PHYML(8)>. This analysis requires at least 2 Mo of memory space.
+PHYML(8)>
+PHYML(8)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(8)>. (    0 sec) [     -1331.6686] [GTR parameters     ]
+PHYML(8)>. (    0 sec) [     -1324.1498] [Alpha              ][  0.233266]
+PHYML(8)>. (    0 sec) [     -1324.1498] [P-inv              ][  0.200559]
+PHYML(8)>. (    0 sec) [     -1323.6155] [Nucleotide freqs.  ]
+PHYML(8)>. (    0 sec) [     -1323.6155] [Branch lengths     ]
+PHYML(8)>. (    0 sec) [     -1323.6101] [GTR parameters     ]
+PHYML(8)>. (    2 sec) [     -1323.5860] [Alpha              ][  0.299437]
+PHYML(8)>. (    2 sec) [     -1323.5860] [P-inv              ][  0.291348]
+PHYML(8)>. (    2 sec) [     -1323.5859] [Nucleotide freqs.  ]
+PHYML(8)>. (    2 sec) [     -1323.5859] [Branch lengths     ]
+PHYML(8)>. (    2 sec) [     -1323.5801] [GTR parameters     ]
+PHYML(8)>. (    3 sec) [     -1323.5792] [Alpha              ][  0.302045]
+PHYML(8)>. (    3 sec) [     -1323.5792] [P-inv              ][  0.290448]
+PHYML(8)>. (    3 sec) [     -1323.5792] [Nucleotide freqs.  ]
+PHYML(8)>. (    3 sec) [     -1323.5792] [Branch lengths     ]
+PHYML(8)>. (    3 sec) [     -1323.5792] [GTR parameters     ]
+PHYML(8)>. (    4 sec) [     -1323.5792] [Alpha              ][  0.301442]
+PHYML(8)>. (    4 sec) [     -1323.5792] [P-inv              ][  0.289868]
+PHYML(8)>. (    4 sec) [     -1323.5792] [Nucleotide freqs.  ]
+PHYML(8)>. (    4 sec) [     -1323.5792] [GTR parameters     ]
+PHYML(8)>. (    4 sec) [     -1323.5791] [Alpha              ][  0.301140]
+PHYML(8)>. (    4 sec) [     -1323.5791] [P-inv              ][  0.289578]
+PHYML(8)>. (    4 sec) [     -1323.5791] [Nucleotide freqs.  ]
+PHYML(8)>
+PHYML(8)>. Log likelihood of the current tree: -1323.579135.
+PHYML(8)>
+PHYML(8)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TrN+I+G.txt'...
+PHYML(8)>
+PHYML(8)>. Time used 0h0m4s
+PHYML(8)>
+PHYML(8)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 8:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TrN+I+G -m 010020 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>                                 ..........................                                      
+PHYML(10)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(10)>                                 ..........................                                      
+PHYML(10)>
+PHYML(10)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(10)>                . Data type:					 dna
+PHYML(10)>                . Alphabet size:				 4
+PHYML(10)>                . Sequence format:				 interleaved
+PHYML(10)>                . Number of data sets:				 1
+PHYML(10)>                . Nb of bootstrapped data sets:			 0
+PHYML(10)>                . Model name:					 Custom
+PHYML(10)>                . Proportion of invariable sites:		 estimated
+PHYML(10)>                . Number of subst. rate categs:			 4
+PHYML(10)>                . Gamma distribution parameter:			 estimated
+PHYML(10)>                . 'Middle' of each rate class:			 mean
+PHYML(10)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(10)>                . Optimise tree topology:			 no
+PHYML(10)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(10)>                . Optimise branch lengths:			 yes
+PHYML(10)>                . Optimise substitution model parameters:	 yes
+PHYML(10)>                . Run ID:					 TPM1uf+I+G
+PHYML(10)>                . Random seed:					 1407527785
+PHYML(10)>                . Subtree patterns aliasing:			 no
+PHYML(10)>                . Version:					 20130103
+PHYML(10)>
+PHYML(10)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>
+PHYML(10)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(10)>
+PHYML(10)>. 394 sites without polymorphism (83.65%).
+PHYML(10)>
+PHYML(10)>. Reading tree...
+PHYML(10)>
+PHYML(10)>. This analysis requires at least 2 Mo of memory space.
+PHYML(10)>
+PHYML(10)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(10)>. (    0 sec) [     -1332.0449] [GTR parameters     ]
+PHYML(10)>. (    1 sec) [     -1324.4529] [Alpha              ][  0.229351]
+PHYML(10)>. (    1 sec) [     -1324.4529] [P-inv              ][  0.198627]
+PHYML(10)>. (    1 sec) [     -1323.8548] [Nucleotide freqs.  ]
+PHYML(10)>. (    1 sec) [     -1323.8548] [Branch lengths     ]
+PHYML(10)>. (    1 sec) [     -1323.8508] [GTR parameters     ]
+PHYML(10)>. (    3 sec) [     -1323.8411] [Alpha              ][  0.294089]
+PHYML(10)>. (    3 sec) [     -1323.8411] [P-inv              ][  0.288362]
+PHYML(10)>. (    3 sec) [     -1323.8410] [Nucleotide freqs.  ]
+PHYML(10)>. (    3 sec) [     -1323.8410] [Branch lengths     ]
+PHYML(10)>. (    3 sec) [     -1323.8355] [GTR parameters     ]
+PHYML(10)>. (    4 sec) [     -1323.8346] [Alpha              ][  0.294863]
+PHYML(10)>. (    4 sec) [     -1323.8346] [P-inv              ][  0.286179]
+PHYML(10)>. (    4 sec) [     -1323.8346] [Nucleotide freqs.  ]
+PHYML(10)>. (    4 sec) [     -1323.8346] [Branch lengths     ]
+PHYML(10)>. (    4 sec) [     -1323.8345] [GTR parameters     ]
+PHYML(10)>. (    5 sec) [     -1323.8342] [Alpha              ][  0.293358]
+PHYML(10)>. (    5 sec) [     -1323.8342] [P-inv              ][  0.284431]
+PHYML(10)>. (    5 sec) [     -1323.8342] [Nucleotide freqs.  ]
+PHYML(10)>. (    5 sec) [     -1323.8342] [GTR parameters     ]
+PHYML(10)>. (    6 sec) [     -1323.8340] [Alpha              ][  0.292058]
+PHYML(10)>. (    6 sec) [     -1323.8340] [P-inv              ][  0.282918]
+PHYML(10)>. (    6 sec) [     -1323.8340] [Nucleotide freqs.  ]
+PHYML(10)>
+PHYML(10)>. Log likelihood of the current tree: -1323.833969.
+PHYML(10)>
+PHYML(10)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TPM1uf+I+G.txt'...
+PHYML(10)>
+PHYML(10)>. Time used 0h0m6s
+PHYML(10)>
+PHYML(10)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 10:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TPM1uf+I+G -m 012210 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>                                 ..........................                                      
+PHYML(12)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(12)>                                 ..........................                                      
+PHYML(12)>
+PHYML(12)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(12)>                . Data type:					 dna
+PHYML(12)>                . Alphabet size:				 4
+PHYML(12)>                . Sequence format:				 interleaved
+PHYML(12)>                . Number of data sets:				 1
+PHYML(12)>                . Nb of bootstrapped data sets:			 0
+PHYML(12)>                . Model name:					 Custom
+PHYML(12)>                . Proportion of invariable sites:		 estimated
+PHYML(12)>                . Number of subst. rate categs:			 4
+PHYML(12)>                . Gamma distribution parameter:			 estimated
+PHYML(12)>                . 'Middle' of each rate class:			 mean
+PHYML(12)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(12)>                . Optimise tree topology:			 no
+PHYML(12)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(12)>                . Optimise branch lengths:			 yes
+PHYML(12)>                . Optimise substitution model parameters:	 yes
+PHYML(12)>                . Run ID:					 TPM2uf+I+G
+PHYML(12)>                . Random seed:					 1407527791
+PHYML(12)>                . Subtree patterns aliasing:			 no
+PHYML(12)>                . Version:					 20130103
+PHYML(12)>
+PHYML(12)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>
+PHYML(12)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(12)>
+PHYML(12)>. 394 sites without polymorphism (83.65%).
+PHYML(12)>
+PHYML(12)>. Reading tree...
+PHYML(12)>
+PHYML(12)>. This analysis requires at least 2 Mo of memory space.
+PHYML(12)>
+PHYML(12)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(12)>. (    0 sec) [     -1331.7975] [GTR parameters     ]
+PHYML(12)>. (    0 sec) [     -1324.0325] [Alpha              ][  0.226257]
+PHYML(12)>. (    0 sec) [     -1324.0325] [P-inv              ][  0.198462]
+PHYML(12)>. (    1 sec) [     -1323.6246] [Nucleotide freqs.  ]
+PHYML(12)>. (    1 sec) [     -1323.6246] [Branch lengths     ]
+PHYML(12)>. (    1 sec) [     -1323.6185] [GTR parameters     ]
+PHYML(12)>. (    2 sec) [     -1323.6018] [Alpha              ][  0.291299]
+PHYML(12)>. (    2 sec) [     -1323.6018] [P-inv              ][  0.290330]
+PHYML(12)>. (    2 sec) [     -1323.6016] [Nucleotide freqs.  ]
+PHYML(12)>. (    2 sec) [     -1323.6016] [Branch lengths     ]
+PHYML(12)>. (    3 sec) [     -1323.5957] [GTR parameters     ]
+PHYML(12)>. (    3 sec) [     -1323.5948] [Alpha              ][  0.292728]
+PHYML(12)>. (    3 sec) [     -1323.5948] [P-inv              ][  0.288709]
+PHYML(12)>. (    3 sec) [     -1323.5948] [Nucleotide freqs.  ]
+PHYML(12)>. (    3 sec) [     -1323.5948] [Branch lengths     ]
+PHYML(12)>. (    4 sec) [     -1323.5948] [GTR parameters     ]
+PHYML(12)>. (    5 sec) [     -1323.5946] [Alpha              ][  0.291559]
+PHYML(12)>. (    5 sec) [     -1323.5946] [P-inv              ][  0.287437]
+PHYML(12)>. (    5 sec) [     -1323.5946] [Nucleotide freqs.  ]
+PHYML(12)>. (    5 sec) [     -1323.5946] [GTR parameters     ]
+PHYML(12)>. (    6 sec) [     -1323.5945] [Alpha              ][  0.290685]
+PHYML(12)>. (    6 sec) [     -1323.5945] [P-inv              ][  0.286289]
+PHYML(12)>. (    6 sec) [     -1323.5945] [Nucleotide freqs.  ]
+PHYML(12)>
+PHYML(12)>. Log likelihood of the current tree: -1323.594510.
+PHYML(12)>
+PHYML(12)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TPM2uf+I+G.txt'...
+PHYML(12)>
+PHYML(12)>. Time used 0h0m6s
+PHYML(12)>
+PHYML(12)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 12:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TPM2uf+I+G -m 010212 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>                                 ..........................                                      
+PHYML(14)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(14)>                                 ..........................                                      
+PHYML(14)>
+PHYML(14)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(14)>                . Data type:					 dna
+PHYML(14)>                . Alphabet size:				 4
+PHYML(14)>                . Sequence format:				 interleaved
+PHYML(14)>                . Number of data sets:				 1
+PHYML(14)>                . Nb of bootstrapped data sets:			 0
+PHYML(14)>                . Model name:					 Custom
+PHYML(14)>                . Proportion of invariable sites:		 estimated
+PHYML(14)>                . Number of subst. rate categs:			 4
+PHYML(14)>                . Gamma distribution parameter:			 estimated
+PHYML(14)>                . 'Middle' of each rate class:			 mean
+PHYML(14)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(14)>                . Optimise tree topology:			 no
+PHYML(14)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(14)>                . Optimise branch lengths:			 yes
+PHYML(14)>                . Optimise substitution model parameters:	 yes
+PHYML(14)>                . Run ID:					 TPM3uf+I+G
+PHYML(14)>                . Random seed:					 1407527797
+PHYML(14)>                . Subtree patterns aliasing:			 no
+PHYML(14)>                . Version:					 20130103
+PHYML(14)>
+PHYML(14)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>
+PHYML(14)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(14)>
+PHYML(14)>. 394 sites without polymorphism (83.65%).
+PHYML(14)>
+PHYML(14)>. Reading tree...
+PHYML(14)>
+PHYML(14)>. This analysis requires at least 2 Mo of memory space.
+PHYML(14)>
+PHYML(14)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(14)>. (    0 sec) [     -1332.2003] [GTR parameters     ]
+PHYML(14)>. (    0 sec) [     -1324.6572] [Alpha              ][  0.230493]
+PHYML(14)>. (    0 sec) [     -1324.6572] [P-inv              ][  0.198784]
+PHYML(14)>. (    0 sec) [     -1324.0161] [Nucleotide freqs.  ]
+PHYML(14)>. (    0 sec) [     -1324.0161] [Branch lengths     ]
+PHYML(14)>. (    0 sec) [     -1323.9763] [GTR parameters     ]
+PHYML(14)>. (    2 sec) [     -1323.9643] [Alpha              ][  0.270486]
+PHYML(14)>. (    2 sec) [     -1323.9643] [P-inv              ][  0.254984]
+PHYML(14)>. (    2 sec) [     -1323.9622] [Nucleotide freqs.  ]
+PHYML(14)>. (    2 sec) [     -1323.9622] [Branch lengths     ]
+PHYML(14)>. (    2 sec) [     -1323.9579] [GTR parameters     ]
+PHYML(14)>. (    4 sec) [     -1323.9576] [Alpha              ][  0.269226]
+PHYML(14)>. (    4 sec) [     -1323.9576] [P-inv              ][  0.255756]
+PHYML(14)>. (    4 sec) [     -1323.9576] [Nucleotide freqs.  ]
+PHYML(14)>. (    4 sec) [     -1323.9576] [Branch lengths     ]
+PHYML(14)>. (    4 sec) [     -1323.9576] [GTR parameters     ]
+PHYML(14)>. (    4 sec) [     -1323.9575] [Alpha              ][  0.269652]
+PHYML(14)>. (    4 sec) [     -1323.9575] [P-inv              ][  0.256267]
+PHYML(14)>. (    4 sec) [     -1323.9575] [Nucleotide freqs.  ]
+PHYML(14)>. (    4 sec) [     -1323.9575] [GTR parameters     ]
+PHYML(14)>. (    5 sec) [     -1323.9575] [Alpha              ][  0.269652]
+PHYML(14)>. (    5 sec) [     -1323.9575] [P-inv              ][  0.256524]
+PHYML(14)>. (    5 sec) [     -1323.9575] [Nucleotide freqs.  ]
+PHYML(14)>
+PHYML(14)>. Log likelihood of the current tree: -1323.957529.
+PHYML(14)>
+PHYML(14)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TPM3uf+I+G.txt'...
+PHYML(14)>
+PHYML(14)>. Time used 0h0m5s
+PHYML(14)>
+PHYML(14)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 14:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TPM3uf+I+G -m 012012 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>                                 ..........................                                      
+PHYML(16)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(16)>                                 ..........................                                      
+PHYML(16)>
+PHYML(16)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(16)>                . Data type:					 dna
+PHYML(16)>                . Alphabet size:				 4
+PHYML(16)>                . Sequence format:				 interleaved
+PHYML(16)>                . Number of data sets:				 1
+PHYML(16)>                . Nb of bootstrapped data sets:			 0
+PHYML(16)>                . Model name:					 Custom
+PHYML(16)>                . Proportion of invariable sites:		 estimated
+PHYML(16)>                . Number of subst. rate categs:			 4
+PHYML(16)>                . Gamma distribution parameter:			 estimated
+PHYML(16)>                . 'Middle' of each rate class:			 mean
+PHYML(16)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(16)>                . Optimise tree topology:			 no
+PHYML(16)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(16)>                . Optimise branch lengths:			 yes
+PHYML(16)>                . Optimise substitution model parameters:	 yes
+PHYML(16)>                . Run ID:					 TIM1+I+G
+PHYML(16)>                . Random seed:					 1407527802
+PHYML(16)>                . Subtree patterns aliasing:			 no
+PHYML(16)>                . Version:					 20130103
+PHYML(16)>
+PHYML(16)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>
+PHYML(16)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(16)>
+PHYML(16)>. 394 sites without polymorphism (83.65%).
+PHYML(16)>
+PHYML(16)>. Reading tree...
+PHYML(16)>
+PHYML(16)>. This analysis requires at least 2 Mo of memory space.
+PHYML(16)>
+PHYML(16)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(16)>. (    0 sec) [     -1331.5144] [GTR parameters     ]
+PHYML(16)>. (    0 sec) [     -1323.9617] [Alpha              ][  0.232535]
+PHYML(16)>. (    0 sec) [     -1323.9617] [P-inv              ][  0.200459]
+PHYML(16)>. (    0 sec) [     -1323.4728] [Nucleotide freqs.  ]
+PHYML(16)>. (    0 sec) [     -1323.4728] [Branch lengths     ]
+PHYML(16)>. (    1 sec) [     -1323.4677] [GTR parameters     ]
+PHYML(16)>. (    2 sec) [     -1323.4428] [Alpha              ][  0.298627]
+PHYML(16)>. (    2 sec) [     -1323.4428] [P-inv              ][  0.291380]
+PHYML(16)>. (    2 sec) [     -1323.4427] [Nucleotide freqs.  ]
+PHYML(16)>. (    2 sec) [     -1323.4427] [Branch lengths     ]
+PHYML(16)>. (    2 sec) [     -1323.4369] [GTR parameters     ]
+PHYML(16)>. (    3 sec) [     -1323.4360] [Alpha              ][  0.301077]
+PHYML(16)>. (    3 sec) [     -1323.4360] [P-inv              ][  0.290798]
+PHYML(16)>. (    3 sec) [     -1323.4360] [Nucleotide freqs.  ]
+PHYML(16)>. (    3 sec) [     -1323.4360] [Branch lengths     ]
+PHYML(16)>. (    3 sec) [     -1323.4360] [GTR parameters     ]
+PHYML(16)>. (    3 sec) [     -1323.4360] [Alpha              ][  0.300776]
+PHYML(16)>. (    3 sec) [     -1323.4360] [P-inv              ][  0.290507]
+PHYML(16)>. (    3 sec) [     -1323.4360] [Nucleotide freqs.  ]
+PHYML(16)>. (    3 sec) [     -1323.4360] [GTR parameters     ]
+PHYML(16)>. (    4 sec) [     -1323.4360] [Alpha              ][  0.300476]
+PHYML(16)>. (    4 sec) [     -1323.4360] [P-inv              ][  0.290217]
+PHYML(16)>. (    4 sec) [     -1323.4360] [Nucleotide freqs.  ]
+PHYML(16)>
+PHYML(16)>. Log likelihood of the current tree: -1323.436003.
+PHYML(16)>
+PHYML(16)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TIM1+I+G.txt'...
+PHYML(16)>
+PHYML(16)>. Time used 0h0m4s
+PHYML(16)>
+PHYML(16)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 16:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TIM1+I+G -m 012230 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>                                 ..........................                                      
+PHYML(18)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(18)>                                 ..........................                                      
+PHYML(18)>
+PHYML(18)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(18)>                . Data type:					 dna
+PHYML(18)>                . Alphabet size:				 4
+PHYML(18)>                . Sequence format:				 interleaved
+PHYML(18)>                . Number of data sets:				 1
+PHYML(18)>                . Nb of bootstrapped data sets:			 0
+PHYML(18)>                . Model name:					 Custom
+PHYML(18)>                . Proportion of invariable sites:		 estimated
+PHYML(18)>                . Number of subst. rate categs:			 4
+PHYML(18)>                . Gamma distribution parameter:			 estimated
+PHYML(18)>                . 'Middle' of each rate class:			 mean
+PHYML(18)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(18)>                . Optimise tree topology:			 no
+PHYML(18)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(18)>                . Optimise branch lengths:			 yes
+PHYML(18)>                . Optimise substitution model parameters:	 yes
+PHYML(18)>                . Run ID:					 TIM2+I+G
+PHYML(18)>                . Random seed:					 1407527806
+PHYML(18)>                . Subtree patterns aliasing:			 no
+PHYML(18)>                . Version:					 20130103
+PHYML(18)>
+PHYML(18)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>
+PHYML(18)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(18)>
+PHYML(18)>. 394 sites without polymorphism (83.65%).
+PHYML(18)>
+PHYML(18)>. Reading tree...
+PHYML(18)>
+PHYML(18)>. This analysis requires at least 2 Mo of memory space.
+PHYML(18)>
+PHYML(18)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(18)>. (    0 sec) [     -1331.2595] [GTR parameters     ]
+PHYML(18)>. (    0 sec) [     -1323.5314] [Alpha              ][  0.229445]
+PHYML(18)>. (    0 sec) [     -1323.5314] [P-inv              ][  0.200336]
+PHYML(18)>. (    0 sec) [     -1323.2314] [Nucleotide freqs.  ]
+PHYML(18)>. (    0 sec) [     -1323.2314] [Branch lengths     ]
+PHYML(18)>. (    0 sec) [     -1323.2238] [GTR parameters     ]
+PHYML(18)>. (    2 sec) [     -1323.1912] [Alpha              ][  0.295732]
+PHYML(18)>. (    2 sec) [     -1323.1912] [P-inv              ][  0.293222]
+PHYML(18)>. (    2 sec) [     -1323.1909] [Nucleotide freqs.  ]
+PHYML(18)>. (    2 sec) [     -1323.1909] [Branch lengths     ]
+PHYML(18)>. (    2 sec) [     -1323.1846] [GTR parameters     ]
+PHYML(18)>. (    3 sec) [     -1323.1837] [Alpha              ][  0.298691]
+PHYML(18)>. (    3 sec) [     -1323.1837] [P-inv              ][  0.293221]
+PHYML(18)>. (    3 sec) [     -1323.1836] [Nucleotide freqs.  ]
+PHYML(18)>. (    3 sec) [     -1323.1836] [Branch lengths     ]
+PHYML(18)>. (    3 sec) [     -1323.1836] [GTR parameters     ]
+PHYML(18)>. (    3 sec) [     -1323.1836] [Alpha              ][  0.298691]
+PHYML(18)>. (    3 sec) [     -1323.1836] [P-inv              ][  0.293221]
+PHYML(18)>. (    3 sec) [     -1323.1836] [Nucleotide freqs.  ]
+PHYML(18)>. (    3 sec) [     -1323.1836] [GTR parameters     ]
+PHYML(18)>. (    4 sec) [     -1323.1836] [Alpha              ][  0.298691]
+PHYML(18)>. (    4 sec) [     -1323.1836] [P-inv              ][  0.293221]
+PHYML(18)>. (    4 sec) [     -1323.1836] [Nucleotide freqs.  ]
+PHYML(18)>
+PHYML(18)>. Log likelihood of the current tree: -1323.183636.
+PHYML(18)>
+PHYML(18)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TIM2+I+G.txt'...
+PHYML(18)>
+PHYML(18)>. Time used 0h0m4s
+PHYML(18)>
+PHYML(18)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 18:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TIM2+I+G -m 010232 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>                                 ..........................                                      
+PHYML(20)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(20)>                                 ..........................                                      
+PHYML(20)>
+PHYML(20)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(20)>                . Data type:					 dna
+PHYML(20)>                . Alphabet size:				 4
+PHYML(20)>                . Sequence format:				 interleaved
+PHYML(20)>                . Number of data sets:				 1
+PHYML(20)>                . Nb of bootstrapped data sets:			 0
+PHYML(20)>                . Model name:					 Custom
+PHYML(20)>                . Proportion of invariable sites:		 estimated
+PHYML(20)>                . Number of subst. rate categs:			 4
+PHYML(20)>                . Gamma distribution parameter:			 estimated
+PHYML(20)>                . 'Middle' of each rate class:			 mean
+PHYML(20)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(20)>                . Optimise tree topology:			 no
+PHYML(20)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(20)>                . Optimise branch lengths:			 yes
+PHYML(20)>                . Optimise substitution model parameters:	 yes
+PHYML(20)>                . Run ID:					 TIM3+I+G
+PHYML(20)>                . Random seed:					 1407527810
+PHYML(20)>                . Subtree patterns aliasing:			 no
+PHYML(20)>                . Version:					 20130103
+PHYML(20)>
+PHYML(20)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>
+PHYML(20)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(20)>
+PHYML(20)>. 394 sites without polymorphism (83.65%).
+PHYML(20)>
+PHYML(20)>. Reading tree...
+PHYML(20)>
+PHYML(20)>. This analysis requires at least 2 Mo of memory space.
+PHYML(20)>
+PHYML(20)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(20)>. (    0 sec) [     -1331.6669] [GTR parameters     ]
+PHYML(20)>. (    0 sec) [     -1324.1607] [Alpha              ][  0.233659]
+PHYML(20)>. (    0 sec) [     -1324.1607] [P-inv              ][  0.200622]
+PHYML(20)>. (    0 sec) [     -1323.6307] [Nucleotide freqs.  ]
+PHYML(20)>. (    0 sec) [     -1323.6307] [Branch lengths     ]
+PHYML(20)>. (    0 sec) [     -1323.5852] [GTR parameters     ]
+PHYML(20)>. (    2 sec) [     -1323.5616] [Alpha              ][  0.298207]
+PHYML(20)>. (    2 sec) [     -1323.5616] [P-inv              ][  0.289821]
+PHYML(20)>. (    2 sec) [     -1323.5591] [Nucleotide freqs.  ]
+PHYML(20)>. (    2 sec) [     -1323.5591] [Branch lengths     ]
+PHYML(20)>. (    2 sec) [     -1323.5533] [GTR parameters     ]
+PHYML(20)>. (    3 sec) [     -1323.5528] [Alpha              ][  0.298979]
+PHYML(20)>. (    3 sec) [     -1323.5528] [P-inv              ][  0.289118]
+PHYML(20)>. (    3 sec) [     -1323.5528] [Nucleotide freqs.  ]
+PHYML(20)>. (    3 sec) [     -1323.5528] [Branch lengths     ]
+PHYML(20)>. (    3 sec) [     -1323.5528] [GTR parameters     ]
+PHYML(20)>. (    4 sec) [     -1323.5528] [Alpha              ][  0.298381]
+PHYML(20)>. (    4 sec) [     -1323.5528] [P-inv              ][  0.288540]
+PHYML(20)>. (    4 sec) [     -1323.5528] [Nucleotide freqs.  ]
+PHYML(20)>. (    4 sec) [     -1323.5528] [GTR parameters     ]
+PHYML(20)>. (    4 sec) [     -1323.5527] [Alpha              ][  0.298381]
+PHYML(20)>. (    4 sec) [     -1323.5527] [P-inv              ][  0.288251]
+PHYML(20)>. (    4 sec) [     -1323.5527] [Nucleotide freqs.  ]
+PHYML(20)>
+PHYML(20)>. Log likelihood of the current tree: -1323.552740.
+PHYML(20)>
+PHYML(20)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TIM3+I+G.txt'...
+PHYML(20)>
+PHYML(20)>. Time used 0h0m4s
+PHYML(20)>
+PHYML(20)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 20:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TIM3+I+G -m 012032 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>                                 ..........................                                      
+PHYML(22)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(22)>                                 ..........................                                      
+PHYML(22)>
+PHYML(22)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(22)>                . Data type:					 dna
+PHYML(22)>                . Alphabet size:				 4
+PHYML(22)>                . Sequence format:				 interleaved
+PHYML(22)>                . Number of data sets:				 1
+PHYML(22)>                . Nb of bootstrapped data sets:			 0
+PHYML(22)>                . Model name:					 Custom
+PHYML(22)>                . Proportion of invariable sites:		 estimated
+PHYML(22)>                . Number of subst. rate categs:			 4
+PHYML(22)>                . Gamma distribution parameter:			 estimated
+PHYML(22)>                . 'Middle' of each rate class:			 mean
+PHYML(22)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(22)>                . Optimise tree topology:			 no
+PHYML(22)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(22)>                . Optimise branch lengths:			 yes
+PHYML(22)>                . Optimise substitution model parameters:	 yes
+PHYML(22)>                . Run ID:					 TVM+I+G
+PHYML(22)>                . Random seed:					 1407527814
+PHYML(22)>                . Subtree patterns aliasing:			 no
+PHYML(22)>                . Version:					 20130103
+PHYML(22)>
+PHYML(22)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>
+PHYML(22)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(22)>
+PHYML(22)>. 394 sites without polymorphism (83.65%).
+PHYML(22)>
+PHYML(22)>. Reading tree...
+PHYML(22)>
+PHYML(22)>. This analysis requires at least 2 Mo of memory space.
+PHYML(22)>
+PHYML(22)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(22)>. (    0 sec) [     -1331.7490] [GTR parameters     ]
+PHYML(22)>. (    1 sec) [     -1323.9976] [Alpha              ][  0.226664]
+PHYML(22)>. (    1 sec) [     -1323.9976] [P-inv              ][  0.198532]
+PHYML(22)>. (    1 sec) [     -1323.5918] [Nucleotide freqs.  ]
+PHYML(22)>. (    1 sec) [     -1323.5918] [Branch lengths     ]
+PHYML(22)>. (    1 sec) [     -1323.5461] [GTR parameters     ]
+PHYML(22)>. (    3 sec) [     -1323.5306] [Alpha              ][  0.290049]
+PHYML(22)>. (    3 sec) [     -1323.5306] [P-inv              ][  0.289672]
+PHYML(22)>. (    3 sec) [     -1323.5283] [Nucleotide freqs.  ]
+PHYML(22)>. (    3 sec) [     -1323.5283] [Branch lengths     ]
+PHYML(22)>. (    3 sec) [     -1323.5220] [GTR parameters     ]
+PHYML(22)>. (    4 sec) [     -1323.5213] [Alpha              ][  0.290277]
+PHYML(22)>. (    4 sec) [     -1323.5213] [P-inv              ][  0.288025]
+PHYML(22)>. (    4 sec) [     -1323.5213] [Nucleotide freqs.  ]
+PHYML(22)>. (    4 sec) [     -1323.5213] [Branch lengths     ]
+PHYML(22)>. (    4 sec) [     -1323.5212] [GTR parameters     ]
+PHYML(22)>. (    5 sec) [     -1323.5211] [Alpha              ][  0.289099]
+PHYML(22)>. (    5 sec) [     -1323.5211] [P-inv              ][  0.286684]
+PHYML(22)>. (    5 sec) [     -1323.5211] [Nucleotide freqs.  ]
+PHYML(22)>. (    5 sec) [     -1323.5211] [GTR parameters     ]
+PHYML(22)>. (    6 sec) [     -1323.5209] [Alpha              ][  0.288233]
+PHYML(22)>. (    6 sec) [     -1323.5209] [P-inv              ][  0.285539]
+PHYML(22)>. (    6 sec) [     -1323.5209] [Nucleotide freqs.  ]
+PHYML(22)>
+PHYML(22)>. Log likelihood of the current tree: -1323.520926.
+PHYML(22)>
+PHYML(22)>. Printing the most likely tree in file 'G:\Cygwin\tmp\jmodeltest6010982257200195311.phy_phyml_tree_TVM+I+G.txt'...
+PHYML(22)>
+PHYML(22)>. Time used 0h0m6s
+PHYML(22)>
+PHYML(22)>oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+ 
+Command line used for process 22:
+    G:\Documents\Carstens\jmodeltest-2.1.5\exe\phyml\PhyML_3.0_win32.exe  -i G:\Documents\Carstens\Pipeline_Analysis\64.nex -d nt -n 1 -b 0 --run_id TVM+I+G -m 012314 -f m -v e -c 4 -a e --no_memory_check -u G:\Cygwin\tmp\jmodeltest8786370284689630284.tree -o lr
+ 
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>                                 ..........................                                      
+PHYML(24)> ooooooooooooooooooooooooooooo        CURRENT SETTINGS        ooooooooooooooooooooooooooooooooooo
+PHYML(24)>                                 ..........................                                      
+PHYML(24)>
+PHYML(24)>                . Sequence filename:				 G:\Cygwin\tmp\jmodeltest6010982257200195311.phy
+PHYML(24)>                . Data type:					 dna
+PHYML(24)>                . Alphabet size:				 4
+PHYML(24)>                . Sequence format:				 interleaved
+PHYML(24)>                . Number of data sets:				 1
+PHYML(24)>                . Nb of bootstrapped data sets:			 0
+PHYML(24)>                . Model name:					 Custom
+PHYML(24)>                . Proportion of invariable sites:		 estimated
+PHYML(24)>                . Number of subst. rate categs:			 4
+PHYML(24)>                . Gamma distribution parameter:			 estimated
+PHYML(24)>                . 'Middle' of each rate class:			 mean
+PHYML(24)>                . Nucleotide equilibrium frequencies:		 ML
+PHYML(24)>                . Optimise tree topology:			 no
+PHYML(24)>                . Evaluated tree:				 file "user tree (G:\Cygwin\tmp\jmodeltest8786370284689630284.tree)"
+PHYML(24)>                . Optimise branch lengths:			 yes
+PHYML(24)>                . Optimise substitution model parameters:	 yes
+PHYML(24)>                . Run ID:					 GTR+I+G
+PHYML(24)>                . Random seed:					 1407527820
+PHYML(24)>                . Subtree patterns aliasing:			 no
+PHYML(24)>                . Version:					 20130103
+PHYML(24)>
+PHYML(24)> oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>
+PHYML(24)>. 152 patterns found (out of a total of 471 sites). 
+PHYML(24)>
+PHYML(24)>. 394 sites without polymorphism (83.65%).
+PHYML(24)>
+PHYML(24)>. Reading tree...
+PHYML(24)>
+PHYML(24)>. This analysis requires at least 2 Mo of memory space.
+PHYML(24)>
+PHYML(24)>. (    0 sec) [     -1334.7695] [Branch lengths     ]
+PHYML(24)>. (    0 sec) [     -1331.2134] [GTR parameters     ]
+PHYML(24)>. (    1 sec) [     -1323.4987] [Alpha              ][  0.229773]
+PHYML(24)>. (    1 sec) [     -1323.4987] [P-inv              ][  0.200361]
+PHYML(24)>. (    1 sec) [     -1323.1992] [Nucleotide freqs.  ]
+PHYML(24)>. (    1 sec) [     -1323.1992] [Branch lengths     ]
