@@ -14,16 +14,16 @@ class FileMethods(object):
 
     def get_range(self, range_file, start, end):
         # Could remove whitespace characters.
-        for num, i in enumerate(range_file):
-            range_start = range_file.index(start)
-            range_file = range_file[range_start:]
-            range_end = range_file.index(end) + range_start
+        range_start = range_file.index(start)
+        range_file = range_file[range_start:]
+        range_end = range_file.index(end) + range_start
         return range_start, range_end
 
-    def filter_output(output, start, end):
+    def filter_output(self, output, start, end):
         output = output[start:end]
         for num, i in enumerate(output):
-            output[num] = i.translate(None, ' \n')
+            output[num] = i.translate(None, ' \r\n')
+        return output
 
 class IterRegistry(type):
 
@@ -37,14 +37,14 @@ class jModelTest(FileMethods):
     """Run jModelTest and store parameters associated with output."""
 
     def run_jModelTest(self):
-        jModelTest = 'java -jar %s -d %s -t fixed -o %s. -s 11 -i -g 4 -f -tr 1' % (path_to_jModelTest, 
+        jModelTest = 'java -jar %s -d %s -t fixed -o %s -s 11 -i -g 4 -f -tr 1' % (path_to_jModelTest, 
                                                      self.sequence_name,
                                                      self.JMT_ID)
         call(jModelTest.split())
 
     def r_jModelTest_parameters(self, jModelTest_file):
         start, end = self.get_range(jModelTest_file, ' Model selected: \r\n', ' \r\n')
-        data = filter_output(jModelTest_file, start + 1, end)
+        data = self.filter_output(jModelTest_file, start + 1, end)
         parameters = []
         for i in data:
             parameter = i.rpartition('=')[0]
@@ -52,7 +52,88 @@ class jModelTest(FileMethods):
             parameters.append([parameter, value])
         return parameters
 
-class NexusFile(jModelTest):
+class Garli(jModelTest):
+
+    """Run garli and store parameters associated with output."""
+
+    def __init__(self, input_file):
+        self.garli_conf = input_file.readlines()
+
+    def w_garli_conf(self, jModelTest_params, garli_file):
+
+        all_possible_models = {
+            'JC' : ['1rate', 'equal'],
+            'F81' : ['1rate', 'estimate'],
+            'K80' : ['2rate', 'equal'],
+            'HKY' : ['2rate', 'estimate'],
+            'trNef' : ['0 1 0 0 2 0', 'equal'],
+            'TrN' : ['0 1 0 0 2 0', 'estimate'],
+            'K81' : ['0 1 2 2 1 0', 'equal'],
+            'K3Puf' : ['0 1 2 2 1 0', 'estimate'],
+            'TMef' : ['0 1 2 2 3 0', 'equal'], # Remove 'I' for translate.
+            'TM' : ['0 1 2 2 3 0', 'estimate'], # Remove 'I' for translate.
+            'TVMef' : ['0 1 2 3 1 4', 'equal'],
+            'TVM' : ['0 1 2 3 1 4', 'estimate'],
+            'SYM' : ['6rate', 'equal'],
+            'GTR' : ['6rate', 'estimate']
+        }
+        # Fix order; strip +IG too early.
+        model_selected = jModelTest_params[0][1]
+        het = '+G' in model_selected
+        inv = '+I' in model_selected
+        model_selected = model_selected.translate(None, '+IG')
+        no_bootstrapreps = raw_input('How many bootstrap replications would' +
+                                     'you like to perform? ')
+        for num,item in enumerate(garli_file):
+            if item.find('datafname') != -1:
+                item = 'datafname = %s\n' % self.sequence_name
+                garli_file[num] = item
+            if item.find('ofprefix') != -1:
+                item = 'ofprefix = %s\n' % self.identifier
+                garli_file[num] = item
+            if item.find('bootstrapreps') != -1:
+                item = 'bootstrapreps = %s\n' % no_bootstrapreps
+                garli_file[num] = item
+            if item.find('datatype') != -1:
+                item = 'datatype = nucleotide\n'
+                garli_file[num] = item
+            if item.find('ratematrix') != -1:
+                item = 'ratematrix = %s\n' % all_possible_models[str(model_selected)][0]
+                garli_file[num] = item
+            if item.find('statefrequencies') != -1:
+                item = 'statefrequencies = %s\n' % all_possible_models[str(model_selected)][1]
+                garli_file[num] = item
+            if item.find('ratehetmodel') != -1:
+                if het == True:
+                    item = 'ratehetmodel = gamma\n'
+                    garli_file[num] = item
+                else:
+                    item = 'ratehetmodel = none\n'
+                    garli_file[num] = item
+            if item.find('numratecats') != -1:
+                if het == True:
+                    item = 'numratecats = 4\n'
+                    garli_file[num] = item
+                else:
+                    item = 'numratecats = 1\n'
+                    garli_file[num] = item
+            if item.find('invariantsites') != -1:
+                if inv == True:
+                    item = 'invariantsites = estimate\n'
+                    garli_file[num] = item
+                else:
+                    item = 'invariantsites = none\n'
+                    garli_file[num] = item
+        with open('garli_%s.conf' % self.identifier, 'w+') as garli_output:
+            garli_output.write(str(garli_file))
+
+    def run_garli():
+        garli = 'garli'
+        garli_run = Popen(garli, stderr = STDOUT, stdout = PIPE)
+        garli_out, garli_err = garli_run.communicate()
+        return garli_out
+
+class NexusFile(Garli):
 
     """A class in which we will store the name and unique associated with the
        given nexus file."""
@@ -84,11 +165,19 @@ class NexusFile(jModelTest):
                 data.append(sequence)
                 output.write('Standard_%s_.xml' % sequence_name)
 
-script, batch, path_to_jModelTest, path_to_beast, tolerance = argv
+script, batch, tolerance, path_to_jModelTest, path_to_beast = argv
 
 path_to_sequence = {}
 
-if bool(batch) == True:
+if batch == 'True':
+    cwd = os.getcwd()
+    files_in_dir = os.listdir(cwd)
+    nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
+    for i in nexus_files:
+        path = i
+        class_name = i.strip('.nex')
+        path_to_sequence[str(class_name)] = str(path)
+else:
     print ('The program will prompt you for the path to each sequence file ' + 
            'as well as a unique name for each instantiated class.')
     no_runs = raw_input('How many runs would you like to perform? ')
@@ -96,21 +185,19 @@ if bool(batch) == True:
         path = raw_input('Path to sequence: ')
         class_name = raw_input('Name of class: ')
         path_to_sequence[str(class_name)] = str(path)
-else:
-    print ('The program will prompt you for the path to the sequence file ' +
-           'as well as a name for the instantiated class.')
-    path = raw_input('Path to sequence: ')
-    class_name = raw_input('Name of class: ')
-    path_to_sequence[str(class_name)] = str(path)
 
 for key in path_to_sequence:
      with open(str(path_to_sequence[key]), 'r') as sequence_file:
          key = NexusFile(key, path_to_sequence[key], sequence_file)
 
 for sequence in NexusFile:
-    print sequence.identifier
-    print sequence.sequence_name
+    print 'sequence file: %s' % sequence.sequence_name
+    print 'Run identifier: %s' % sequence.identifier
+    print 'Running jModelTest...'
     sequence.run_jModelTest()
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
-        print sequence.r_jModelTest_parameters(JMT_output)
+        jModelTest_params = sequence.r_jModelTest_parameters(JMT_output)
+    with open('garli.conf', 'r+') as garli_conf:
+        garli_conf = garli_conf.readlines()
+        print sequence.w_garli_conf(jModelTest_params, garli_conf)
