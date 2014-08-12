@@ -37,10 +37,13 @@ class jModelTest(FileMethods):
     """Run jModelTest and store parameters associated with output."""
 
     def run_jModelTest(self):
-        jModelTest = 'java -jar %s -d %s -t fixed -o %s -s 11 -i -g 4 -f -tr 1' % (path_to_jModelTest, 
-                                                     self.sequence_name,
-                                                     self.JMT_ID)
-        call(jModelTest.split())
+        jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (path_to_jModelTest, self.sequence_name)
+        jMT_run = Popen(jModelTest.split(), stderr = STDOUT, stdout = PIPE)
+        with open('%s' % self.JMT_ID, 'w') as output:
+            for line in iter(jMT_run.stdout.readline, ''):
+                print line.strip()
+                output.write(line)
+        jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
         start, end = self.get_range(jModelTest_file, ' Model selected: \r\n', ' \r\n')
@@ -77,13 +80,13 @@ class Garli(jModelTest):
             'SYM' : ['6rate', 'equal'],
             'GTR' : ['6rate', 'estimate']
         }
-        # Fix order; strip +IG too early.
+
         model_selected = jModelTest_params[0][1]
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
         no_bootstrapreps = raw_input('How many bootstrap replications would' +
-                                     'you like to perform? ')
+                                     ' you like to perform? ')
         for num,item in enumerate(garli_file):
             if item.find('datafname') != -1:
                 item = 'datafname = %s\n' % self.sequence_name
@@ -125,13 +128,15 @@ class Garli(jModelTest):
                     item = 'invariantsites = none\n'
                     garli_file[num] = item
         with open('garli_%s.conf' % self.identifier, 'w+') as garli_output:
-            garli_output.write(str(garli_file))
+            for i in garli_file:
+                garli_output.write(i)
 
-    def run_garli():
-        garli = 'garli'
-        garli_run = Popen(garli, stderr = STDOUT, stdout = PIPE)
-        garli_out, garli_err = garli_run.communicate()
-        return garli_out
+    def run_garli(self):
+        garli = './garli.exe garli_%s.conf' % self.identifier
+        garli_run = Popen(garli.split(), stderr = STDOUT, stdout = PIPE)
+        for line in iter(garli_run.stdout.readline, ''):
+            print line.strip()
+        garli_run.stdout.close()
 
 class NexusFile(Garli):
 
@@ -145,7 +150,7 @@ class NexusFile(Garli):
         self.identifier = str(seq_name) + '_' + str(randrange(0, 999999999))
         self.sequence_name = str(path)
         self.JMT_ID = 'jModelTest_%s.out' % self.identifier
-        # BEASY ID
+        # BEAST ID
         self.nexus_file = seq_file.readlines()
         self.registry.append(self)
 
@@ -191,13 +196,15 @@ for key in path_to_sequence:
          key = NexusFile(key, path_to_sequence[key], sequence_file)
 
 for sequence in NexusFile:
-    print 'sequence file: %s' % sequence.sequence_name
+    print '------------------------------------------------------------------'
+    print 'Sequence file: %s' % sequence.sequence_name
     print 'Run identifier: %s' % sequence.identifier
-    print 'Running jModelTest...'
+    print '------------------------------------------------------------------'
     sequence.run_jModelTest()
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
         jModelTest_params = sequence.r_jModelTest_parameters(JMT_output)
     with open('garli.conf', 'r+') as garli_conf:
         garli_conf = garli_conf.readlines()
-        print sequence.w_garli_conf(jModelTest_params, garli_conf)
+        sequence.w_garli_conf(jModelTest_params, garli_conf)
+        sequence.run_garli()
