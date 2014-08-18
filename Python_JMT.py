@@ -1,14 +1,13 @@
 import os
 from shutil import copy, move, make_archive
 from sys import argv
-from subprocess import Popen, STDOUT, PIPE, call
-from linecache import getline
+from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
 import pyper
 from numpy import array, std
 
-class FileMethods(object):
+class CommonMethods(object):
 
     """Returns the range of user specified start and end sequences."""
 
@@ -29,7 +28,13 @@ class FileMethods(object):
                 output.append(tmp[1])
         return output
 
-class jModelTest(FileMethods):
+    def dict_check(self, string, dict):
+        if string in dict:
+            return dict[string]
+        else:
+            return 'None.'
+
+class jModelTest(CommonMethods):
 
     """Run jModelTest and store parameters associated with output."""
 
@@ -52,7 +57,6 @@ class jModelTest(FileMethods):
             parameters.append([parameter, value])
         for i in parameters:
             self.parameters[i[0]] = i[1]
-        # self.parameters[] = parameters
 
 class Garli(jModelTest):
 
@@ -84,9 +88,6 @@ class Garli(jModelTest):
         'SYM' : ['6rate', 'equal'],
         'GTR' : ['6rate', 'estimate']
     }
-
-    def __init__(self, input_file):
-        self.garli_conf = input_file.readlines()
 
     def w_garli_conf(self, garli_file):
         model_selected = self.parameters['Model']
@@ -138,8 +139,8 @@ class Garli(jModelTest):
                 garli_output.write(i)
 
     def run_garli(self):
-        garli = './garli.exe garli_%s.conf' % self.identifier
-        garli_run = Popen(garli.split(), stderr = STDOUT, stdout = PIPE)
+        garli = './garli.exe -b garli_%s.conf' % self.identifier
+        garli_run = Popen(garli.split(), stderr = STDOUT, stdout = PIPE, stdin = PIPE)
         for line in iter(garli_run.stdout.readline, ''):
             print line.strip()
         garli_run.stdout.close()
@@ -161,54 +162,145 @@ class Garli(jModelTest):
 #             st_dev.append([parameter, std(i)])
 #         return st_dev
 
-# class BEAST(ToleranceCheck):
+class BEAST(Garli):
 
-#     """Run BEAST and store parameters associated with output."""
+    """Run BEAST and store parameters associated with output."""
 
-#     def w_beast_xml(self, beast_xml):
-#         chain_length = raw_input("How long would you like to run the chain? ") # Make this standard.
-#         store_every = raw_input("How often would you like the chain to sample? ") # Make this standard.
-#         model_selected = self.parameters[0][1]
-#         het = '+G' in model_selected
-#         inv = '+I' in model_selected
-#         for num, item in enumerate(beast_xml):
-#             if het == True:
-                
-#             item = item.replace('PUT_NAME_OF_FILE_SANS_NEX_HERE', str(self.sequence_name))
-#             beast_xml[num] = item
-#         beast_xml = ET.XML((''.join(beast_xml)))
-#         output.write(ET.tostring(beast_xml, pretty_print = True))
+    def JC_F81(self, *xml_nodes):
+        for i in xml_nodes:
+            i.text = '1.0'
 
-#     def identify_taxon_and_seq(self, seq_file, beast_xml):
-#         sequence_start, sequence_end = self.get_range(self, self.seq_file, '\tmatrix\n',
-#                                                  '\n')
-#         sequence_start += 1
-#         seq_file = seq_file.readlines()
-#         for line in seq_file:
-#             while sequence_start <= sequence_end:
-#                 species_id = getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[0]
-#                 species_sequence = getline(str(path_to_sequence), int(sequence_start)).rpartition("\t")[-1]
-#                 data = root.find('data')
-#                 sequence = ET.Element('sequence', id='%s' % species_id,
-#                                       taxon='%s' % species_id, totalcount='4',
-#                                       value='%s' % species_sequence)
-#                 data.append(sequence)
-#                 output.write('Standard_%s_.xml' % sequence_name)
+    def K80_HKY(self, *xml_nodes):
+        for i in xml_nodes:
+            if i == rateAG or i == rateCT:
+                i.text = self.parameters['ti/tv']
+            else:
+                i.text = '1.0'
 
-#     def run_beast(self, tolerance):
-#         beast_xml = 'BEAST_XML_%s.xml' % identifier
-#         BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s' % (path_to_beast,
-#                 beast_xml, identifier, str(randrange(0, 999999)))
-#         subprocess.call(BEAST.split())
-#         if tolerance == True:
-#             resume_beast('NAME OF BEAST LOG FILE')
+    sub_models = {'JC' : JC_F81, 'F81' : JC_F81,
+                  'K80' : K80_HKY, 'HKY' : K80_HKY}
 
-#     def resume_beast(self, BEAST_log_file):
-#         ToleranceCheck(BEAST_log_file)
-#         BEAST_log_file.calculate_statistics()
-#         for i in st_dev:
-#             if i > tolerance:
-#                 BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s -resume' % (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
+    def w_beast_submodel(self):
+        model_selected = self.parameters['Model']
+        het = '+G' in model_selected
+        inv = '+I' in model_selected
+        model_selected = model_selected.translate(None, '+IG')
+        # Need to write to XML?
+        run.set('chainLength', '%s' % chain_length)
+        run.set('preBurnin', '%s' % burnin)
+        log.set('logEvery', '%s' % store_every)
+        screen_log.set('logEvery', '%s' % store_every)
+        tree_log.set('logEvery', '%s' % store_every)
+        if Garli.models[str(model_selected)][1] == 'estimate':
+            freq = ET.SubElement(state, 'parameter', attrib = {
+                                 'dimension' : '4', 
+                                 'id' : 'freqParameter.s:%s' % self.sequence_name,
+                                 'lower' : '0.0', 'name' : 'stateNode',
+                                 'upper' : '1.0'})
+            freq.text = '0.25'
+            freq_log = ET.SubElement(log, 'parameter', attrib = {
+                                      'idref' : 'freqParameter.s:%s' % self.sequence_name,
+                                      'name' : 'log'})
+        if Garli.models[str(model_selected)][1] == 'equal':
+            freq = ET.SubElement(substmodel, 'frequencies', attrib = {
+                                 'data' : '@%s' % self.sequence_name, 'estimate' : 'false',
+                                 'id' : 'equalFreqs.s:%s' % self.sequence_name,
+                                 'spec' : 'Frequencies'})
+        if het == True:
+            sitemodel.set('gammaCategoryCount', '4')
+            gamma_shape = ET.SubElement(sitemodel, 'parameter', attrib = {
+                          'estimate' : 'false', 'id' : 'gammaShape.s:%s' % self.sequence_name,
+                          'name' : 'shape'})
+            gamma_shape.text = self.parameters['gammashape']
+        if inv == True:
+            p_inv = ET.SubElement(siteModel, 'parameter', attrib = {
+                                  'estimate' : 'false', 
+                                  'id' : 'proportionInvaraint.s:%s' % self.sequence_name,
+                                  'lower' : '0.0', 'name' : 'proportionInvaraint',
+                                  'upper' : '1.0'})
+            p_inv.text = self.parameters['p-inv']
+
+    def w_beast_rates(self):
+        xml_nodes = []
+        model_selected = (self.parameters['Model']).translate(None, '+IG')
+        for element in substmodel.iter():
+            if 'rateAC.s:' in element.get('id'):
+                rateAC = element
+                xml_nodes.append(element)
+            if 'rateAG.s:' in element.get('id'):
+                rateAG = element
+                xml_nodes.append(element)
+            if 'rateAT.s:' in element.get('id'):
+                rateAT = element
+                xml_nodes.append(element)
+            if 'rateCG.s:' in element.get('id'):
+                rateCG = element
+                xml_nodes.append(element)
+            if 'rateCT.s:' in element.get('id'):
+                rateCT = element
+                xml_nodes.append(element)
+            if 'rateGT.s:' in element.get('id'):
+                rateGT = element
+                xml_nodes.append(element)
+        if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
+            BEAST.sub_models[str(model_selected)](xml_nodes)
+        else:
+            rateAC.text = '%s' % self.parameters['R(a)[AC]']
+            rateAG.text = '%s' % self.parameters['R(b)[AG]']
+            rateAT.text = '%s' % self.parameters['R(c)[AT]']
+            rateCG.text = '%s' % self.parameters['R(d)[CG]']
+            rateCT.text = '%s' % self.parameters['R(e)[CT]']
+            rateGT.text = '%s' % self.parameters['R(f)[GT]']
+
+    def w_beast_taxon(self, beast_xml):
+        sequence_start, sequence_end = self.get_range(self.nexus_file, '\tmatrix\r\n',
+                                                 '\r\n')
+        sequence_start += 1
+        sequence_end -= 1
+        for line in self.nexus_file:
+            while sequence_start <= sequence_end:
+                species_id = (self.nexus_file[int(sequence_start)].rpartition("\t")[0]).strip()
+                species_sequence = (self.nexus_file[int(sequence_start)].rpartition("\t")[-1]).strip()
+                sequence = ET.SubElement(data, 'sequence', attrib = {
+                                         'id' : 'seq_%s' % species_id,
+                                         'taxon' : '%s' % species_id,
+                                         'totalcount' : '4',
+                                         'value' : '%s' % species_sequence})
+                self.beast_finalize()
+                sequence_start += 1
+        # with open(beast_xml, 'r+') as beast_xml:
+        #     beast_xml = beast_xml.readlines()
+        #     for num, item in enumerate(beast_xml):
+        #         item = item.replace('Taxon', str(self.sequence_name))
+        #         beast_xml[num] = item
+        #     beast_xml = ET.XML((''.join(beast_xml)))
+        #     output.write(ET.tostring(beast_xml, pretty_print = True))
+
+    def beast_finalize(self):
+        log.set('fileName', str(self.BEAST_ID))
+        beast.write(self.BEAST_XML)
+        with open(self.BEAST_XML, 'r+') as beast_xml:
+            beast_xml = beast_xml.readlines()
+            for num, item in enumerate(beast_xml):
+                item = item.replace('Taxon', str(self.sequence_name))
+                beast_xml[num] = item
+            beast_xml = ET.XML((''.join(beast_xml)))
+            self.BEAST_XML.write(ET.tostring(beast_xml, pretty_print = True))
+
+    def run_beast(self, tolerance):
+        beast_xml = 'BEAST_XML_%s.xml' % self.identifier
+        BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s' % (path_to_beast,
+                beast_xml, identifier, str(randrange(0, 999999)))
+        subprocess.call(BEAST.split())
+        if tolerance == True:
+            resume_beast('NAME OF BEAST LOG FILE')
+
+    def resume_beast(self, BEAST_log_file):
+        ToleranceCheck(BEAST_log_file)
+        BEAST_log_file.calculate_statistics()
+        for i in st_dev:
+            if i > tolerance:
+                BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s -resume' % (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
 
 class IterRegistry(type):
 
@@ -217,7 +309,7 @@ class IterRegistry(type):
     def __iter__(cls):
         return iter(cls.registry)
 
-class NexusFile(Garli):
+class NexusFile(BEAST):
 
     """A class in which we will store the name and unique associated with the
        given nexus file."""
@@ -232,14 +324,34 @@ class NexusFile(Garli):
         self.identifier = str(seq_name) + '_' + str(randrange(0, 999999999))
         self.JMT_ID = 'jModelTest_%s.out' % self.identifier
         self.parameters = {}
+        self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
         self.BEAST_ID = 'BEAST_%s.out' % self.identifier
         self.registry.append(self)
 
-script, batch, tolerance, path_to_jModelTest, path_to_beast = argv
+script, batch_run, tolerance_run, path_to_jModelTest, path_to_beast = argv
+
+parser = ET.XMLParser(remove_blank_text = True)
+beast = ET.parse('Standard.xml', parser)
+data = beast.find('data')
+run = beast.find('run')
+for element in run.iter():
+    if element.tag == 'state':
+        state = element
+    if element.tag == 'substModel':
+        substmodel = element
+    if element.tag == 'siteModel':
+        sitemodel = element
+for element in run.iterfind('logger'):
+    if element.get('id') == 'tracelog':
+        log = element
+    if element.get('id') == 'screenlog':
+        screen_log = element
+    if 'treelog.t:' in element.get('id'):
+        tree_log = element
 
 path_to_sequence = {}
 
-if batch == 'True':
+if batch_run == 'True':
     cwd = os.getcwd()
     files_in_dir = os.listdir(cwd)
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
@@ -258,12 +370,15 @@ else:
 
 no_bootstrapreps = raw_input('How many bootstrap replications would you ' + 
                              'like to perform in the garli run? ')
-# chain_length = raw_input('How long would you like to run the MCMC chain in ' +
-#                         'the BEAST run? ')
-# store_every = raw_input('How often would you like the chain to sample in ' +
-#                         'the BEAST run? By default, the burnin is set to ' +
-#                         'a quarter of samples.')
-# burnin = (int(chain_length) / int(store_every)) * 0.25
+chain_length = raw_input('How long would you like to run the MCMC chain in ' +
+                        'the BEAST run? ')
+store_every = raw_input('How often would you like the chain to sample in ' +
+                        'the BEAST run? ')
+print 'By default, the burnin is set to a quarter of samples.'
+burnin = int(round((int(chain_length) / int(store_every)) * 0.25))
+
+if tolerance_run == 'True':
+    tolerance = raw_input('What would you like the tolerance to be? ')
 
 for key in path_to_sequence:
      with open(str(path_to_sequence[key]), 'r') as sequence_file:
@@ -271,19 +386,25 @@ for key in path_to_sequence:
 
 for sequence in NexusFile:
     print '------------------------------------------------------------------'
-    print 'Sequence file: %s' % sequence.sequence_name
+    print 'Sequence file: %s' % sequence.path
     print 'Run identifier: %s' % sequence.identifier
+    print 'Garli bootstrap replications: %s' % no_bootstrapreps
+    print 'Length of MCMC chain: %s' % chain_length
+    print 'Sample frequency: %s' % store_every
+    print 'Burnin: %s' % burnin
+    if tolerance_run == 'True':
+        print 'Tolerance: %s' % tolerance
     print '------------------------------------------------------------------'
     sequence.run_jModelTest()
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
         sequence.r_jModelTest_parameters(JMT_output)
-        print sequence.parameters
-    # with open('garli.conf', 'r+') as garli_conf:
-    #     garli_conf = garli_conf.readlines()
-    #     sequence.w_garli_conf(garli_conf)
-    #     sequence.run_garli()
-    # with open('Standard.xml', 'r+') as BEAST_xml:
-    #     BEAST_xml = BEAST_xml.readlines()
-    #     sequence.w_beast_xml(BEAST_xml)
-    #     sequence.run_beast()
+    with open('garli.conf', 'r+') as garli_conf:
+        garli_conf = garli_conf.readlines()
+        sequence.w_garli_conf(garli_conf)
+        sequence.run_garli()
+    print sequence.parameters
+    sequence.w_beast_submodel()
+    sequence.w_beast_rates()
+    sequence.w_beast_taxon('Standard.xml')
+    sequence.beast_finalize(B)

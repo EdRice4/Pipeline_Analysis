@@ -105,11 +105,7 @@ def K80_HKY(self, *xml_nodoes):
         else:
             i.text = '1.0'
 
-sub_models = {'JC' : JC_F81, 'F81' : JC_F81, 'K80' : 'K80_HKY', 'HKY' : 'K80_HKY']
-else:
-
-
-def identify_taxon_and_seq(self, seq_file, beast_xml):
+def w_beast_taxon(self, seq_file, beast_xml):
         sequence_start, sequence_end = self.get_range(self, self.seq_file, '\tmatrix\n',
                                                  '\n')
         sequence_start += 1
@@ -124,14 +120,10 @@ def identify_taxon_and_seq(self, seq_file, beast_xml):
                                       value='%s' % species_sequence)
                 data.append(sequence)
                 output.write('Standard_%s_.xml' % sequence_name)
-
-for num, item in enumerate(beast_xml):
-    if het == True:
-    if inv == True:
-    item = item.replace('PUT_NAME_OF_FILE_SANS_NEX_HERE', str(self.sequence_name))
-    beast_xml[num] = item
-beast_xml = ET.XML((''.join(beast_xml)))
-output.write(ET.tostring(beast_xml, pretty_print = True))
-
-rates = ['rateAC.s:%s', 'rateAG.s:%s', 'rateAT.s:%s', 'rateCG.s:%s'
-         'rateGT.s:%s']
+        for num, item in enumerate(beast_xml):
+            if het == True:
+            if inv == True:
+            item = item.replace('PUT_NAME_OF_FILE_SANS_NEX_HERE', str(self.sequence_name))
+            beast_xml[num] = item
+        beast_xml = ET.XML((''.join(beast_xml)))
+        output.write(ET.tostring(beast_xml, pretty_print = True))
