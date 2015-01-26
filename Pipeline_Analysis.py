@@ -21,8 +21,7 @@ class NexusFile(object):
     def __init__(self, seq_file):
         self.path = str(seq_file)
         self.sequence_name = self.path.rpartition("/")[-1]
-        self.identifier = str(self.sequence_name) + '_' + 
-                          str(randrange(0, 999999999))
+        self.identifier = str(self.sequence_name) + '_' + str(randrange(0, 999999999))
 
 class GetRange(NexusFile):
 
@@ -58,7 +57,7 @@ class Matching(GetRange):
             matching.extend(i for i in iterable if x in i)
         return matching
 
-class Replace(Matching)
+class Replace(Matching):
 
     """A class which will replace values of a list with a user specified list"""
 
@@ -192,8 +191,7 @@ class ToleranceCheck(object):
 # Do I have all necessary parameters?
 # Could use regular expressions.
 def w_beast_xml(jModelTest_file, xml_file):
-    (freqA, freqC, freqG, freqT, Ra, Rb, Rc, Rd, Re, Rf, gamma_shape = 
-    r_jModelTest_parameters(jModelTest_file))
+    freqA, freqC, freqG, freqT, Ra, Rb, Rc, Rd, Re, Rf, gamma_shape = r_jModelTest_parameters(jModelTest_file)
     chain_length = raw_input("How long would you like to run the chain? ") # Make this standard.
     store_every = raw_input("How often would you like the chain to sample? ") # Make this standard.
     taxon_name = sequence_name.strip('.nex')
@@ -238,8 +236,7 @@ class Beast(ToleranceCheck):
         BEAST_log_file.calculate_statistics()
         for i in st_dev:
             if i > tolerance:
-                BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s -resume' % 
-                (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
+                BEAST = 'java -jar %s %s -prefix %s -beagle -seed %s -resume' % (path_to_beast, beast_xml, identifier, str(randrange(0, 999999)))
 
 # To run bGMYC, must install PypeR.
 def bGMYC():
@@ -249,7 +246,7 @@ def bGMYC():
     r = pyper.R()
     r('library(bGMYC)')
     r('trees <- read.nexus("%s.trees")' % identifier)
-    r('result.multi <- bgmyc.multiphylo(trees, mcmc=%s, burnin=%s, thinning=%s)') % (mcmc, burnin, thinning))
+    r('result.multi <- bgmyc.multiphylo(trees, mcmc=%s, burnin=%s, thinning=%s)') % (mcmc, burnin, thinning)
     # Checkpoint?
     r('result.spec <- bgmyc.spec(result.multi, filename=%s.txt)' % identifier)
     r('result.probmat <- spec.probmat(result.mult)')
@@ -269,13 +266,14 @@ def clean_up():
     root_dir = os.path.expanduser(os.path.join('~', str(identifier)))
     make_archive(archive_name, 'gztar', root_dir)
 
-# Ensure you are in home dir; if all files are dumped in one directory, easy to clean and organize.
+# Ensure you are in home dirictory; if all files are dumped in one directory,
+# the program is able to readily reconciliate output.
 home_dir = os.path.expanduser('~')
 while os.getcwd() != home_dir:
     os.chdir(home_dir)
 
 # User input to find sequence file and jModelTest, respectively.
-script, path_to_sequence, path_to_jModelTest, path_to_beast = argv
+# script, path_to_sequence, path_to_jModelTest, path_to_beast = argv
 # path_to_sequence = raw_input('Path to sequence file: ')
 # path_to_jModelTest = raw_input('Path to jModelTest.jar: ')
 # path_to_beast = raw_input('Path to BEAST.jar: ')
@@ -289,7 +287,7 @@ subprocess.call(jModelTest.split())
 # Write to garli.conf file.
 with open('garli.conf', 'r+') as garli_conf:
     jModelTest_file = open('jModelTest_%s_.out' % identifier, 'r')
-    output = open("garli_%s_.conf" % identifier, 'w') 
+    output = open("garli_%s_.conf" % identifier, 'w')
     w_garli_conf(jModelTest_file, garli_conf)
     while jModelTest_file.closed != True:
         jModelTest_file.close()
@@ -323,5 +321,5 @@ run_beast()
 # Run bGMYC.
 bGMYC()
 
-# Copy and rename sequence file then clean up folder, creating directory and archive of latest run.
+# Copy and rename sequence file then clean up folder, creating archive of latest run.
 clean_up()

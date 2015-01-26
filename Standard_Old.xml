@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
+
+
+    <data
+id="Taxon"
+name="alignment">
+                </data>
+
+
+    
+
+
+    
+
+
+    
+<map name="Uniform">beast.math.distributions.Uniform</map>
+<map name="Exponential">beast.math.distributions.Exponential</map>
+<map name="LogNormal">beast.math.distributions.LogNormalDistributionModel</map>
+<map name="Normal">beast.math.distributions.Normal</map>
+<map name="Beta">beast.math.distributions.Beta</map>
+<map name="Gamma">beast.math.distributions.Gamma</map>
+<map name="LaplaceDistribution">beast.math.distributions.LaplaceDistribution</map>
+<map name="prior">beast.math.distributions.Prior</map>
+<map name="InverseGamma">beast.math.distributions.InverseGamma</map>
+<map name="OneOnX">beast.math.distributions.OneOnX</map>
+
+
+<run chainLength="10000000" id="mcmc" spec="MCMC">
+    <state id="state" storeEvery="5000">
+        <tree id="Tree.t:Taxon" name="stateNode">
+            <taxonset id="TaxonSet.Taxon" spec="TaxonSet">
+                <data
+idref="Taxon"
+name="alignment"/>
+            </taxonset>
+        </tree>
+        <parameter id="birthRate.t:Taxon" name="stateNode">1.0</parameter>
+        <parameter id="mutationRate.s:Taxon" name="stateNode">1.0</parameter>
+        <parameter dimension="4" id="freqParameter.s:Taxon" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
+    </state>
+
+    <init estimate="false" id="RandomTree.t:Taxon" initial="@Tree.t:Taxon" spec="beast.evolution.tree.RandomTree" taxa="@Taxon">
+        <populationModel id="ConstantPopulation0.t:Taxon" spec="ConstantPopulation">
+            <parameter id="randomPopSize.t:Taxon" name="popSize">1.0</parameter>
+        </populationModel>
+    </init>
+
+    <distribution id="posterior" spec="util.CompoundDistribution">
+        <distribution id="prior" spec="util.CompoundDistribution">
+            <distribution birthDiffRate="@birthRate.t:Taxon" id="YuleModel.t:Taxon" spec="beast.evolution.speciation.YuleModel" tree="@Tree.t:Taxon"/>
+            <prior id="YuleBirthRatePrior.t:Taxon" name="distribution" x="@birthRate.t:Taxon">
+                <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
+            </prior>
+            <prior id="MutationRatePrior.s:Taxon" name="distribution" x="@mutationRate.s:Taxon">
+                <OneOnX id="OneOnX.0" name="distr"/>
+            </prior>
+        </distribution>
+        <distribution id="likelihood" spec="util.CompoundDistribution">
+            <distribution data="@Taxon" id="treeLikelihood.Taxon" spec="TreeLikelihood" tree="@Tree.t:Taxon">
+                <siteModel id="SiteModel.s:Taxon" mutationRate="@mutationRate.s:Taxon" spec="SiteModel">
+                    <parameter estimate="false" id="gammaShape.s:Taxon" name="shape">1.0</parameter>
+                    <parameter estimate="false" id="proportionInvariant.s:Taxon" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="gtr.s:Taxon" spec="GTR">
+                        <parameter estimate="false" id="rateAC.s:Taxon" lower="0.0" name="rateAC">1.0</parameter>
+                        <parameter estimate="false" id="rateAG.s:Taxon" lower="0.0" name="rateAG">1.0</parameter>
+                        <parameter estimate="false" id="rateAT.s:Taxon" lower="0.0" name="rateAT">1.0</parameter>
+                        <parameter estimate="false" id="rateCG.s:Taxon" lower="0.0" name="rateCG">1.0</parameter>
+                        <parameter estimate="false" id="rateCT.s:Taxon" lower="0.0" name="rateCT">1.0</parameter>
+                        <parameter estimate="false" id="rateGT.s:Taxon" lower="0.0" name="rateGT">1.0</parameter>
+                        <frequencies frequencies="@freqParameter.s:Taxon" id="estimatedFreqs.s:Taxon" spec="Frequencies"/>
+                    </substModel>
+                </siteModel>
+                <branchRateModel id="StrictClock.c:Taxon" spec="beast.evolution.branchratemodel.StrictClockModel">
+                    <parameter estimate="false" id="clockRate.c:Taxon" name="clock.rate">1.0</parameter>
+                </branchRateModel>
+            </distribution>
+        </distribution>
+    </distribution>
+
+    <operator id="YuleBirthRateScaler.t:Taxon" parameter="@birthRate.t:Taxon" scaleFactor="0.75" spec="ScaleOperator" weight="3.0"/>
+
+    <operator id="treeScaler.t:Taxon" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:Taxon" weight="3.0"/>
+
+    <operator id="treeRootScaler.t:Taxon" rootOnly="true" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:Taxon" weight="3.0"/>
+
+    <operator id="UniformOperator.t:Taxon" spec="Uniform" tree="@Tree.t:Taxon" weight="30.0"/>
+
+    <operator id="SubtreeSlide.t:Taxon" spec="SubtreeSlide" tree="@Tree.t:Taxon" weight="15.0"/>
+
+    <operator id="narrow.t:Taxon" spec="Exchange" tree="@Tree.t:Taxon" weight="15.0"/>
+
+    <operator id="wide.t:Taxon" isNarrow="false" spec="Exchange" tree="@Tree.t:Taxon" weight="3.0"/>
+
+    <operator id="WilsonBalding.t:Taxon" spec="WilsonBalding" tree="@Tree.t:Taxon" weight="3.0"/>
+
+    <operator id="mutationRateScaler.s:Taxon" parameter="@mutationRate.s:Taxon" scaleFactor="0.5" spec="ScaleOperator" weight="0.1"/>
+
+    <operator delta="0.01" id="FrequenciesExchanger.s:Taxon" spec="DeltaExchangeOperator" weight="0.1">
+        <parameter idref="freqParameter.s:Taxon"/>
+    </operator>
+
+    <logger fileName="Taxon.log" id="tracelog" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+        <log idref="treeLikelihood.Taxon"/>
+        <log id="TreeHeight.t:Taxon" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:Taxon"/>
+        <log idref="YuleModel.t:Taxon"/>
+        <parameter idref="birthRate.t:Taxon" name="log"/>
+        <parameter idref="mutationRate.s:Taxon" name="log"/>
+        <parameter idref="freqParameter.s:Taxon" name="log"/>
+    </logger>
+
+    <logger id="screenlog" logEvery="1000">
+        <log idref="posterior"/>
+        <log arg="@posterior" id="ESS.0" spec="util.ESS"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+    </logger>
+
+    <logger fileName="$(tree).trees" id="treelog.t:Taxon" logEvery="1000" mode="tree">
+        <log id="TreeWithMetaDataLogger.t:Taxon" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@Tree.t:Taxon"/>
+    </logger>
+
+</run>
+
+</beast>
