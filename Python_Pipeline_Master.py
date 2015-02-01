@@ -41,7 +41,8 @@ class jModelTest(CommonMethods):
     """Run jModelTest and store parameters associated with output."""
 
     def run_jModelTest(self):
-        jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (path_to_jModelTest, self.path)
+        jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
+                     path_to_jModelTest, self.path)
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
         with open('%s' % self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
@@ -50,7 +51,8 @@ class jModelTest(CommonMethods):
         jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
-        start, end = self.get_range(jModelTest_file, ' Model selected: \r\n', ' \r\n')
+        start, end = self.get_range(jModelTest_file, ' Model selected: \r\n',
+                                    ' \r\n')
         data = self.filter_output(jModelTest_file, start + 1, end)
         parameters = []
         for i in data:
@@ -111,10 +113,12 @@ class Garli(jModelTest):
                 item = 'datatype = nucleotide\n'
                 garli_file[num] = item
             if item.find('ratematrix') != -1:
-                item = 'ratematrix = %s\n' % Garli.models[str(model_selected)][0]
+                item = 'ratematrix = %s\n' % Garli.models[str(
+                       model_selected)][0]
                 garli_file[num] = item
             if item.find('statefrequencies') != -1:
-                item = 'statefrequencies = %s\n' % Garli.models[str(model_selected)][1]
+                item = 'statefrequencies = %s\n' % Garli.models[str(
+                       model_selected)][1]
                 garli_file[num] = item
             if item.find('ratehetmodel') != -1:
                 if het:
@@ -143,7 +147,8 @@ class Garli(jModelTest):
 
     def run_garli(self):
         garli = './garli.exe -b garli_%s.conf' % self.identifier
-        garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+        garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE,
+                          stdin=PIPE)
         for line in iter(garli_run.stdout.readline, ''):
             print line.strip()
         garli_run.stdout.close()
@@ -208,7 +213,8 @@ class BEAST(ToleranceCheck):
                                      'name': 'log'})
         if Garli.models[str(model_selected)][1] == 'equal':
             freq = ET.SubElement(substmodel, 'frequencies', attrib={
-                                 'data': '@%s' % self.sequence_name, 'estimate': 'false',
+                                 'data': '@%s' % self.sequence_name,
+                                 'estimate': 'false',
                                  'id': 'equalFreqs.s:%s' % self.sequence_name,
                                  'spec': 'Frequencies'})
         if het:
@@ -258,12 +264,14 @@ class BEAST(ToleranceCheck):
             rateGT.text = '%s' % self.parameters['R(f)[GT]']
 
     def w_beast_taxon(self):
-        sequence_start, sequence_end = self.get_range(self.nexus_file, '\tmatrix\r\n', '\r\n')
+        sequence_start, sequence_end = self.get_range(self.nexus_file,
+                                                      '\tmatrix\r\n', '\r\n')
         sequence_start += 1
         sequence_end -= 1
         for line in self.nexus_file:
             while sequence_start <= sequence_end:
-                species_id = (self.nexus_file[int(sequence_start)].rpartition("\t")[0]).strip()
+                species_id = (self.nexus_file[int(sequence_start)].rpartition(
+                              "\t")[0]).strip()
                 species_sequence = (self.nexus_file[int(sequence_start)].rpartition("\t")[-1]).strip()
                 sequence = ET.SubElement(data, 'sequence', attrib={
                                          'id': 'seq_%s' % species_id,
