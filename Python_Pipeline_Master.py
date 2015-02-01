@@ -1,10 +1,10 @@
 import os
-from shutil import copy, move, make_archive
+from shutil import copy, move
 from sys import argv
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
-import pyper
+# import pyper
 from numpy import array, std, average
 
 
@@ -20,10 +20,10 @@ class CommonMethods(object):
         return range_start, range_end
 
     def filter_output(self, output, start, end):
-        output = output[start:end]
-        output = map(lambda x: x.translate(None, ' \r\n)'), output)
+        output = map(lambda x: x.translate(None, ' \r\n)'),
+                     output[start:end])
         for num, i in enumerate(output):
-            if '(ti/tv' in i: # will always be last?
+            if '(ti/tv' in i:
                 tmp = (output.pop(num)).split('(')
                 output.insert(num, tmp[0])
                 output.append(tmp[1])
@@ -195,7 +195,6 @@ class BEAST(ToleranceCheck):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        # Need to write to XML?
         run.set('chainLength', '%s' % chain_length)
         run.set('preBurnin', '%s' % burnin)
         log.set('logEvery', '%s' % store_every)
@@ -230,7 +229,7 @@ class BEAST(ToleranceCheck):
                                   'lower': '0.0', 'name': 'proportionInvaraint',
                                   'upper': '1.0'})
             p_inv.text = self.parameters['p-inv']
-
+    # May be able to consolidate this.
     def w_beast_rates(self):
         xml_nodes = []
         model_selected = (self.parameters['Model']).translate(None, '+IG')
@@ -317,7 +316,7 @@ class BEAST(ToleranceCheck):
 
 class CleanUp(BEAST):
 
-    """A class used to reconciliate all output in run."""
+    """A class used to consolidate all output in run."""
 
     def clean_up(self):
         cwd = os.getcwd()
@@ -326,8 +325,6 @@ class CleanUp(BEAST):
         for i in output_files:
             move(i, self.identifier)
         copy(self.path, self.identifier)
-        make_archive(self.identifier, 'gztar', self.identifier)
-        # delete directory later?
 
 
 class IterRegistry(type):
@@ -340,7 +337,7 @@ class IterRegistry(type):
 
 class NexusFile(CleanUp):
 
-    """A class in which we will store the name and unique associated with the
+    """A class in which we will store the parameters associated with the
        given nexus file."""
 
     __metaclass__ = IterRegistry
@@ -438,7 +435,7 @@ for sequence in NexusFile:
     sequence.beast_finalize()
     os.mkdir(str(sequence.identifier))
     sequence.run_beast()
-    if tolerance_run == 'True':  # use bool?
+    if tolerance_run == 'True':
         os.chdir(str(sequence.identifier))
         with open(str(sequence.BEAST_ID), 'r') as data_file:
                 data_file = data_file.readlines()
