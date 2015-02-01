@@ -21,9 +21,9 @@ class CommonMethods(object):
 
     def filter_output(self, output, start, end):
         output = output[start:end]
+        output = map(lambda x: x.translate(None, ' \r\n)'), output)
         for num, i in enumerate(output):
-            output[num] = i.translate(None, ' \r\n)')
-            if '(ti/tv' in i:
+            if '(ti/tv' in i: # will always be last?
                 tmp = (output.pop(num)).split('(')
                 output.insert(num, tmp[0])
                 output.append(tmp[1])
