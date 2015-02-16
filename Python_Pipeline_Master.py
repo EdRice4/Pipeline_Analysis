@@ -5,7 +5,8 @@ from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
 # import pyper
-from numpy import array, std, average
+from numpy import array, std, average, loadtxt
+import acor
 
 
 class CommonMethods(object):
@@ -160,19 +161,17 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        # data = []
+        # auto_cor_times = []
         # for line in data_file:
             # if not line[0] == '#' and not line[0] == 'S':
                 # data.append(line.split())
         # data = filter(lambda x: not x[0] == '#'
                       # and not x[0] == 'S', data_file)
-        data = loadtxt(self.BEAST_ID, unpack = True, skiprows = skip)
-        cat_data = zip(*data)
-        st_dev = []
-        for i in cat_data[1:]:
-            data_std = array(map(float, i))
-            st_dev.append(std(data_std))
-        return average(map(float, st_dev))
+        cols = range(1,16)
+        data = loadtxt(self.BEAST_ID, unpack=True, skiprows=skip, usecols=cols)
+        auto_cor_times = zip(*(map(lambda x: acor.acor(x), data)))[0]
+        auto_cor_times = map(lambda x,y: x/(len(y)), auto_cor_times, data)
+        return auto_cor_times
 
 
 class BEAST(ToleranceCheck):
@@ -450,5 +449,6 @@ for sequence in NexusFile:
                             'freqParameter.2\tfreqParameter.3 \t'
                             'freqParameter.4\t\r\n')
                 skip = data_file.index(delimiter)
+                skip += 1
         sequence.resume_beast(data_file)
     sequence.clean_up()
