@@ -160,10 +160,13 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        data = []
-        for line in data_file:
-            if not line[0] == '#' and not line[0] == 'S':
-                data.append(line.split())
+        # data = []
+        # for line in data_file:
+            # if not line[0] == '#' and not line[0] == 'S':
+                # data.append(line.split())
+        # data = filter(lambda x: not x[0] == '#'
+                      # and not x[0] == 'S', data_file)
+        data = loadtxt(self.BEAST_ID, unpack = True, skiprows = skip)
         cat_data = zip(*data)
         st_dev = []
         for i in cat_data[1:]:
@@ -394,11 +397,11 @@ else:
         class_name = raw_input('Name of class: ')
         path_to_sequence[str(class_name)] = str(path)
 
-no_bootstrapreps = raw_input('How many bootstrap replications would you ' +
+no_bootstrapreps = raw_input('How many bootstrap replications would you ' 
                              'like to perform in the garli run? ')
-chain_length = raw_input('How long would you like to run the MCMC chain in ' +
+chain_length = raw_input('How long would you like to run the MCMC chain in ' 
                          'the BEAST run? ')
-store_every = raw_input('How often would you like the chain to sample in ' +
+store_every = raw_input('How often would you like the chain to sample in ' 
                         'the BEAST run? ')
 print 'By default, the burnin is set to a quarter of samples.'
 burnin = int(round((int(chain_length) / int(store_every)) * 0.25))
@@ -439,5 +442,13 @@ for sequence in NexusFile:
         os.chdir(str(sequence.identifier))
         with open(str(sequence.BEAST_ID), 'r') as data_file:
                 data_file = data_file.readlines()
+                delimiter = ('Sample\tposterior\tlikelihood\tprior'
+                            '\ttreeLikelihood\tTreeHeight\tYuleModel'
+                            '\tbirthRate\tmutationRate\tfreqParameter.1'
+                            '\tfreqParameter.2\tfreqParameter.3\t'
+                            'freqParameter.4\tfreqParameter.1\t'
+                            'freqParameter.2\tfreqParameter.3 \t'
+                            'freqParameter.4\t\r\n')
+                skip = data_file.index(delimiter)
         sequence.resume_beast(data_file)
     sequence.clean_up()
