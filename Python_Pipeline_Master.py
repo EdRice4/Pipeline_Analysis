@@ -7,6 +7,7 @@ from random import randrange
 # import pyper
 from numpy import array, std, average, loadtxt
 import acor
+import argparse
 
 
 class CommonMethods(object):
@@ -161,17 +162,11 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        # auto_cor_times = []
-        # for line in data_file:
-            # if not line[0] == '#' and not line[0] == 'S':
-                # data.append(line.split())
-        # data = filter(lambda x: not x[0] == '#'
-                      # and not x[0] == 'S', data_file)
         cols = range(1,16)
         data = loadtxt(self.BEAST_ID, unpack=True, skiprows=skip, usecols=cols)
         auto_cor_times = zip(*(map(lambda x: acor.acor(x), data)))[0]
-        auto_cor_times = map(lambda x,y: x/(len(y)), data, auto_cor_times)
-        return auto_cor_times
+        eff_sample_size = map(lambda x,y: x/(len(y)), data, auto_cor_times)
+        return eff_sample_size 
 
 
 class BEAST(ToleranceCheck):
@@ -300,11 +295,11 @@ class BEAST(ToleranceCheck):
             print line.strip()
         beast_run.stdout.close()
 
-    # could just use end likelihood?
     def resume_beast(self, BEAST_log_file):
-        average_std = self.calculate_statistics(BEAST_log_file)
+        eff_sample_size = self.calculate_statistics(BEAST_log_file)
+        eff_sample_size = filter(lambda x: x < tolerance, eff_sample_size)
         run_number = 1
-        if abs(float(average_std)) > float(tolerance):
+        if eff_sample_size:
             os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % self.sequence_name, run_number)
             BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (path_to_beast, str(randrange(0, 999999)),
                                                                 self.BEAST_XML)
@@ -313,7 +308,7 @@ class BEAST(ToleranceCheck):
                 print line.strip()
             beast_run.stdout.close()
             run_number += 1
-            self.resume_beast(data_file)
+            self.resume_beast(BEAST_log_file)
 
 
 class CleanUp(BEAST):
@@ -355,11 +350,45 @@ class NexusFile(CleanUp):
         self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
         self.BEAST_ID = 'BEAST_%s.out' % self.identifier
         self.registry.append(self)
+# make defaults and metion in help
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
+arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
+arg_parser.addargument('-b', '--batch', help=('run script in batch mode'
+                       'for multiple nexus files'), action='store_true')
+arg_parser.addargument('--bootstrap', type=int, help=('# of bootstrap '
+                       'replications for garli run'))
+arg_parser.addargument('--chain', type=int, help=('length of MCMC chain '
+                       'for BEAST run'))
+arg_parser.addargument('--store_every', type=int, help=('sample interval '
+                       'for BEAST run'))
+arg_parser.addargument('-t', '--tolerance', help=('run script in tolerance'
+                       'mode for BEAST run'), action='store_true')
+arg_parser.add_argument('--tol_value', type=int, help=('value of toelrance'
+                        'for BEAST run'))
+arg_parser.add_argument('--burnin', type=int, help=('desired burnin for BEAST'
+                        'run default = 0.25 of chain length'))
+args = arg_parser.parse_args()
 
-script, batch_run, tolerance_run, path_to_jModelTest, path_to_beast = argv
+# (script, batch_run, tolerance_run, tolerance_value, path_to_jModelTest,
+ # path_to_beast, burnin) = argv
 
-parser = ET.XMLParser(remove_blank_text=True)
-beast = ET.parse('Standard_New.xml', parser)
+# no_bootstrapreps = raw_input('How many bootstrap replications would you ' 
+                             # 'like to perform in the garli run? ')
+# chain_length = raw_input('How long would you like to run the MCMC chain in ' 
+                         # 'the BEAST run? ')
+# store_every = raw_input('How often would you like the chain to sample in ' 
+                        # 'the BEAST run? ')
+# write function to set defaults of args?
+if not tolerance_value:
+    tolerance_value = 100
+
+if not burnin:
+    print 'By default, the burnin is set to a quarter of samples.'
+    burnin = int(round((int(chain_length) / int(store_every)) * 0.25))
+
+XML_parser = ET.XMLParser(remove_blank_text=True)
+beast = ET.parse('Standard_New.xml', XML_parser)
 data = beast.find('data')
 run = beast.find('run')
 for element in run.iter():
@@ -396,17 +425,8 @@ else:
         class_name = raw_input('Name of class: ')
         path_to_sequence[str(class_name)] = str(path)
 
-no_bootstrapreps = raw_input('How many bootstrap replications would you ' 
-                             'like to perform in the garli run? ')
-chain_length = raw_input('How long would you like to run the MCMC chain in ' 
-                         'the BEAST run? ')
-store_every = raw_input('How often would you like the chain to sample in ' 
-                        'the BEAST run? ')
-print 'By default, the burnin is set to a quarter of samples.'
-burnin = int(round((int(chain_length) / int(store_every)) * 0.25))
-
-if tolerance_run == 'True':
-    tolerance = raw_input('What would you like the tolerance to be? ')
+# if tolerance_run == 'True':
+    # tolerance = raw_input('What would you like the tolerance to be? ')
 
 for key in path_to_sequence:
     with open(str(path_to_sequence[key]), 'r') as sequence_file:
