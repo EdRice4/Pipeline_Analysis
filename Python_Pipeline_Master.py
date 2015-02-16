@@ -170,7 +170,7 @@ class ToleranceCheck(Garli):
         cols = range(1,16)
         data = loadtxt(self.BEAST_ID, unpack=True, skiprows=skip, usecols=cols)
         auto_cor_times = zip(*(map(lambda x: acor.acor(x), data)))[0]
-        auto_cor_times = map(lambda x,y: x/(len(y)), auto_cor_times, data)
+        auto_cor_times = map(lambda x,y: x/(len(y)), data, auto_cor_times)
         return auto_cor_times
 
 
