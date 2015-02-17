@@ -101,6 +101,10 @@ class Garli(jModelTest):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
+        garli_params = ['datafname =', 'ofprefix =', 'searchreps =',
+                        'bootstrapreps =', 'ratematrix =',
+                        'statefrequencies =', 'ratehetmodel =',
+                        'numratecats =', 'invariantsites =']
         for num, item in enumerate(garli_file):
             if item.find('datafname') != -1:
                 item = 'datafname = %s\n' % self.path
@@ -110,9 +114,6 @@ class Garli(jModelTest):
                 garli_file[num] = item
             if item.find('bootstrapreps') != -1:
                 item = 'bootstrapreps = %s\n' % no_bootstrapreps
-                garli_file[num] = item
-            if item.find('datatype') != -1:
-                item = 'datatype = nucleotide\n'
                 garli_file[num] = item
             if item.find('ratematrix') != -1:
                 item = 'ratematrix = %s\n' % Garli.models[str(
@@ -350,7 +351,7 @@ class NexusFile(CleanUp):
         self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
         self.BEAST_ID = 'BEAST_%s.out' % self.identifier
         self.registry.append(self)
-# make defaults and metion in help
+# make defaults and mention in help
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
 arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
@@ -370,15 +371,6 @@ arg_parser.add_argument('--burnin', type=int, help=('desired burnin for BEAST'
                         'run default = 0.25 of chain length'))
 args = arg_parser.parse_args()
 
-# (script, batch_run, tolerance_run, tolerance_value, path_to_jModelTest,
- # path_to_beast, burnin) = argv
-
-# no_bootstrapreps = raw_input('How many bootstrap replications would you ' 
-                             # 'like to perform in the garli run? ')
-# chain_length = raw_input('How long would you like to run the MCMC chain in ' 
-                         # 'the BEAST run? ')
-# store_every = raw_input('How often would you like the chain to sample in ' 
-                        # 'the BEAST run? ')
 # write function to set defaults of args?
 if not tolerance_value:
     tolerance_value = 100
