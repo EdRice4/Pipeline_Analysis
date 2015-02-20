@@ -48,8 +48,8 @@ class jModelTest(CommonMethods):
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
         with open('%s' % self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
-                print(line.strip())
-                output.write(line)
+                print((line.strip()).decode())
+                output.write(str(line))
         jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
@@ -105,24 +105,36 @@ class Garli(jModelTest):
                         'bootstrapreps =', 'ratematrix =',
                         'statefrequencies =', 'ratehetmodel =',
                         'numratecats =', 'invariantsites =']
+        values = [self.path, self.identifier, args.bootstrap,
+                  Garli.models[str(model_selected)][0],
+                  Garli.models[str(model_selected)][1]]
+        lines = []
         for num, item in enumerate(garli_file):
-            if item.find('datafname') != -1:
-                item = 'datafname = %s\n' % self.path
-                garli_file[num] = item
-            if item.find('ofprefix') != -1:
-                item = 'ofprefix = %s\n' % self.identifier
-                garli_file[num] = item
-            if item.find('bootstrapreps') != -1:
-                item = 'bootstrapreps = %s\n' % args.bootstrap
-                garli_file[num] = item
-            if item.find('ratematrix') != -1:
-                item = 'ratematrix = %s\n' % Garli.models[str(
-                       model_selected)][0]
-                garli_file[num] = item
-            if item.find('statefrequencies') != -1:
-                item = 'statefrequencies = %s\n' % Garli.models[str(
-                       model_selected)][1]
-                garli_file[num] = item
+            if item.strip() in garli_params:
+                lines.append(num)
+        tmpl = map(lambda x, y: x + ' ' + y + '\n', garli_params, values)
+        tmpd = dict(zip(tmpl, values))
+        for i in tmpd.items():
+            garli_file[i[1]] = i[0]
+            #if item in garli_params:
+                #dict[item] = num
+            #if item.find('datafname') != -1:
+                #item = 'datafname = %s\n' % self.path
+                #garli_file[num] = item
+            #if item.find('ofprefix') != -1:
+                #item = 'ofprefix = %s\n' % self.identifier
+                #garli_file[num] = item
+            #if item.find('bootstrapreps') != -1:
+                #item = 'bootstrapreps = %s\n' % args.bootstrap
+                #garli_file[num] = item
+            #if item.find('ratematrix') != -1:
+                #item = 'ratematrix = %s\n' % Garli.models[str(
+                       #model_selected)][0]
+                #garli_file[num] = item
+            #if item.find('statefrequencies') != -1:
+                #item = 'statefrequencies = %s\n' % Garli.models[str(
+                       #model_selected)][1]
+                #garli_file[num] = item
             if item.find('ratehetmodel') != -1:
                 if het:
                     item = 'ratehetmodel = gamma\n'
@@ -153,7 +165,7 @@ class Garli(jModelTest):
         garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE,
                           stdin=PIPE)
         for line in iter(garli_run.stdout.readline, ''):
-            print(line.strip())
+            print((line.strip()).decode())
         garli_run.stdout.close()
 
 
@@ -296,7 +308,7 @@ class BEAST(ToleranceCheck):
                                                          self.BEAST_XML)
         beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
         for line in iter(beast_run.stdout.readline, ''):
-            print(line.strip())
+            print((line.strip()).decode())
         beast_run.stdout.close()
 
     def resume_beast(self, BEAST_log_file):
@@ -338,12 +350,12 @@ class IterRegistry(type):
         return iter(cls.registry)
 
 
-class NexusFile(CleanUp):
+class NexusFile(CleanUp, metaclass=IterRegistry):
 
     """A class in which we will store the parameters associated with the
        given nexus file."""
 
-    __metaclass__ = IterRegistry
+    #__metaclass__ = IterRegistry
     registry = []
 
     def __init__(self, seq_name, path, seq_file):
@@ -372,7 +384,7 @@ arg_parser.add_argument('-t', '--tolerance', help=('run script in tolerance '
                         'mode for BEAST run'), action='store_true')
 arg_parser.add_argument('--tol_value', type=int, help=('value of toelrance '
                         'for BEAST run'))
-arg_parser.add_argument('burnin', type=int, help=('desired burnin for BEAST '
+arg_parser.add_argument('--burnin', type=int, help=('desired burnin for BEAST '
                         'run default = 0.25 of chain length'))
 args = arg_parser.parse_args()
 
@@ -381,7 +393,7 @@ if not args.tol_value:
     args.tol_value = 100
 if not args.burnin:
     print('By default, the burnin is set to a quarter of samples.')
-    args.burnin = round(args.chain_length / args.store_every) * 0.25
+    args.burnin = round(args.chain / args.store_every) * 0.25
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard_New.xml', XML_parser)
@@ -415,10 +427,10 @@ if args.batch:
 else:
     print ('The program will prompt you for the path to each sequence file ' +
            'as well as a unique name for each instantiated class.')
-    no_runs = raw_input('How many runs would you like to perform? ')
+    no_runs = input('How many runs would you like to perform? ')
     for i in range(int(no_runs)):
-        path = raw_input('Path to sequence: ')
-        class_name = raw_input('Name of class: ')
+        path = input('Path to sequence: ')
+        class_name = input('Name of class: ')
         path_to_sequence[str(class_name)] = str(path)
 
 # if tolerance_run == 'True':
@@ -426,7 +438,8 @@ else:
 
 for key in path_to_sequence:
     with open(str(path_to_sequence[key]), 'r') as sequence_file:
-        key = NexusFile(key, path_to_sequence[key], sequence_file)
+        #key = NexusFile(key, path_to_sequence[key], sequence_file)
+        NexusFile(key, path_to_sequence[key], sequence_file)
 
 for sequence in NexusFile:
     print('-----------------------------------------------------------------')
