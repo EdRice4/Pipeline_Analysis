@@ -1,11 +1,11 @@
 import os
 from shutil import copy, move
-from sys import argv
+# from sys import argv
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
 # import pyper
-from numpy import array, std, average, loadtxt
+from numpy import loadtxt
 import acor
 import argparse
 
@@ -44,11 +44,11 @@ class jModelTest(CommonMethods):
 
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
-                     path_to_jModelTest, self.path)
+                     args.jMT, self.path)
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
         with open('%s' % self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
-                print line.strip()
+                print(line.strip())
                 output.write(line)
         jMT_run.stdout.close()
 
@@ -113,7 +113,7 @@ class Garli(jModelTest):
                 item = 'ofprefix = %s\n' % self.identifier
                 garli_file[num] = item
             if item.find('bootstrapreps') != -1:
-                item = 'bootstrapreps = %s\n' % no_bootstrapreps
+                item = 'bootstrapreps = %s\n' % args.bootstrap
                 garli_file[num] = item
             if item.find('ratematrix') != -1:
                 item = 'ratematrix = %s\n' % Garli.models[str(
@@ -153,7 +153,7 @@ class Garli(jModelTest):
         garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE,
                           stdin=PIPE)
         for line in iter(garli_run.stdout.readline, ''):
-            print line.strip()
+            print(line.strip())
         garli_run.stdout.close()
 
 
@@ -163,11 +163,11 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        cols = range(1,16)
+        cols = range(1, 16)
         data = loadtxt(self.BEAST_ID, unpack=True, skiprows=skip, usecols=cols)
         auto_cor_times = zip(*(map(lambda x: acor.acor(x), data)))[0]
-        eff_sample_size = map(lambda x,y: x/(len(y)), data, auto_cor_times)
-        return eff_sample_size 
+        eff_sample_size = map(lambda x, y: x/(len(y)), data, auto_cor_times)
+        return eff_sample_size
 
 
 class BEAST(ToleranceCheck):
@@ -193,11 +193,11 @@ class BEAST(ToleranceCheck):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        run.set('chainLength', '%s' % chain_length)
-        run.set('preBurnin', '%s' % burnin)
-        log.set('logEvery', '%s' % store_every)
-        screen_log.set('logEvery', '%s' % store_every)
-        tree_log.set('logEvery', '%s' % store_every)
+        run.set('chainLength', '%s' % args.chain)
+        run.set('preBurnin', '%s' % args.burnin)
+        log.set('logEvery', '%s' % args.store_every)
+        screen_log.set('logEvery', '%s' % args.store_every)
+        tree_log.set('logEvery', '%s' % args.store_every)
         if Garli.models[str(model_selected)][1] == 'estimate':
             freq = ET.SubElement(state, 'parameter', attrib={
                                  'dimension': '4',
@@ -227,6 +227,7 @@ class BEAST(ToleranceCheck):
                                   'lower': '0.0', 'name': 'proportionInvaraint',
                                   'upper': '1.0'})
             p_inv.text = self.parameters['p-inv']
+
     # May be able to consolidate this.
     def w_beast_rates(self):
         xml_nodes = []
@@ -289,24 +290,28 @@ class BEAST(ToleranceCheck):
             beast_xml_file.write(''.join(beast_xml))
 
     def run_beast(self):
-        BEAST = 'java -jar %s -prefix %s -seed %s %s' % (path_to_beast,
-                                                         self.identifier, str(randrange(0, 999999)), self.BEAST_XML)
+        BEAST = 'java -jar %s -prefix %s -seed %s %s' % (args.BEAST,
+                                                         self.identifier,
+                                                         str(randrange(0, 999999)),
+                                                         self.BEAST_XML)
         beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
         for line in iter(beast_run.stdout.readline, ''):
-            print line.strip()
+            print(line.strip())
         beast_run.stdout.close()
 
     def resume_beast(self, BEAST_log_file):
         eff_sample_size = self.calculate_statistics(BEAST_log_file)
-        eff_sample_size = filter(lambda x: x < tolerance, eff_sample_size)
+        eff_sample_size = filter(lambda x: x < args.tolerance, eff_sample_size)
         run_number = 1
         if eff_sample_size:
             os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % self.sequence_name, run_number)
-            BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (path_to_beast, str(randrange(0, 999999)),
+            BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (args.BEAST,
+                                                                str(randrange(0, 999999)),
                                                                 self.BEAST_XML)
-            beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+            beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
+                              stdin=PIPE)
             for line in iter(beast_run.stdout.readline, ''):
-                print line.strip()
+                print(line.strip())
             beast_run.stdout.close()
             run_number += 1
             self.resume_beast(BEAST_log_file)
@@ -355,29 +360,28 @@ class NexusFile(CleanUp):
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
 arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
-arg_parser.addargument('-b', '--batch', help=('run script in batch mode'
-                       'for multiple nexus files'), action='store_true')
-arg_parser.addargument('--bootstrap', type=int, help=('# of bootstrap '
-                       'replications for garli run'))
-arg_parser.addargument('--chain', type=int, help=('length of MCMC chain '
-                       'for BEAST run'))
-arg_parser.addargument('--store_every', type=int, help=('sample interval '
-                       'for BEAST run'))
-arg_parser.addargument('-t', '--tolerance', help=('run script in tolerance'
-                       'mode for BEAST run'), action='store_true')
-arg_parser.add_argument('--tol_value', type=int, help=('value of toelrance'
+arg_parser.add_argument('-b', '--batch', help=('run script in batch mode'
+                        'for multiple nexus files'), action='store_true')
+arg_parser.add_argument('bootstrap', type=int, help=('# of bootstrap '
+                        'replications for garli run'))
+arg_parser.add_argument('chain', type=int, help=('length of MCMC chain '
                         'for BEAST run'))
-arg_parser.add_argument('--burnin', type=int, help=('desired burnin for BEAST'
+arg_parser.add_argument('store_every', type=int, help=('sample interval '
+                        'for BEAST run'))
+arg_parser.add_argument('-t', '--tolerance', help=('run script in tolerance '
+                        'mode for BEAST run'), action='store_true')
+arg_parser.add_argument('--tol_value', type=int, help=('value of toelrance '
+                        'for BEAST run'))
+arg_parser.add_argument('burnin', type=int, help=('desired burnin for BEAST '
                         'run default = 0.25 of chain length'))
 args = arg_parser.parse_args()
 
 # write function to set defaults of args?
-if not tolerance_value:
-    tolerance_value = 100
-
-if not burnin:
-    print 'By default, the burnin is set to a quarter of samples.'
-    burnin = int(round((int(chain_length) / int(store_every)) * 0.25))
+if not args.tol_value:
+    args.tol_value = 100
+if not args.burnin:
+    print('By default, the burnin is set to a quarter of samples.')
+    args.burnin = round(args.chain_length / args.store_every) * 0.25
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard_New.xml', XML_parser)
@@ -400,7 +404,7 @@ for element in run.iterfind('logger'):
 
 path_to_sequence = {}
 
-if batch_run == 'True':
+if args.batch:
     cwd = os.getcwd()
     files_in_dir = os.listdir(cwd)
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
@@ -425,16 +429,16 @@ for key in path_to_sequence:
         key = NexusFile(key, path_to_sequence[key], sequence_file)
 
 for sequence in NexusFile:
-    print '------------------------------------------------------------------'
-    print 'Sequence file: %s' % sequence.path
-    print 'Run identifier: %s' % sequence.identifier
-    print 'Garli bootstrap replications: %s' % no_bootstrapreps
-    print 'Length of MCMC chain: %s' % chain_length
-    print 'Sample frequency: %s' % store_every
-    print 'Burnin: %s' % burnin
-    if tolerance_run == 'True':
-        print 'Tolerance: %s' % tolerance
-    print '------------------------------------------------------------------'
+    print('-----------------------------------------------------------------')
+    print('Sequence file: %s' % sequence.path)
+    print('Run identifier: %s' % sequence.identifier)
+    print('Garli bootstrap replications: %s' % args.bootstrap)
+    print('Length of MCMC chain: %s' % args.chain)
+    print('Sample frequency: %s' % args.store_every)
+    print('Burnin: %s' % args.burnin)
+    if args.tolerance:
+        print('Tolerance: %s' % args.tol_value)
+    print('-----------------------------------------------------------------')
     sequence.run_jModelTest()
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
@@ -449,17 +453,17 @@ for sequence in NexusFile:
     sequence.beast_finalize()
     os.mkdir(str(sequence.identifier))
     sequence.run_beast()
-    if tolerance_run == 'True':
+    if args.tolerance:
         os.chdir(str(sequence.identifier))
         with open(str(sequence.BEAST_ID), 'r') as data_file:
                 data_file = data_file.readlines()
                 delimiter = ('Sample\tposterior\tlikelihood\tprior'
-                            '\ttreeLikelihood\tTreeHeight\tYuleModel'
-                            '\tbirthRate\tmutationRate\tfreqParameter.1'
-                            '\tfreqParameter.2\tfreqParameter.3\t'
-                            'freqParameter.4\tfreqParameter.1\t'
-                            'freqParameter.2\tfreqParameter.3 \t'
-                            'freqParameter.4\t\r\n')
+                             '\ttreeLikelihood\tTreeHeight\tYuleModel'
+                             '\tbirthRate\tmutationRate\tfreqParameter.1'
+                             '\tfreqParameter.2\tfreqParameter.3\t'
+                             'freqParameter.4\tfreqParameter.1\t'
+                             'freqParameter.2\tfreqParameter.3 \t'
+                             'freqParameter.4\t\r\n')
                 skip = data_file.index(delimiter)
                 skip += 1
         sequence.resume_beast(data_file)
