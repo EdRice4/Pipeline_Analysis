@@ -1,6 +1,5 @@
 import os
 from shutil import copy, move
-# from sys import argv
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -15,7 +14,6 @@ class CommonMethods(object):
     """Returns the range of user specified start and end sequences."""
 
     def get_range(self, range_file, start, end):
-        # Could remove whitespace characters.
         range_start = range_file.index(start)
         range_file = range_file[range_start:]
         range_end = range_file.index(end) + range_start
@@ -263,7 +261,8 @@ class BEAST(ToleranceCheck):
             if 'rateGT.s:' in element.get('id'):
                 rateGT = element
                 xml_nodes.append(element)
-        if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
+        if str(model_selected)
+        #if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
             BEAST.sub_models[str(model_selected)](xml_nodes)
         else:
             rateAC.text = '%s' % self.parameters['R(a)[AC]']
@@ -433,12 +432,8 @@ else:
         class_name = input('Name of class: ')
         path_to_sequence[str(class_name)] = str(path)
 
-# if tolerance_run == 'True':
-    # tolerance = raw_input('What would you like the tolerance to be? ')
-
 for key in path_to_sequence:
     with open(str(path_to_sequence[key]), 'r') as sequence_file:
-        #key = NexusFile(key, path_to_sequence[key], sequence_file)
         NexusFile(key, path_to_sequence[key], sequence_file)
 
 for sequence in NexusFile:
@@ -481,3 +476,4 @@ for sequence in NexusFile:
                 skip += 1
         sequence.resume_beast(data_file)
     sequence.clean_up()
+    print sequence.parameters
