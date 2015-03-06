@@ -1,0 +1,20 @@
+<itsabeastystatewerein version='2.0' sample='1'>
+<statenode id='Tree.t:47'>((((0:0.12575862475816438,(1:0.11521187896565348,2:0.11521187896565348)40:0.0105467457925109)42:0.04696878517589895,15:0.17272740993406333)43:0.5008577100969598,((3:0.06122629972222218,20:0.06122629972222218)34:0.01807565379152566,4:0.07930195351374784)37:0.5942831665172753)48:1.8845090147593906,((((((5:0.0880315086556146,(9:0.06422489884353844,11:0.06422489884353844)35:0.023806609812076163)38:0.028404209513311476,(12:0.015193059294673059,22:0.015193059294673059)28:0.10124265887425302)41:0.14227903811678783,((14:0.005663872737522203,17:0.005663872737522203)27:0.24971390485762554,16:0.25537777759514774)44:0.0033369786905661503)45:0.07995213112071536,((6:0.053985747425483274,13:0.053985747425483274)33:0.04837140417350855,(((7:7.439683405303772E-4,19:7.439683405303772E-4)26:0.007379753607596696,23:0.008123721948127074)29:0.0608063861056075,(10:0.035583907809787575,25:0.035583907809787575)31:0.033346200243947)36:0.033427043545257246)39:0.23630973580743742)46:0.13268677552239005,((8:0.020997674859369847,24:0.020997674859369847)30:0.020373922274516017,21:0.041371597133885864)32:0.4299820657949334)47:0.4146662026878526,18:0.8860198656166719)49:1.6720742691737418)50:0.0</statenode>
+<statenode id='birthRate.t:47'>birthRate.t:47[1 1] (-Infinity,Infinity): 1.0 </statenode>
+<statenode id='mutationRate.s:47'>mutationRate.s:47[1 1] (0.0,Infinity): 1.0 </statenode>
+<statenode id='freqParameter.s:47'>freqParameter.s:47[4 1] (0.0,1.0): 0.25 0.25 0.25 0.25 </statenode>
+</itsabeastystatewerein>
+<!--
+{operators:[
+{id:"YuleBirthRateScaler.t:47", p:0.75, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"treeScaler.t:47", p:0.5, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"treeRootScaler.t:47", p:0.5, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"UniformOperator.t:47", p:NaN, accept:1, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"SubtreeSlide.t:47", p:1.0, accept:0, reject:1, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"narrow.t:47", p:NaN, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"wide.t:47", p:NaN, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"WilsonBalding.t:47", p:NaN, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"mutationRateScaler.s:47", p:0.5, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"FrequenciesExchanger.s:47", p:0.01, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0}
+]}
+-->
