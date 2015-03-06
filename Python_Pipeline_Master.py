@@ -1,6 +1,5 @@
 import os
 from shutil import copy, move
-# from sys import argv
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -22,13 +21,12 @@ class CommonMethods(object):
         return range_start, range_end
 
     def filter_output(self, output, start, end):
-        output = map(lambda x: x.translate(None, ' \r\n)'),
-                     output[start:end])
+        output = list(map(lambda x: ''.join(x.split()), output[start:end]))  # map(lambda x: x.translate(None, ' \n)'), output[start:end])
         for num, i in enumerate(output):
             if '(ti/tv' in i:
                 tmp = (output.pop(num)).split('(')
                 output.insert(num, tmp[0])
-                output.append(tmp[1])
+                output.append((tmp[1]).replace(')', ''))
         return output
 
     def dict_check(self, string, dict):
@@ -45,17 +43,17 @@ class jModelTest(CommonMethods):
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
-        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
-        with open('%s' % self.JMT_ID, 'w') as output:
-            for line in iter(jMT_run.stdout.readline, ''):
-                print((line.strip()).decode())
-                output.write(str(line))
+        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE, universal_newlines=True)
+        with open(self.JMT_ID, 'w') as output:
+            for line in jMT_run.stdout:
+                print(line, end='')
+                output.write(line)
         jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
-        start, end = self.get_range(jModelTest_file, ' Model selected: \r\n',
-                                    ' \r\n')
-        data = self.filter_output(jModelTest_file, start + 1, end)
+        start, end = self.get_range(jModelTest_file, ' Model selected: \n',
+                                    ' \n')
+        data = self.filter_output(jModelTest_file, start + 1, end) # data = data[start:end]?;change args in filter_output?
         parameters = []
         for i in data:
             parameter = i.rpartition('=')[0]
@@ -453,7 +451,7 @@ for sequence in NexusFile:
         print('Tolerance: %s' % args.tol_value)
     print('-----------------------------------------------------------------')
     sequence.run_jModelTest()
-    with open(str(sequence.JMT_ID), 'r') as JMT_output:
+    with open('%s' % sequence.JMT_ID, 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
     sequence.r_jModelTest_parameters(JMT_output)
     with open('garli.conf', 'r+') as garli_conf:
