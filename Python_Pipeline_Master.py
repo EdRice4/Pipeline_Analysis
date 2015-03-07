@@ -3,7 +3,7 @@ from shutil import copy, move
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
-import pyper
+# import pyper
 from numpy import loadtxt
 import acor
 import argparse
@@ -42,20 +42,6 @@ class jModelTest(CommonMethods):
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
-<<<<<<< HEAD:Python2_Pipeline_Master.py
-        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
-        with open('%s' % self.JMT_ID, 'w') as output:
-            for line in iter(jMT_run.stdout.readline, ''):
-                #print((line.strip()).decode())
-                output.write(str(line))
-            jMT_run.stdout.close()
-
-    def r_jModelTest_parameters(self, jModelTest_file):
-        start, end = self.get_range(jModelTest_file, ' Model selected: \r\n',
-                                    ' \r\n')
-        data = self.filter_output(jModelTest_file, start + 1, end)
-        parameters = [] # use a dictionary?
-=======
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE, universal_newlines=True)
         with open(self.JMT_ID, 'w') as output:
             for line in jMT_run.stdout:
@@ -68,7 +54,6 @@ class jModelTest(CommonMethods):
                                     ' \n')
         data = self.filter_output(jModelTest_file, start + 1, end) # data = data[start:end]?;change args in filter_output?
         parameters = []
->>>>>>> python3:Python_Pipeline_Master.py
         for i in data:
             parameter = i.rpartition('=')[0]
             value = i.rpartition('=')[-1]

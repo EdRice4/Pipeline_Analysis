@@ -1,5 +1,6 @@
 import os
 from shutil import copy, move
+# from sys import argv
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -14,18 +15,20 @@ class CommonMethods(object):
     """Returns the range of user specified start and end sequences."""
 
     def get_range(self, range_file, start, end):
+        # Could remove whitespace characters.
         range_start = range_file.index(start)
         range_file = range_file[range_start:]
         range_end = range_file.index(end) + range_start
         return range_start, range_end
 
     def filter_output(self, output, start, end):
-        output = list(map(lambda x: ''.join(x.split()), output[start:end]))  # map(lambda x: x.translate(None, ' \n)'), output[start:end])
+        output = map(lambda x: x.translate(None, ' \r\n)'),
+                     output[start:end])
         for num, i in enumerate(output):
             if '(ti/tv' in i:
                 tmp = (output.pop(num)).split('(')
                 output.insert(num, tmp[0])
-                output.append((tmp[1]).replace(')', ''))
+                output.append(tmp[1])
         return output
 
     def dict_check(self, string, dict):
@@ -42,7 +45,6 @@ class jModelTest(CommonMethods):
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
-<<<<<<< HEAD:Python2_Pipeline_Master.py
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
         with open('%s' % self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
@@ -55,20 +57,6 @@ class jModelTest(CommonMethods):
                                     ' \r\n')
         data = self.filter_output(jModelTest_file, start + 1, end)
         parameters = [] # use a dictionary?
-=======
-        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE, universal_newlines=True)
-        with open(self.JMT_ID, 'w') as output:
-            for line in jMT_run.stdout:
-                print(line, end='')
-                output.write(line)
-        jMT_run.stdout.close()
-
-    def r_jModelTest_parameters(self, jModelTest_file):
-        start, end = self.get_range(jModelTest_file, ' Model selected: \n',
-                                    ' \n')
-        data = self.filter_output(jModelTest_file, start + 1, end) # data = data[start:end]?;change args in filter_output?
-        parameters = []
->>>>>>> python3:Python_Pipeline_Master.py
         for i in data:
             parameter = i.rpartition('=')[0]
             value = i.rpartition('=')[-1]
@@ -275,8 +263,7 @@ class BEAST(ToleranceCheck):
             if 'rateGT.s:' in element.get('id'):
                 rateGT = element
                 xml_nodes.append(element)
-        if str(model_selected)
-        #if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
+        if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
             BEAST.sub_models[str(model_selected)](xml_nodes)
         else:
             rateAC.text = '%s' % self.parameters['R(a)[AC]']
@@ -363,12 +350,12 @@ class IterRegistry(type):
         return iter(cls.registry)
 
 
-class NexusFile(CleanUp, metaclass=IterRegistry):
+class NexusFile(CleanUp):
 
     """A class in which we will store the parameters associated with the
        given nexus file."""
 
-    #__metaclass__ = IterRegistry
+    __metaclass__ = IterRegistry
     registry = []
 
     def __init__(self, seq_name, path, seq_file):
@@ -462,7 +449,7 @@ for sequence in NexusFile:
         print('Tolerance: %s' % args.tol_value)
     print('-----------------------------------------------------------------')
     sequence.run_jModelTest()
-    with open('%s' % sequence.JMT_ID, 'r') as JMT_output:
+    with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
     sequence.r_jModelTest_parameters(JMT_output)
     with open('garli.conf', 'r+') as garli_conf:
@@ -490,4 +477,3 @@ for sequence in NexusFile:
                 skip += 1
         sequence.resume_beast(data_file)
     sequence.clean_up()
-    print sequence.parameters
