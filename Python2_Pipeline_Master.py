@@ -35,6 +35,17 @@ class CommonMethods(object):
         else:
             return 'None.'
 
+    def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
+        lines = []
+        for num, i in enumerate(file_to_edit):
+            if i.strip() in lines_to_edit:
+                    lines.append(num)
+            tmpl = map(lambda x, y: x + ' ' + y, lines_to_edit,
+                       values_to_insert)
+            tmpd = dict(zip(tmpl, lines))
+            for i in tmpd:
+                file_to_edit[tmpd[i]] = i
+        return file_to_edit
 
 class jModelTest(CommonMethods):
 
@@ -54,15 +65,8 @@ class jModelTest(CommonMethods):
         start, end = self.get_range(jModelTest_file, ' Model selected: \n',
                                     ' \n')
         data = self.filter_output(jModelTest_file, start + 1, end)
-        parameters = [] # use a dictionary?
         for i in data:
             self.parameters[i.rpartition('=')[0]] = i.rpartition('=')[-1]
-        #for i in data:
-            #parameter = i.rpartition('=')[0]
-            #value = i.rpartition('=')[-1]
-            #parameters.append([parameter, value])
-        #for i in parameters:
-            #self.parameters[i[0]] = i[1]
 
 
 class Garli(jModelTest):
@@ -103,19 +107,19 @@ class Garli(jModelTest):
         model_selected = model_selected.translate(None, '+IG')
         garli_params = ['datafname =', 'ofprefix =', 'searchreps =',
                         'bootstrapreps =', 'ratematrix =',
-                        'statefrequencies =', 'ratehetmodel =',
-                        'numratecats =', 'invariantsites =']
+                        'statefrequencies =']
         values = [self.path, self.identifier, args.bootstrap,
                   Garli.models[str(model_selected)][0],
                   Garli.models[str(model_selected)][1]]
-        lines = []
-        for num, item in enumerate(garli_file):
-            if item.strip() in garli_params:
-                lines.append(num)
-        tmpl = map(lambda x, y: x + ' ' + y + '\n', garli_params, values)
-        tmpd = dict(zip(tmpl, values))
-        for i in tmpd.items():
-            garli_file[i[1]] = i[0]
+        garli_file = self.file_edit(garli_file, garli_params, values)
+        #lines = []
+        #for num, item in enumerate(garli_file):
+            #if item.strip() in garli_params:
+                #lines.append(num)
+        #tmpl = map(lambda x, y: x + ' ' + y + '\n', garli_params, values)
+        #tmpd = dict(zip(tmpl, values))
+        #for i in tmpd.items():
+            #garli_file[i[1]] = i[0]
             #if item in garli_params:
                 #dict[item] = num
             #if item.find('datafname') != -1:
