@@ -118,7 +118,7 @@ class Garli(jModelTest):
                 #lines.append(num)
         #tmpl = map(lambda x, y: x + ' ' + y + '\n', garli_params, values)
         #tmpd = dict(zip(tmpl, values))
-        #for i in tmpd.items():
+        for num, item in enumerate(garli_file):
             #garli_file[i[1]] = i[0]
             #if item in garli_params:
                 #dict[item] = num
