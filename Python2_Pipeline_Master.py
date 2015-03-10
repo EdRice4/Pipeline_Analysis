@@ -1,4 +1,3 @@
-# this is a test
 import os
 from shutil import copy, move
 from subprocess import Popen, STDOUT, PIPE
@@ -56,7 +55,7 @@ class jModelTest(CommonMethods):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE,
-                        universal_new_lines=True)
+                        universal_newlines=True)
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 output.write(str(line))
