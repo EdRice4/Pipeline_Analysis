@@ -59,6 +59,8 @@ class jModelTest(CommonMethods):
                         universal_newlines=True)
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
+                print line.strip()
+            #for line in iter(jMT_run.stdout.readline()):
                 output.write(str(line))
             jMT_run.stdout.close()
 
@@ -109,7 +111,7 @@ class Garli(jModelTest):
         garli_params = ['datafname =', 'ofprefix =', 'searchreps =',
                         'bootstrapreps =', 'ratematrix =',
                         'statefrequencies =']
-        values = [self.path, self.identifier, args.bootstrap,
+        values = [self.path, self.identifier, str(args.bootstrap),
                   Garli.models[str(model_selected)][0],
                   Garli.models[str(model_selected)][1]]
         garli_file = self.file_edit(garli_file, garli_params, values)
