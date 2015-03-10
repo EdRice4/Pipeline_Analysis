@@ -336,7 +336,26 @@ class BEAST(ToleranceCheck):
             self.resume_beast(BEAST_log_file)
 
 
-class CleanUp(BEAST):
+class bGMYC(BEAST):
+
+    """A class used to run bGMYC in R with pypeR module."""
+
+    def bGMYC(self):
+        r = pyper.R()
+        r('library(ape)')
+        r('library(bGMYC)')
+        r('read.nexus(file="%s.trees") -> trees' % self.identifer)
+        r('bgmyc.multiphylo(trees, mcmc=50000, burning=40000, thinning=100) -> result.multi')
+        r('svg("%s_mcmc.svg")' % self.identifier)
+        r('plot(result.multi)')
+        r('dev.off()')
+        r('bgmyc.spec(result.multi, filename="%s.txt") -> result.spec' % self.identifier)
+        r('spec.probmat(result.multi) -> result.probmat')
+        r('svg("%s_prob.svg")' % self.identifer)
+        r('plot(result.probmat, trees[[1]])')
+        r('dev.off()')
+
+class CleanUp(bGMYC):
 
     """A class used to consolidate all output in run."""
 
