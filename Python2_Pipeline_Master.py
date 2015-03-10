@@ -47,6 +47,7 @@ class CommonMethods(object):
                 file_to_edit[tmpd[i]] = i
         return file_to_edit
 
+
 class jModelTest(CommonMethods):
 
     """Run jModelTest and store parameters associated with output."""
