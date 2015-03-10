@@ -344,14 +344,14 @@ class bGMYC(BEAST):
         r = pyper.R()
         r('library(ape)')
         r('library(bGMYC)')
-        r('read.nexus(file="%s.trees") -> trees' % self.identifer)
+        r('read.nexus(file="%s.trees") -> trees' % self.identifier)
         r('bgmyc.multiphylo(trees, mcmc=50000, burning=40000, thinning=100) -> result.multi')
         r('svg("%s_mcmc.svg")' % self.identifier)
         r('plot(result.multi)')
         r('dev.off()')
         r('bgmyc.spec(result.multi, filename="%s.txt") -> result.spec' % self.identifier)
         r('spec.probmat(result.multi) -> result.probmat')
-        r('svg("%s_prob.svg")' % self.identifer)
+        r('svg("%s_prob.svg")' % self.identifier)
         r('plot(result.probmat, trees[[1]])')
         r('dev.off()')
 
@@ -504,4 +504,5 @@ for sequence in NexusFile:
                 skip = data_file.index(delimiter)
                 skip += 1
         sequence.resume_beast(data_file)
+    sequence.bGMYC()
     sequence.clean_up()
