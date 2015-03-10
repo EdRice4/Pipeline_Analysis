@@ -431,10 +431,10 @@ if args.batch:
 else:
     print ('The program will prompt you for the path to each sequence file ' +
            'as well as a unique name for each instantiated class.')
-    no_runs = input('How many runs would you like to perform? ')
+    no_runs = raw_input('How many runs would you like to perform? ')
     for i in range(int(no_runs)):
-        path = input('Path to sequence: ')
-        class_name = input('Name of class: ')
+        path = raw_input('Path to sequence: ')
+        class_name = raw_input('Name of class: ')
         path_to_sequence[str(class_name)] = str(path)
 
 for key in path_to_sequence:
