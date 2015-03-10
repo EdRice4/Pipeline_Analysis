@@ -400,7 +400,7 @@ if not args.tol_value:
     args.tol_value = 100
 if not args.burnin:
     print('By default, the burnin is set to a quarter of samples.')
-    args.burnin = round(args.chain / args.store_every) * 0.25
+    args.burnin = round((args.chain / args.store_every) * 0.25)
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard_New.xml', XML_parser)
