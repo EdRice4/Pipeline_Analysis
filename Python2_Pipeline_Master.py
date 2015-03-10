@@ -400,7 +400,7 @@ arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
 arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
 arg_parser.add_argument('-b', '--batch', help=('run script in batch mode'
                         'for multiple nexus files'), action='store_true')
-arg_parser.add_argument('-g', '--garli', helo=('run garli prior to BEAST')
+arg_parser.add_argument('-g', '--garli', help=('run garli prior to BEAST'),
                         action='store_false')
 arg_parser.add_argument('-bsr', '--bootstrap', type=int, help=('# of bootstrap '
                         'replications for garli run'))
