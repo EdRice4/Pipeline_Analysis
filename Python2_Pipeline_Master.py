@@ -108,7 +108,7 @@ class Garli(jModelTest):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        garli_params = ['datafname =', 'ofprefix =', 'searchreps =',
+        garli_params = ['datafname =', 'ofprefix =', 
                         'bootstrapreps =', 'ratematrix =',
                         'statefrequencies =']
         values = [self.path, self.identifier, str(args.bootstrap),
