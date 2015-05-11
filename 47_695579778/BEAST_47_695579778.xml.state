@@ -1,0 +1,20 @@
+<itsabeastystatewerein version='2.0' sample='4'>
+<statenode id='Tree.t:47'>(((((0:0.03188485420864418,(13:0.0020246738606398097,24:0.0020246738606398097)27:0.029860180348004372)31:0.04646973685570934,(22:0.056658666302388264,23:0.056658666302388264)34:0.02169592476196526)36:0.041352319132168,11:0.11970691019652152)41:0.34948629588063745,(((2:0.2188747079301666,9:0.2188747079301666)42:0.026518550196809654,12:0.24539325812697627)44:0.15741027757702986,((8:0.0709420062467882,21:0.0709420062467882)35:0.03849014844627177,10:0.10943215469305997)40:0.2933713810109462)47:0.06638967037315285)48:1.2616765875812561,((((((1:0.004511327292536777,(5:0.003341320865622609,16:0.003341320865622609)28:0.001170006426914168)29:0.050270019625830935,3:0.05478134691836771)38:0.03862245870213733,(14:0.08724353992637365,18:0.08724353992637365)37:0.006160265694131389)49:0.13234336042826084,((15:0.0444030608588632,19:0.0444030608588632)32:0.06421381636906752,25:0.10861687722793072)39:0.11713028882083516)43:0.0409254934718139,(6:0.05126828799569451,(7:0.05022255966866251,20:0.05022255966866251)30:0.0010457283270320014)33:0.21540437152488529)45:0.13558532124507366,(4:0.001638185040707214,17:0.001638185040707214)26:0.4006197957249462)46:1.3286118128927618)50:0.0</statenode>
+<statenode id='birthRate.t:47'>birthRate.t:47[1 1] (-Infinity,Infinity): 1.0 </statenode>
+<statenode id='mutationRate.s:47'>mutationRate.s:47[1 1] (0.0,Infinity): 1.0 </statenode>
+<statenode id='freqParameter.s:47'>freqParameter.s:47[4 1] (0.0,1.0): 0.25 0.25 0.25 0.25 </statenode>
+</itsabeastystatewerein>
+<!--
+{operators:[
+{id:"YuleBirthRateScaler.t:47", p:0.75, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"treeScaler.t:47", p:0.5, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"treeRootScaler.t:47", p:0.5, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"UniformOperator.t:47", p:NaN, accept:2, reject:2, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"SubtreeSlide.t:47", p:1.0, accept:0, reject:1, acceptFC:0, rejectFC:0, rejectIv:1, rejectOp:1},
+{id:"narrow.t:47", p:NaN, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"wide.t:47", p:NaN, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"WilsonBalding.t:47", p:NaN, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"mutationRateScaler.s:47", p:0.5, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0},
+{id:"FrequenciesExchanger.s:47", p:0.01, accept:0, reject:0, acceptFC:0, rejectFC:0, rejectIv:0, rejectOp:0}
+]}
+-->
