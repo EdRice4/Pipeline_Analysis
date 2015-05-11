@@ -213,8 +213,8 @@ class BEAST(ToleranceCheck):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        run.set('chainLength', '%s' % args.chain)
-        run.set('preBurnin', '%s' % args.burnin)
+        run.set('chainLength', '%s' % args.MCMC_BEAST)
+        run.set('preBurnin', '%s' % args.burnin_BEAST)
         log.set('logEvery', '%s' % args.store_every)
         screen_log.set('logEvery', '%s' % args.store_every)
         tree_log.set('logEvery', '%s' % args.store_every)
@@ -348,8 +348,9 @@ class bGMYC(BEAST):
         r("library(ape)")
         r("library(bGMYC)")
         r("read.nexus(file='%s.trees') -> trees" % self.sequence_name)
-        r("bgmyc.multiphylo(trees, mcmc=100, burnin=10, thinning=5, t1=%i, "
-          "t2=%i, start=c(1,1,%i)) -> result.multi" % (args.t1, args.t2, thres)) 
+        r("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, t1=%i, "
+          "t2=%i, start=c(1,1,%i)) -> result.multi" % (args.MCMC_bGMYC,
+          args.burnin_bGMYC, args.thinning, args.t1, args.t2, threshold)) 
         r("svg('%s_mcmc.svg')" % self.identifier)
         r("plot(result.multi)")
         r("dev.off()")
@@ -404,20 +405,26 @@ arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
 arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
 arg_parser.add_argument('-b', '--batch', help=('run script in batch mode '
                         'for multiple nexus files'), action='store_true')
-arg_parser.add_argument('-g', '--garli', help=('run garli prior to BEAST'),
-                        action='store_true')
+arg_parser.add_argument('-g', '--garli', help=('run garli analysis prior to '
+                        'BEAST'), action='store_true')
 arg_parser.add_argument('-bsr', '--bootstrap', type=int, help=('# of bootstrap '
-                        'replications for garli run'))
-arg_parser.add_argument('chain', type=int, help=('length of MCMC chain '
-                        'for BEAST run'))
+                        'replications for garli analysis'))
+arg_parser.add_argument('MCMC_BEAST', type=int, help=('length of MCMC chain '
+                        'for BEAST analysis'))
 arg_parser.add_argument('store_every', type=int, help=('sample interval '
-                        'for BEAST run'))
+                        'for BEAST analysis'))
 arg_parser.add_argument('-t', '--tolerance', help=('run script in tolerance '
                         'mode for BEAST run'), action='store_true')
 arg_parser.add_argument('--tol_value', type=int, help=('value of toelrance '
                         'for BEAST run'))
-arg_parser.add_argument('--burnin', type=int, help=('desired burnin for BEAST '
+arg_parser.add_argument('--burnin_BEAST', type=int, help=('burnin for BEAST '
                         'run default = 0.25 of chain length'))
+arg_parser.add_argument('MCMC_bGMYC', type=int, help=('length of MCM chain '
+                        'for bGMYC analysis'))
+arg_parser.add_argument('--burnin_bGMYC', type=int, help=('burnin for bGMYC '
+                        'run default = 0.25 of chain length'))
+arg_parser.add_argument('thinning', type=int, help=('sample interval for '
+                        ' bGMYC analysis'))
 arg_parser.add_argument('t1', type=int, help=('value of t1 for bGMYC analysis '
                         'see instructions in bGMYC documentation'))
 arg_parser.add_argument('t2', type=int, help=('value of t1 for bGMYC analysis '
@@ -427,10 +434,12 @@ args = arg_parser.parse_args()
 # write function to set defaults of args?
 if not args.tol_value:
     args.tol_value = 100
-if not args.burnin:
-    print('By default, the burnin is set to a quarter of samples.')
-    args.burnin = int(round((args.chain / args.store_every) * 0.25))
-thres = int(round((args.t1 + args.t2) / 2))
+if not args.burnin_BEAST:
+    #print('By default, the burnin is set to a quarter of samples.')
+    args.burnin_BEAST = int(round(args.MCMC_BEAST *  0.25))
+if not args.burnin_bGMYC:
+    args.burnin_bGMYC = int(round(args.MCMC_bGMYC * 0.25))
+threshold = int(round((args.t1 + args.t2) / 2))
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard_New.xml', XML_parser)
@@ -479,9 +488,9 @@ for sequence in NexusFile:
     print('Sequence file: %s' % sequence.path)
     print('Run identifier: %s' % sequence.identifier)
     print('Garli bootstrap replications: %s' % args.bootstrap)
-    print('Length of MCMC chain: %s' % args.chain)
+    print('Length of MCMC chain: %s' % args.MCMC_BEAST)
     print('Sample frequency: %s' % args.store_every)
-    print('Burnin: %s' % args.burnin)
+    print('Burnin: %s' % args.burnin_BEAST)
     if args.tolerance:
         print('Tolerance: %s' % args.tol_value)
     print('-----------------------------------------------------------------')
