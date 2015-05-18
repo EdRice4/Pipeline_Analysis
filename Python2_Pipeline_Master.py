@@ -123,28 +123,6 @@ class Garli(jModelTest):
         else:
             garli_values.append('none')
         garli_file = self.file_edit(garli_file, garli_params, garli_values)
-        #for num, item in enumerate(garli_file):
-            #if item.find('ratehetmodel') != -1:
-                #if het:
-                    #item = 'ratehetmodel = gamma\n'
-                    #garli_file[num] = item
-                #else:
-                    #item = 'ratehetmodel = none\n'
-                    #garli_file[num] = item
-            #if item.find('numratecats') != -1:
-                #if het:
-                    #item = 'numratecats = 4\n'
-                    #garli_file[num] = item
-                #else:
-                    #item = 'numratecats = 1\n'
-                    #garli_file[num] = item
-            #if item.find('invariantsites') != -1:
-                #if inv:
-                    #item = 'invariantsites = estimate\n'
-                    #garli_file[num] = item
-                #else:
-                    #item = 'invariantsites = none\n'
-                    #garli_file[num] = item
         with open('garli_%s.conf' % self.identifier, 'w+') as garli_output:
             for i in garli_file:
                 garli_output.write(i)
