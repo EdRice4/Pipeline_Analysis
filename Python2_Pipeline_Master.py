@@ -6,7 +6,7 @@ from random import randrange
 from numpy import loadtxt
 import acor
 import argparse
-import pyper 
+import pyper
 
 
 class CommonMethods(object):
@@ -40,7 +40,7 @@ class CommonMethods(object):
         for num, i in enumerate(file_to_edit):
             if i.strip() in lines_to_edit:
                     lines.append(num)
-            tmpl = map(lambda x, y: x + ' ' + y, lines_to_edit,
+            tmpl = map(lambda x, y: x + ' ' + y + '\n', lines_to_edit,
                        values_to_insert)
             tmpd = dict(zip(tmpl, lines))
             for i in tmpd:
@@ -59,8 +59,7 @@ class jModelTest(CommonMethods):
                         universal_newlines=True)
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
-                print line.strip()
-            #for line in iter(jMT_run.stdout.readline()):
+                print(line.strip())
                 output.write(str(line))
             jMT_run.stdout.close()
 
@@ -108,67 +107,49 @@ class Garli(jModelTest):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        garli_params = ['datafname =', 'ofprefix =', 
+        garli_params = ['datafname =', 'ofprefix =',
                         'bootstrapreps =', 'ratematrix =',
-                        'statefrequencies =']
-        values = [self.path, self.identifier, str(args.bootstrap),
-                  Garli.models[str(model_selected)][0],
-                  Garli.models[str(model_selected)][1]]
-        garli_file = self.file_edit(garli_file, garli_params, values)
-        #lines = []
+                        'statefrequencies =', 'ratehetmodel =',
+                        'numratecats =', 'invariantsites =']
+        garli_values = [self.path, self.identifier, str(args.bootstrap),
+                        Garli.models[str(model_selected)][0],
+                        Garli.models[str(model_selected)][1]]
+        if het:
+            garli_values.extend(['gamma', '4'])
+        else:
+            garli_values.extend(['none', '1'])
+        if inv:
+            garli_values.append('estimate')
+        else:
+            garli_values.append('none')
+        garli_file = self.file_edit(garli_file, garli_params, garli_values)
         #for num, item in enumerate(garli_file):
-            #if item.strip() in garli_params:
-                #lines.append(num)
-        #tmpl = map(lambda x, y: x + ' ' + y + '\n', garli_params, values)
-        #tmpd = dict(zip(tmpl, values))
-        for num, item in enumerate(garli_file):
-            #garli_file[i[1]] = i[0]
-            #if item in garli_params:
-                #dict[item] = num
-            #if item.find('datafname') != -1:
-                #item = 'datafname = %s\n' % self.path
-                #garli_file[num] = item
-            #if item.find('ofprefix') != -1:
-                #item = 'ofprefix = %s\n' % self.identifier
-                #garli_file[num] = item
-            #if item.find('bootstrapreps') != -1:
-                #item = 'bootstrapreps = %s\n' % args.bootstrap
-                #garli_file[num] = item
-            #if item.find('ratematrix') != -1:
-                #item = 'ratematrix = %s\n' % Garli.models[str(
-                       #model_selected)][0]
-                #garli_file[num] = item
-            #if item.find('statefrequencies') != -1:
-                #item = 'statefrequencies = %s\n' % Garli.models[str(
-                       #model_selected)][1]
-                #garli_file[num] = item
-            if item.find('ratehetmodel') != -1:
-                if het:
-                    item = 'ratehetmodel = gamma\n'
-                    garli_file[num] = item
-                else:
-                    item = 'ratehetmodel = none\n'
-                    garli_file[num] = item
-            if item.find('numratecats') != -1:
-                if het:
-                    item = 'numratecats = 4\n'
-                    garli_file[num] = item
-                else:
-                    item = 'numratecats = 1\n'
-                    garli_file[num] = item
-            if item.find('invariantsites') != -1:
-                if inv:
-                    item = 'invariantsites = estimate\n'
-                    garli_file[num] = item
-                else:
-                    item = 'invariantsites = none\n'
-                    garli_file[num] = item
+            #if item.find('ratehetmodel') != -1:
+                #if het:
+                    #item = 'ratehetmodel = gamma\n'
+                    #garli_file[num] = item
+                #else:
+                    #item = 'ratehetmodel = none\n'
+                    #garli_file[num] = item
+            #if item.find('numratecats') != -1:
+                #if het:
+                    #item = 'numratecats = 4\n'
+                    #garli_file[num] = item
+                #else:
+                    #item = 'numratecats = 1\n'
+                    #garli_file[num] = item
+            #if item.find('invariantsites') != -1:
+                #if inv:
+                    #item = 'invariantsites = estimate\n'
+                    #garli_file[num] = item
+                #else:
+                    #item = 'invariantsites = none\n'
+                    #garli_file[num] = item
         with open('garli_%s.conf' % self.identifier, 'w+') as garli_output:
             for i in garli_file:
                 garli_output.write(i)
 
     def run_garli(self):
-        #garli = './garli.exe -b garli_%s.conf' % self.identifier
         garli = './Garli -b garli_%s.conf' % self.identifier
         garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE,
                           stdin=PIPE)
@@ -343,14 +324,16 @@ class bGMYC(BEAST):
 
     def bGMYC(self):
         os.chdir(str(self.identifier))
-        #threshold = int(round((args.t1 + args.t2) / 2))
         r = pyper.R()
         r("library(ape)")
         r("library(bGMYC)")
         r("read.nexus(file='%s.trees') -> trees" % self.sequence_name)
         r("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, t1=%i, "
           "t2=%i, start=c(1,1,%i)) -> result.multi" % (args.MCMC_bGMYC,
-          args.burnin_bGMYC, args.thinning, args.t1, args.t2, threshold)) 
+                                                       args.burnin_bGMYC,
+                                                       args.thinning,
+                                                       args.t1, args.t2,
+                                                       threshold))
         r("svg('%s_mcmc.svg')" % self.identifier)
         r("plot(result.multi)")
         r("dev.off()")
@@ -359,6 +342,7 @@ class bGMYC(BEAST):
         r('svg("%s_prob.svg")' % self.identifier)
         r('plot(result.probmat, trees[[1]])')
         r('dev.off()')
+
 
 class CleanUp(bGMYC):
 
@@ -399,7 +383,7 @@ class NexusFile(CleanUp):
         self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
         self.BEAST_ID = 'BEAST_%s.out' % self.identifier
         self.registry.append(self)
-# make defaults and mention in help
+
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
 arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
@@ -407,8 +391,8 @@ arg_parser.add_argument('-b', '--batch', help=('run script in batch mode '
                         'for multiple nexus files'), action='store_true')
 arg_parser.add_argument('-g', '--garli', help=('run garli analysis prior to '
                         'BEAST'), action='store_true')
-arg_parser.add_argument('-bsr', '--bootstrap', type=int, help=('# of bootstrap '
-                        'replications for garli analysis'))
+arg_parser.add_argument('-bsr', '--bootstrap', type=int, help=('# of bootstrap'
+                        ' replications for garli analysis'))
 arg_parser.add_argument('MCMC_BEAST', type=int, help=('length of MCMC chain '
                         'for BEAST analysis'))
 arg_parser.add_argument('store_every', type=int, help=('sample interval '
@@ -435,8 +419,7 @@ args = arg_parser.parse_args()
 if not args.tol_value:
     args.tol_value = 100
 if not args.burnin_BEAST:
-    #print('By default, the burnin is set to a quarter of samples.')
-    args.burnin_BEAST = int(round(args.MCMC_BEAST *  0.25))
+    args.burnin_BEAST = int(round(args.MCMC_BEAST * 0.25))
 if not args.burnin_bGMYC:
     args.burnin_bGMYC = int(round(args.MCMC_bGMYC * 0.25))
 threshold = int(round((args.t1 + args.t2) / 2))
@@ -450,7 +433,6 @@ for element in run.iter():
         state = element
     if element.tag == 'substModel':
         substmodel = element
-    if element.tag == 'siteModel':
         sitemodel = element
 for element in run.iterfind('logger'):
     if element.get('id') == 'tracelog':
@@ -498,31 +480,29 @@ for sequence in NexusFile:
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
     sequence.r_jModelTest_parameters(JMT_output)
-    with open('garli.conf', 'r+') as garli_conf:
+    with open('garli.conf', 'r') as garli_conf:
         garli_conf = garli_conf.readlines()
     sequence.w_garli_conf(garli_conf)
     sequence.run_garli()
-    sequence.w_beast_submodel()
-    sequence.w_beast_rates()
-    sequence.w_beast_taxon()
-    sequence.beast_finalize()
-    os.mkdir(str(sequence.identifier))
-    sequence.run_beast()
-    if args.tolerance:
-        os.chdir(str(sequence.identifier))
-        with open(str(sequence.BEAST_ID), 'r') as data_file:
-                data_file = data_file.readlines()
-                delimiter = ('Sample\tposterior\tlikelihood\tprior'
-                             '\ttreeLikelihood\tTreeHeight\tYuleModel'
-                             '\tbirthRate\tmutationRate\tfreqParameter.1'
-                             '\tfreqParameter.2\tfreqParameter.3\t'
-                             'freqParameter.4\tfreqParameter.1\t'
-                             'freqParameter.2\tfreqParameter.3 \t'
-                             'freqParameter.4\t\r\n')
-                skip = data_file.index(delimiter)
-                skip += 1
-        sequence.resume_beast(data_file)
-    sequence.clean_up()
-    sequence.bGMYC()
-    #print(args.t1, args.t2, threshold)
-    #print(type(args.t1), type(args.t2), type(threshold))
+    #sequence.w_beast_submodel()
+    #sequence.w_beast_rates()
+    #sequence.w_beast_taxon()
+    #sequence.beast_finalize()
+    #os.mkdir(str(sequence.identifier))
+    #sequence.run_beast()
+    #if args.tolerance:
+        #os.chdir(str(sequence.identifier))
+        #with open(str(sequence.BEAST_ID), 'r') as data_file:
+                #data_file = data_file.readlines()
+                #delimiter = ('Sample\tposterior\tlikelihood\tprior'
+                             #'\ttreeLikelihood\tTreeHeight\tYuleModel'
+                             #'\tbirthRate\tmutationRate\tfreqParameter.1'
+                             #'\tfreqParameter.2\tfreqParameter.3\t'
+                             #'freqParameter.4\tfreqParameter.1\t'
+                             #'freqParameter.2\tfreqParameter.3 \t'
+                             #'freqParameter.4\t\r\n')
+                #skip = data_file.index(delimiter)
+                #skip += 1
+        #sequence.resume_beast(data_file)
+    #sequence.clean_up()
+    #sequence.bGMYC()
