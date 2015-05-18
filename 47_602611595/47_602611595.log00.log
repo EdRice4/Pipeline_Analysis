@@ -1,0 +1,12 @@
+Search rep 1 (of 2)
+random seed = 449181
+gen	best_like	time	optPrecision
+0	-1767.514602	1	0.5
+Score after final optimization: -1760.670095
+Final	-1760.670095	44	0.01
+Search rep 2 (of 2)
+random seed = 560024112
+gen	best_like	time	optPrecision
+0	-1793.808988	44	0.5
+Score after final optimization: -1760.670092
+Final	-1760.670092	88	0.01

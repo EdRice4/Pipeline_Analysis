@@ -458,10 +458,11 @@ for sequence in NexusFile:
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
     sequence.r_jModelTest_parameters(JMT_output)
-    with open('garli.conf', 'r') as garli_conf:
-        garli_conf = garli_conf.readlines()
-    sequence.w_garli_conf(garli_conf)
-    sequence.run_garli()
+    if args.garli:
+        with open('garli.conf', 'r') as garli_conf:
+            garli_conf = garli_conf.readlines()
+        sequence.w_garli_conf(garli_conf)
+        sequence.run_garli()
     sequence.w_beast_submodel()
     sequence.w_beast_rates()
     sequence.w_beast_taxon()
