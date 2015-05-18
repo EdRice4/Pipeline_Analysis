@@ -484,25 +484,25 @@ for sequence in NexusFile:
         garli_conf = garli_conf.readlines()
     sequence.w_garli_conf(garli_conf)
     sequence.run_garli()
-    #sequence.w_beast_submodel()
-    #sequence.w_beast_rates()
-    #sequence.w_beast_taxon()
-    #sequence.beast_finalize()
-    #os.mkdir(str(sequence.identifier))
-    #sequence.run_beast()
-    #if args.tolerance:
-        #os.chdir(str(sequence.identifier))
-        #with open(str(sequence.BEAST_ID), 'r') as data_file:
-                #data_file = data_file.readlines()
-                #delimiter = ('Sample\tposterior\tlikelihood\tprior'
-                             #'\ttreeLikelihood\tTreeHeight\tYuleModel'
-                             #'\tbirthRate\tmutationRate\tfreqParameter.1'
-                             #'\tfreqParameter.2\tfreqParameter.3\t'
-                             #'freqParameter.4\tfreqParameter.1\t'
-                             #'freqParameter.2\tfreqParameter.3 \t'
-                             #'freqParameter.4\t\r\n')
-                #skip = data_file.index(delimiter)
-                #skip += 1
-        #sequence.resume_beast(data_file)
-    #sequence.clean_up()
-    #sequence.bGMYC()
+    sequence.w_beast_submodel()
+    sequence.w_beast_rates()
+    sequence.w_beast_taxon()
+    sequence.beast_finalize()
+    os.mkdir(str(sequence.identifier))
+    sequence.run_beast()
+    if args.tolerance:
+        os.chdir(str(sequence.identifier))
+        with open(str(sequence.BEAST_ID), 'r') as data_file:
+                data_file = data_file.readlines()
+                delimiter = ('Sample\tposterior\tlikelihood\tprior'
+                             '\ttreeLikelihood\tTreeHeight\tYuleModel'
+                             '\tbirthRate\tmutationRate\tfreqParameter.1'
+                             '\tfreqParameter.2\tfreqParameter.3\t'
+                             'freqParameter.4\tfreqParameter.1\t'
+                             'freqParameter.2\tfreqParameter.3 \t'
+                             'freqParameter.4\t\r\n')
+                skip = data_file.index(delimiter)
+                skip += 1
+        sequence.resume_beast(data_file)
+    sequence.clean_up()
+    sequence.bGMYC()
