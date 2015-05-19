@@ -57,10 +57,13 @@ class jModelTest(CommonMethods):
                      args.jMT, self.path)
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                         universal_newlines=True)
+        n = 1469
+        bar = pyprind.ProgBar(n)
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 print(line.strip())
                 output.write(str(line))
+                bar.update()
             jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
@@ -132,7 +135,7 @@ class Garli(jModelTest):
         garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE,
                           stdin=PIPE)
         for line in iter(garli_run.stdout.readline, ''):
-            print((line.strip()).decode())
+            print(line.strip())
         garli_run.stdout.close()
 
 
@@ -141,9 +144,8 @@ class ToleranceCheck(Garli):
     """A class that can calculate statistics of data in a file separated into
        columns."""
 
-    def calculate_statistics(self, data_file):
-        cols = range(1, 16)
-        data = loadtxt(self.BEAST_ID, unpack=True, skiprows=skip, usecols=cols)
+    def calculate_statistics(self, data_file, rows, cols):
+        data = loadtxt(self.BEAST_ID, unpack=True, skiprows=rows, usecols=cols)
         auto_cor_times = zip(*(map(lambda x: acor.acor(x), data)))[0]
         eff_sample_size = map(lambda x, y: x/(len(y)), data, auto_cor_times)
         return eff_sample_size
@@ -279,11 +281,20 @@ class BEAST(ToleranceCheck):
         beast_run.stdout.close()
 
     def resume_beast(self, BEAST_log_file):
-        eff_sample_size = self.calculate_statistics(BEAST_log_file)
+        delimiter = ('Sample\tposterior\tlikelihood\tprior'
+                     '\ttreeLikelihood\tTreeHeight\tYuleModel'
+                     '\tbirthRate\tmutationRate\tfreqParameter.1'
+                     '\tfreqParameter.2\tfreqParameter.3\t'
+                     'freqParameter.4\tfreqParameter.1\t'
+                     'freqParameter.2\tfreqParameter.3 \t'
+                     'freqParameter.4\t\n')
+        rows = data_file.index(delimiter) + 1
+        cols = range(1, 16)
+        eff_sample_size = self.calculate_statistics(BEAST_log_file, rows, cols)
         eff_sample_size = filter(lambda x: x < args.tolerance, eff_sample_size)
         run_number = 1
         if eff_sample_size:
-            os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % self.sequence_name, run_number)
+            os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % (self.sequence_name, run_number))
             BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (args.BEAST,
                                                                 str(randrange(0, 999999)),
                                                                 self.BEAST_XML)
@@ -302,6 +313,7 @@ class bGMYC(BEAST):
 
     def bGMYC(self):
         os.chdir(str(self.identifier))
+        threshold = int(round((args.t1 + args.t2) / 2))
         r = pyper.R()
         r("library(ape)")
         r("library(bGMYC)")
@@ -393,14 +405,12 @@ arg_parser.add_argument('t2', type=int, help=('value of t1 for bGMYC analysis '
                         'see instructions in bGMYC documentation'))
 args = arg_parser.parse_args()
 
-# write function to set defaults of args?
 if not args.tol_value:
     args.tol_value = 100
 if not args.burnin_BEAST:
     args.burnin_BEAST = int(round(args.MCMC_BEAST * 0.25))
 if not args.burnin_bGMYC:
     args.burnin_bGMYC = int(round(args.MCMC_bGMYC * 0.25))
-threshold = int(round((args.t1 + args.t2) / 2))
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard_New.xml', XML_parser)
@@ -473,15 +483,7 @@ for sequence in NexusFile:
         os.chdir(str(sequence.identifier))
         with open(str(sequence.BEAST_ID), 'r') as data_file:
                 data_file = data_file.readlines()
-                delimiter = ('Sample\tposterior\tlikelihood\tprior'
-                             '\ttreeLikelihood\tTreeHeight\tYuleModel'
-                             '\tbirthRate\tmutationRate\tfreqParameter.1'
-                             '\tfreqParameter.2\tfreqParameter.3\t'
-                             'freqParameter.4\tfreqParameter.1\t'
-                             'freqParameter.2\tfreqParameter.3 \t'
-                             'freqParameter.4\t\r\n')
-                skip = data_file.index(delimiter)
-                skip += 1
         sequence.resume_beast(data_file)
+        os.chdir('..')
     sequence.clean_up()
     sequence.bGMYC()
