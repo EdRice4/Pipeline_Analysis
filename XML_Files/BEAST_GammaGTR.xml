@@ -62,6 +62,7 @@ name="alignment"/>
             </taxonset>
         </tree>
         <parameter id="birthRate.t:64" name="stateNode">1.0</parameter>
+        <parameter id="mutationRate.s:64" name="stateNode">1.0</parameter>
     </state>
 
     <init estimate="false" id="RandomTree.t:64" initial="@Tree.t:64" spec="beast.evolution.tree.RandomTree" taxa="@64">
@@ -76,14 +77,24 @@ name="alignment"/>
             <prior id="YuleBirthRatePrior.t:64" name="distribution" x="@birthRate.t:64">
                 <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
             </prior>
+            <prior id="MutationRatePrior.s:64" name="distribution" x="@mutationRate.s:64">
+                <OneOnX id="OneOnX.0" name="distr"/>
+            </prior>
         </distribution>
         <distribution id="likelihood" spec="util.CompoundDistribution">
             <distribution data="@64" id="treeLikelihood.64" spec="TreeLikelihood" tree="@Tree.t:64">
-                <siteModel id="SiteModel.s:64" spec="SiteModel">
-                    <parameter estimate="false" id="mutationRate.s:64" name="mutationRate">1.0</parameter>
-                    <parameter estimate="false" id="gammaShape.s:64" name="shape">1.0</parameter>
+                <siteModel gammaCategoryCount="4" id="SiteModel.s:64" mutationRate="@mutationRate.s:64" spec="SiteModel">
+                    <parameter estimate="false" id="gammaShape.s:64" name="shape">0.119</parameter>
                     <parameter estimate="false" id="proportionInvariant.s:64" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
-                    <substModel id="JC69.s:64" spec="JukesCantor"/>
+                    <substModel id="gtr.s:64" spec="GTR">
+                        <parameter estimate="false" id="rateAC.s:64" lower="0.0" name="rateAC">1.0</parameter>
+                        <parameter estimate="false" id="rateAG.s:64" lower="0.0" name="rateAG">1.0</parameter>
+                        <parameter estimate="false" id="rateAT.s:64" lower="0.0" name="rateAT">1.0</parameter>
+                        <parameter estimate="false" id="rateCG.s:64" lower="0.0" name="rateCG">1.0</parameter>
+                        <parameter estimate="false" id="rateCT.s:64" lower="0.0" name="rateCT">1.0</parameter>
+                        <parameter estimate="false" id="rateGT.s:64" lower="0.0" name="rateGT">1.0</parameter>
+                        <frequencies data="@64" estimate="false" id="equalFreqs.s:64" spec="Frequencies"/>
+                    </substModel>
                 </siteModel>
                 <branchRateModel id="StrictClock.c:64" spec="beast.evolution.branchratemodel.StrictClockModel">
                     <parameter estimate="false" id="clockRate.c:64" name="clock.rate">1.0</parameter>
@@ -108,7 +119,9 @@ name="alignment"/>
 
     <operator id="WilsonBalding.t:64" spec="WilsonBalding" tree="@Tree.t:64" weight="3.0"/>
 
-    <logger fileName="Vagina.log" id="tracelog" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+    <operator id="mutationRateScaler.s:64" parameter="@mutationRate.s:64" scaleFactor="0.5" spec="ScaleOperator" weight="0.1"/>
+
+    <logger fileName="64.log" id="tracelog" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
         <log idref="posterior"/>
         <log idref="likelihood"/>
         <log idref="prior"/>
@@ -116,6 +129,7 @@ name="alignment"/>
         <log id="TreeHeight.t:64" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:64"/>
         <log idref="YuleModel.t:64"/>
         <parameter idref="birthRate.t:64" name="log"/>
+        <parameter idref="mutationRate.s:64" name="log"/>
     </logger>
 
     <logger id="screenlog" logEvery="1000">

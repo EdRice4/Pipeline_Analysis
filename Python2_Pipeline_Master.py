@@ -413,7 +413,7 @@ if not args.burnin_bGMYC:
     args.burnin_bGMYC = int(round(args.MCMC_bGMYC * 0.25))
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
-beast = ET.parse('Standard_New.xml', XML_parser)
+beast = ET.parse('Standard.xml', XML_parser)
 data = beast.find('data')
 run = beast.find('run')
 for element in run.iter():
