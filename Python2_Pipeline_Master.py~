@@ -4,7 +4,7 @@ from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
 from numpy import loadtxt
-import acor
+import acor  # from acor import acor?
 import argparse
 import pyper
 
