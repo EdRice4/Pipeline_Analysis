@@ -27,21 +27,24 @@ def SortDictionary(nexus, header, footer, delimiter):
     taxons = list(set([x for x in taxons if x != 'withdrawn' and x != 'CASENT']))
     for i in taxons:
         individuals = filter(lambda x: i in x[0], data)
-        nex_file_new = [
-            '#NEXUS\n', 'begin data;\n',
-            '\tdimensions ntax=%s nchar=%s;\n' % (len(individuals),
+        nex_file_header = [
+            '#NEXUS\n', 'begin data;',
+            '\tdimensions ntax=%s nchar=%s;' % (len(individuals),
                                                   len(individuals[0][1])),
-            '\tformat datatype=dna missing=? gap=-;\n', 'matrix\n',
-            ';\n', 'end;\n'
-        ]
-        #np.savetxt(i, individuals, delimiter='\t', newline='\n', header=nex
+            '\tformat datatype=dna missing=? gap=-;', 'matrix'
+            ]
+        nex_file_footer = ['end;', ';']
+        np.savetxt(i, individuals, fmt='%s', delimiter='\t', newline='\n',
+                   header='\n'.join(nex_file_header),
+                   footer='\n'.join(nex_file_footer), 
+                   comments='')
         #individuals = map(lambda x: '\t'.join(x[0:1]), individuals)
         #individuals = map(lambda x: np.array_str(x), individuals)
         #nex_file_new[5:1] = individuals
         #nex_file_new = str(nex_file_new)
         #with open(str(i) + '.nex', 'w') as f:
             #f.write(nex_file_new)
-    return nex_file_new
+    #return nex_file_header, nex_file_footer
 
 
 arg_parser = argparse.ArgumentParser()
