@@ -30,22 +30,14 @@ def SortDictionary(nexus, header, footer, delimiter):
         nex_file_header = [
             '#NEXUS\n', 'begin data;',
             '\tdimensions ntax=%s nchar=%s;' % (len(individuals),
-                                                  len(individuals[0][1])),
+                                                len(individuals[0][1])),
             '\tformat datatype=dna missing=? gap=-;', 'matrix'
             ]
         nex_file_footer = ['end;', ';']
         np.savetxt(i, individuals, fmt='%s', delimiter='\t', newline='\n',
                    header='\n'.join(nex_file_header),
-                   footer='\n'.join(nex_file_footer), 
+                   footer='\n'.join(nex_file_footer),
                    comments='')
-        #individuals = map(lambda x: '\t'.join(x[0:1]), individuals)
-        #individuals = map(lambda x: np.array_str(x), individuals)
-        #nex_file_new[5:1] = individuals
-        #nex_file_new = str(nex_file_new)
-        #with open(str(i) + '.nex', 'w') as f:
-            #f.write(nex_file_new)
-    #return nex_file_header, nex_file_footer
-
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('nex_file', type=str, help='Nexus file to be sorted')
@@ -64,4 +56,4 @@ if not args.footer:
 if not args.delimiter:
     args.delimiter = '|'
 
-print(SortDictionary(args.nex_file, args.header, args.footer, args.delimiter))
+SortDictionary(args.nex_file, args.header, args.footer, args.delimiter)
