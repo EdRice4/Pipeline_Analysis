@@ -36,7 +36,7 @@ def SortDictionary(nexus, header, footer, delimiter):
             ';\n', 'end;\n'
         ]
         #individuals = map(lambda x: '\t'.join(x[0:1]), individuals)
-        individuals = map(lambda x: np.array_str(x), individuals)
+        #individuals = map(lambda x: np.array_str(x), individuals)
         #nex_file_new[5:1] = individuals
         #nex_file_new = str(nex_file_new)
         #with open(str(i) + '.nex', 'w') as f:
