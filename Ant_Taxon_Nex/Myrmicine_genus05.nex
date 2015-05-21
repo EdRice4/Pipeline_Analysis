@@ -1,0 +1,10 @@
+#NEXUS
+
+begin data;
+	dimensions ntax=2 nchar=901;
+	format datatype=dna missing=? gap=-;
+matrix
+ASNAU766-09|CASENT0145098-D01|Myrmicine_genus05	---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------TTTCCCCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTCTTATTCTTCTACTAATAAGAAGATTTATTAATACTGGAGTAGGTACCGGATGAACTATCTATCCCCCCTTAGCCTCAAATATCTTCCATAGAGGCCCCTCTATTGATCTATCA---ATTTTCTCCCTACATATTGCAGGGATATCATCAATCCTAGGAGCTATTAACTTTATCTCAACAATCCTTAACATACACCATAAAAACTTTACTATAGATAAAATTTCTCTCCTTTCCTGATCCATTTTAATTACCGCTATCTTACTCTTACTCTCTCTCCCAGTTCTCGCTGGA---GCAATCACTATATTATTAACCGACCGTAACTTAAATACCTCATTCTTTGACCCAGGGGGAGGAGGAGACCCTATCCTATACCAACACCTA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ASANG378-10|CASENT0145098-D02|Myrmicine_genus05	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------AGATTTTGACTCCTTCCCCCCTCTCTTATTCTTCTACTAATAAGAAGATTTATTAATACTGGAGTAGGTACCGGATGAACTATCTATCCCCCCTTAGCCTCAAATATCTTCCATAGAGGCCCCTCTATTGATCTATCA---ATTTTCTCCCTACATATTGCAGGGATATCATCAATCCTAGGAGCTATTAACTTTATCTCAACAATCCTTAACATACACCATAAAAACTTTACTATAGATAAAATTTCTCTCCTTTCCTGATCCATTTTAATTACCGCTATCTTACTCTTACTCTCTCTCCCAGTTCTCGCTGGA---GCAATCACTATATTATTAACCGACCGTAACTTAAATACCTCATTCTTTGACCCAGGGGGAGGAGGAGACCCTATCCTATACCAACACCTA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;
+end;
