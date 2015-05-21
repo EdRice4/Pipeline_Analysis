@@ -57,13 +57,10 @@ class jModelTest(CommonMethods):
                      args.jMT, self.path)
         jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                         universal_newlines=True)
-        n = 1469
-        bar = pyprind.ProgBar(n)
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 print(line.strip())
                 output.write(str(line))
-                bar.update()
             jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
@@ -96,7 +93,7 @@ class Garli(jModelTest):
         'TM1ef': ['0 1 2 2 3 0', 'equal'],  # Remove 'I' for translate.
         'TM1': ['0 1 2 2 3 0', 'estimate'],  # Remove 'I' for translate.
         'TM2ef': ['0 1 0 2 3 2', 'equal'],
-        'TM2': ['0 1 0 2 3 2', 'estimate'],
+        'TM2': ['(0 1 0 2 3 2)', 'estimate'],
         'TM3ef': ['0 1 2 0 3 2', 'equal'],
         'TM3': ['0 1 2 0 3 2', 'estimate'],
         'TVMef': ['0 1 2 3 1 4', 'equal'],

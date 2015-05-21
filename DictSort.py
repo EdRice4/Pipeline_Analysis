@@ -33,8 +33,8 @@ def SortDictionary(nexus, header, footer, delimiter):
                                                 len(individuals[0][1])),
             '\tformat datatype=dna missing=? gap=-;', 'matrix'
             ]
-        nex_file_footer = ['end;', ';']
-        np.savetxt(i, individuals, fmt='%s', delimiter='\t', newline='\n',
+        nex_file_footer = [';', 'end;']
+        np.savetxt(i + '.nex', individuals, fmt='%s', delimiter='\t', newline='\n',
                    header='\n'.join(nex_file_header),
                    footer='\n'.join(nex_file_footer),
                    comments='')
