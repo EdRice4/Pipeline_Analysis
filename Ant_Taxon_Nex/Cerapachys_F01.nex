@@ -1,0 +1,9 @@
+#NEXUS
+
+begin data;
+	dimensions ntax=1 nchar=901;
+	format datatype=dna missing=? gap=-;
+matrix
+ASANH083-10|CASENT0157054-D01|Cerapachys_F01	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------AGATTTTGACTCCTGCCCCCTTCCCTAACCCTGCTACTTATAAGAAGCTTCATTTCTAGGGGGGCTGGAACTGGCTGAACTGTTTATCCCCCCTTAGCCTCTAATGTCTTTCACAGAGGGCCCTCAATTGACCTG---ACAATTTTCTCCCTCCACATTGCAGGTATATCCTCCATTCTTGGAGCAATTAATTTCATCTCAACAATTATTAATATACGACACAAAAACCAAACTCTTGATAAAATACCCTTACTAGTATGGGCTATCCTAGTCACTGCAACCCTCTTACTCCTTTCTCTTCCTGTTCTAGCTGGG---GCGATCACTATACTTCTTACAGATCGAAATCTAAATACATCATTCTTTGACCCCTCGGGAGGAGGGGACCCTATTCTATACCAACACTTA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;
+end;
