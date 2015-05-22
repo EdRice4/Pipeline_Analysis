@@ -242,7 +242,7 @@ class BEAST(ToleranceCheck):
 
     def w_beast_taxon(self):
         sequence_start, sequence_end = self.get_range(self.nexus_file,
-                                                      '\tmatrix\n', ';\n')
+                                                      'matrix\n', ';\n')
         sequence_start += 1
         sequence_end -= 1
         for line in self.nexus_file:
