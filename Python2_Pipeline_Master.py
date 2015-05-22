@@ -27,6 +27,7 @@ class CommonMethods(object):
                 tmp = (output.pop(num)).split('(')
                 output.insert(num, tmp[0])
                 output.append(tmp[1])
+        output = map(lambda x: x.translate(None, ')'), output)
         return output
 
     def dict_check(self, string, dict):
@@ -232,12 +233,12 @@ class BEAST(ToleranceCheck):
         if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
             BEAST.sub_models[str(model_selected)](xml_nodes)
         else:
-            rateAC.text = '%s' % self.parameters['R(a)[AC]']
-            rateAG.text = '%s' % self.parameters['R(b)[AG]']
-            rateAT.text = '%s' % self.parameters['R(c)[AT]']
-            rateCG.text = '%s' % self.parameters['R(d)[CG]']
-            rateCT.text = '%s' % self.parameters['R(e)[CT]']
-            rateGT.text = '%s' % self.parameters['R(f)[GT]']
+            rateAC.text = '%s' % self.parameters['Ra[AC]']
+            rateAG.text = '%s' % self.parameters['Rb[AG]']
+            rateAT.text = '%s' % self.parameters['Rc[AT]']
+            rateCG.text = '%s' % self.parameters['Rd[CG]']
+            rateCT.text = '%s' % self.parameters['Re[CT]']
+            rateGT.text = '%s' % self.parameters['Rf[GT]']
 
     def w_beast_taxon(self):
         sequence_start, sequence_end = self.get_range(self.nexus_file,
