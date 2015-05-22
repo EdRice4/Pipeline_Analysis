@@ -196,9 +196,16 @@ class BEAST(ToleranceCheck):
         if het:
             sitemodel.set('gammaCategoryCount', '4')
             gamma_shape = ET.SubElement(sitemodel, 'parameter', attrib={
-                                        'estimate': 'false', 'id': 'gammaShape.s:%s' % self.sequence_name,
+                                        'estimate': 'false',
+                                        'id': 'gammaShape.s:%s' % self.sequence_name,
                                         'name': 'shape'})
             gamma_shape.text = self.parameters['gammashape']
+        else:
+            gamma_shape = ET.SubElement(sitemodel, 'parameter', attrib={
+                                        'estimate': 'false',
+                                        'id': 'gammaShape.s:%s' % self.sequence_name,
+                                        'name': 'shape'})
+            gamma_shape.text = '0.0'
         if inv:
             p_inv = ET.SubElement(siteModel, 'parameter', attrib={
                                   'estimate': 'false',
@@ -206,6 +213,13 @@ class BEAST(ToleranceCheck):
                                   'lower': '0.0', 'name': 'proportionInvaraint',
                                   'upper': '1.0'})
             p_inv.text = self.parameters['p-inv']
+        else:
+            p_inv = ET.SubElement(siteModel, 'parameter', attrib={
+                                  'estimate': 'false',
+                                  'id': 'proportionInvaraint.s:%s' % self.sequence_name,
+                                  'lower': '0.0', 'name': 'proportionInvaraint',
+                                  'upper': '1.0'})
+            p_inv.text = '0.0'
 
     # May be able to consolidate this.
     def w_beast_rates(self):

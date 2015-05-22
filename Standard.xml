@@ -47,8 +47,6 @@
         <distribution id="likelihood" spec="util.CompoundDistribution">
             <distribution data="@replace_taxon" id="treeLikelihood.replace_taxon" spec="TreeLikelihood" tree="@Tree.t:replace_taxon">
                 <siteModel id="SiteModel.s:replace_taxon" mutationRate="@mutationRate.s:replace_taxon" spec="SiteModel">
-                    <parameter estimate="false" id="gammaShape.s:replace_taxon" name="shape">1.0</parameter>
-                    <parameter estimate="false" id="proportionInvariant.s:replace_taxon" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
                     <substModel id="gtr.s:replace_taxon" spec="GTR">
                         <parameter estimate="false" id="rateAC.s:replace_taxon" lower="0.0" name="rateAC">1.0</parameter>
                         <parameter estimate="false" id="rateAG.s:replace_taxon" lower="0.0" name="rateAG">1.0</parameter>
