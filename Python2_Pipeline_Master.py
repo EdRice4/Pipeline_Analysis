@@ -207,14 +207,14 @@ class BEAST(ToleranceCheck):
                                         'name': 'shape'})
             gamma_shape.text = '0.0'
         if inv:
-            p_inv = ET.SubElement(siteModel, 'parameter', attrib={
+            p_inv = ET.SubElement(sitemodel, 'parameter', attrib={
                                   'estimate': 'false',
                                   'id': 'proportionInvaraint.s:%s' % self.sequence_name,
                                   'lower': '0.0', 'name': 'proportionInvaraint',
                                   'upper': '1.0'})
             p_inv.text = self.parameters['p-inv']
         else:
-            p_inv = ET.SubElement(siteModel, 'parameter', attrib={
+            p_inv = ET.SubElement(sitemodel, 'parameter', attrib={
                                   'estimate': 'false',
                                   'id': 'proportionInvaraint.s:%s' % self.sequence_name,
                                   'lower': '0.0', 'name': 'proportionInvaraint',
@@ -433,6 +433,7 @@ for element in run.iter():
         state = element
     if element.tag == 'substModel':
         substmodel = element
+    if element.tag == 'siteModel':
         sitemodel = element
 for element in run.iterfind('logger'):
     if element.get('id') == 'tracelog':
