@@ -469,22 +469,22 @@ for sequence in NexusFile:
     for keys, values in sequence.parameters.items():
         print(keys)
         print(values)
-    #if args.garli:
-        #with open('garli.conf', 'r') as garli_conf:
-            #garli_conf = garli_conf.readlines()
-        #sequence.w_garli_conf(garli_conf)
-        #sequence.run_garli()
-    #sequence.w_beast_submodel()
-    #sequence.w_beast_rates()
-    #sequence.w_beast_taxon()
-    #sequence.beast_finalize()
-    #os.mkdir(str(sequence.identifier))
-    #sequence.run_beast()
-    #if args.tolerance:
-        #os.chdir(str(sequence.identifier))
-        #with open(str(sequence.BEAST_ID), 'r') as data_file:
-                #data_file = data_file.readlines()
-        #sequence.resume_beast(data_file)
-        #os.chdir('..')
-    #sequence.clean_up()
-    #sequence.bGMYC()
+    if args.garli:
+        with open('garli.conf', 'r') as garli_conf:
+            garli_conf = garli_conf.readlines()
+        sequence.w_garli_conf(garli_conf)
+        sequence.run_garli()
+    sequence.w_beast_submodel()
+    sequence.w_beast_rates()
+    sequence.w_beast_taxon()
+    sequence.beast_finalize()
+    os.mkdir(str(sequence.identifier))
+    sequence.run_beast()
+    if args.tolerance:
+        os.chdir(str(sequence.identifier))
+        with open(str(sequence.BEAST_ID), 'r') as data_file:
+                data_file = data_file.readlines()
+        sequence.resume_beast(data_file)
+        os.chdir('..')
+    sequence.clean_up()
+    sequence.bGMYC()
