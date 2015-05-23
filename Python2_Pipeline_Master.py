@@ -210,14 +210,14 @@ class BEAST(ToleranceCheck):
             p_inv = ET.SubElement(sitemodel, 'parameter', attrib={
                                   'estimate': 'false',
                                   'id': 'proportionInvariant.s:%s' % self.sequence_name,
-                                  'lower': '0.0', 'name': 'proportionInvaraint',
+                                  'lower': '0.0', 'name': 'proportionInvariant',
                                   'upper': '1.0'})
             p_inv.text = self.parameters['p-inv']
         else:
             p_inv = ET.SubElement(sitemodel, 'parameter', attrib={
                                   'estimate': 'false',
                                   'id': 'proportionInvariant.s:%s' % self.sequence_name,
-                                  'lower': '0.0', 'name': 'proportionInvaraint',
+                                  'lower': '0.0', 'name': 'proportionInvariant',
                                   'upper': '1.0'})
             p_inv.text = '0.0'
 
