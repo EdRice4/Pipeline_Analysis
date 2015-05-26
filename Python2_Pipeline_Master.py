@@ -284,10 +284,9 @@ class BEAST(ToleranceCheck):
             beast_xml_file.write(''.join(beast_xml))
 
     def run_beast(self):
-        BEAST = 'java -jar %s -prefix %s -seed %s %s' % (args.BEAST,
-                                                         self.identifier,
-                                                         str(randrange(0, 999999)),
-                                                         self.BEAST_XML)
+        BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, self.identifier,
+                                               str(randrange(0, 999999)),
+                                               self.BEAST_XML)
         beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
         for line in iter(beast_run.stdout.readline, ''):
             print(line.strip())
