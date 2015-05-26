@@ -56,11 +56,13 @@ class jModelTest(CommonMethods):
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
-        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE)
+        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE,
+                        universal_newlines=True)
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
-                print(line.strip())
-                output.write(str(line))
+                if line != 'Cannot perform output.\n':
+                    print(line.strip())
+                    output.write(str(line))
             jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
