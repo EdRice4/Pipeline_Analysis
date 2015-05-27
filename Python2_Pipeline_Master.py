@@ -480,9 +480,6 @@ for sequence in NexusFile:
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
     sequence.r_jModelTest_parameters(JMT_output)
-    #for keys, values in sequence.parameters.items():
-        #print(keys)
-        #print(values)
     if args.garli:
         with open('garli.conf', 'r') as garli_conf:
             garli_conf = garli_conf.readlines()
@@ -498,7 +495,8 @@ for sequence in NexusFile:
         os.chdir(str(sequence.identifier))
         with open(str(sequence.BEAST_ID), 'r') as data_file:
                 data_file = data_file.readlines()
-        sequence.resume_beast(data_file)
-        os.chdir('..')
+        print(data_file)
+        #sequence.resume_beast(data_file)
+        #os.chdir('..')
     sequence.clean_up()
     sequence.bGMYC()
