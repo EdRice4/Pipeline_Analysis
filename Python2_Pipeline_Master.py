@@ -3,8 +3,10 @@ from shutil import copy, move
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
-from numpy import loadtxt
-import acor  # from acor import acor?
+#from numpy import loadtxt
+from numpy import genfromtxt
+from StringIO import StringIO
+from acor import acor
 import argparse
 import pyper
 
@@ -144,8 +146,10 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file, rows, cols):
-        data = loadtxt(self.BEAST_ID, unpack=True, skiprows=rows, usecols=cols)
-        auto_cor_times = zip(*(map(lambda x: acor.acor(x), data)))[0]
+        data = genfromtxt(StringIO(data_file), comments='#',
+                          usecols=range(1, 17))
+        data = zip(*data)
+        auto_cor_times = (map(lambda x: acor(x), data))[0]
         eff_sample_size = map(lambda x, y: x/(len(y)), data, auto_cor_times)
         return eff_sample_size
 
@@ -293,14 +297,14 @@ class BEAST(ToleranceCheck):
         beast_run.stdout.close()
 
     def resume_beast(self, BEAST_log_file):
-        delimiter = ('Sample\tposterior\tlikelihood\tprior\t'
-		     'treeLikelihood\tTreeHeight\tYuleModel\t'
-		     'birthRate\tmutationRate\tfreqParameter.1\t'
-		     'freqParameter.2\tfreqParameter.3\tfreqParameter.4\t'
-		     'freqParameter.1\tfreqParameter.2\tfreqParameter.3\t'
-		     'freqParameter.4\t\n')
-        rows = data_file.index(delimiter) + 1
-        cols = range(1, 16)
+        #delimiter = ('Sample\tposterior\tlikelihood\tprior\t'
+		     #'treeLikelihood\tTreeHeight\tYuleModel\t'
+		     #'birthRate\tmutationRate\tfreqParameter.1\t'
+		     #'freqParameter.2\tfreqParameter.3\tfreqParameter.4\t'
+		     #'freqParameter.1\tfreqParameter.2\tfreqParameter.3\t'
+		     #'freqParameter.4\t\n')
+        #rows = data_file.index(delimiter) + 1
+        #cols = range(1, 16)
         eff_sample_size = self.calculate_statistics(BEAST_log_file, rows, cols)
         eff_sample_size = filter(lambda x: x < args.tolerance, eff_sample_size)
         run_number = 1
@@ -493,10 +497,12 @@ for sequence in NexusFile:
     sequence.run_beast()
     if args.tolerance:
         os.chdir(str(sequence.identifier))
-        with open(str(sequence.BEAST_ID), 'r') as data_file:
-                data_file = data_file.readlines()
-        print(data_file)
-        #sequence.resume_beast(data_file)
-        #os.chdir('..')
+        with open(self.BEAST_ID, 'r') as BEAST_out:
+            beast_out = beast_out.read()
+        #with open(str(sequence.BEAST_ID), 'r') as data_file:
+            #data_file = data_file.readlines()
+        #print(data_file)
+        sequence.resume_beast(data_file)
+        os.chdir('..')
     sequence.clean_up()
     sequence.bGMYC()
