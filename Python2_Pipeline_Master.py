@@ -297,7 +297,7 @@ class BEAST(ToleranceCheck):
                      '\tbirthRate\tmutationRate\tfreqParameter.1'
                      '\tfreqParameter.2\tfreqParameter.3\t'
                      'freqParameter.4\tfreqParameter.1\t'
-                     'freqParameter.2\tfreqParameter.3 \t'
+                     'freqParameter.2\tfreqParameter.3\t'
                      'freqParameter.4\t\n')
         rows = data_file.index(delimiter) + 1
         cols = range(1, 16)
