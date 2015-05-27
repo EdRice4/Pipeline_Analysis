@@ -293,13 +293,12 @@ class BEAST(ToleranceCheck):
         beast_run.stdout.close()
 
     def resume_beast(self, BEAST_log_file):
-        delimiter = ('Sample\tposterior\tlikelihood\tprior'
-                     '\ttreeLikelihood\tTreeHeight\tYuleModel'
-                     '\tbirthRate\tmutationRate\tfreqParameter.1'
-                     '\tfreqParameter.2\tfreqParameter.3\t'
-                     'freqParameter.4\tfreqParameter.1\t'
-                     'freqParameter.2\tfreqParameter.3 \t'
-                     'freqParameter.4\t\n')
+        delimiter = ('Sample\tposterior\tlikelihood\tprior\t'
+		     'treeLikelihood\tTreeHeight\tYuleModel\t'
+		     'birthRate\tmutationRate\tfreqParameter.1\t'
+		     'freqParameter.2\tfreqParameter.3\tfreqParameter.4\t'
+		     'freqParameter.1\tfreqParameter.2\tfreqParameter.3\t'
+		     'freqParameter.4\t\n')
         rows = data_file.index(delimiter) + 1
         cols = range(1, 16)
         eff_sample_size = self.calculate_statistics(BEAST_log_file, rows, cols)
