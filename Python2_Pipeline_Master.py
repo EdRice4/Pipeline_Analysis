@@ -146,8 +146,10 @@ class ToleranceCheck(Garli):
     def calculate_statistics(self, data_file):
         data = (genfromtxt(data_file, comments='#', usecols=range(1, 17)))[1:-1]
         data = zip(*data)
-        auto_cor_times = (map(lambda x: acor(x), data))[0]
-        eff_sample_size = map(lambda x, y: len(x)/y, data, auto_cor_times)
+        stats = map(lambda x: acor(x), data)
+        auto_cor_times = (zip(*stats))[0]
+        chain_length = args.MCMC_BEAST - args.burnin_BEAST
+        eff_sample_size = map(lambda x: chain_length/x, auto_cor_times)
         return eff_sample_size
 
 
@@ -175,7 +177,7 @@ class BEAST(ToleranceCheck):
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
         run.set('chainLength', '%s' % args.MCMC_BEAST)
-        run.set('preBurnin', '%s' % args.burnin_BEAST)
+        run.set('preBurnin', '0')
         log.set('logEvery', '%s' % args.store_every)
         screen_log.set('logEvery', '%s' % args.store_every)
         tree_log.set('logEvery', '%s' % args.store_every)
