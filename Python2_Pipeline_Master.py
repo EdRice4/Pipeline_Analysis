@@ -144,10 +144,10 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))
+        data = (genfromtxt(data_file, comments='#', usecols=range(1, 17)))[1:-1]
         data = zip(*data)
         auto_cor_times = (map(lambda x: acor(x), data))[0]
-        eff_sample_size = map(lambda x, y: x/(len(y)), data, auto_cor_times)
+        eff_sample_size = map(lambda x, y: len(x)/y, data, auto_cor_times)
         return eff_sample_size
 
 
