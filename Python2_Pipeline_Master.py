@@ -1,5 +1,3 @@
-import os
-from shutil import copy, move
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -82,24 +80,24 @@ class Garli(jModelTest):
         'F81': ['1rate', 'estimate'],
         'K80': ['2rate', 'equal'],
         'HKY': ['2rate', 'estimate'],
-        'TrNef': ['0 1 0 0 2 0', 'equal'],
-        'TrN': ['0 1 0 0 2 0', 'estimate'],
-        'TPM1': ['0 1 2 2 1 0', 'equal'],
-        'TPM1uf': ['0 1 2 2 1 0', 'estimate'],
-        'TPM2': ['0 1 0 2 1 2', 'equal'],
-        'TPM2uf': ['0 1 0 2 1 2', 'estimate'],
-        'TPM3': ['0 1 2 0 1 2', 'equal'],
-        'TPM3uf': ['0 1 2 0 1 2', 'estimate'],
-        'K3P': ['0 1 2 2 1 0', 'equal'],
-        'K3Puf': ['0 1 2 2 1 0', 'estimate'],
-        'TM1ef': ['0 1 2 2 3 0', 'equal'],  # Remove 'I' for translate.
-        'TM1': ['0 1 2 2 3 0', 'estimate'],  # Remove 'I' for translate.
-        'TM2ef': ['0 1 0 2 3 2', 'equal'],
-        'TM2': ['(0 1 0 2 3 2)', 'estimate'],
-        'TM3ef': ['0 1 2 0 3 2', 'equal'],
-        'TM3': ['0 1 2 0 3 2', 'estimate'],
-        'TVMef': ['0 1 2 3 1 4', 'equal'],
-        'TVM': ['0 1 2 3 1 4', 'estimate'],
+        'TrNef': ['(0 1 0 0 2 0)', 'equal'],
+        'TrN': ['(0 1 0 0 2 0)', 'estimate'],
+        'TPM1': ['(0 1 2 2 1 0)', 'equal'],
+        'TPM1uf': ['(0 1 2 2 1 0)', 'estimate'],
+        'TPM2': ['(0 1 0 2 1 2)', 'equal'],
+        'TPM2uf': ['(0 1 0 2 1 2)', 'estimate'],
+        'TPM3': ['(0 1 2 0 1 2)', 'equal'],
+        'TPM3uf': ['(0 1 2 0 1 2)', 'estimate'],
+        'K3P': ['(0 1 2 2 1 0)', 'equal'],
+        'K3Puf': ['(0 1 2 2 1 0)', 'estimate'],
+        'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate.
+        'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate.
+        'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
+        'TM2': ['((0 1 0 2 3 2))', 'estimate'],
+        'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
+        'TM3': ['(0 1 2 0 3 2)', 'estimate'],
+        'TVMef': ['(0 1 2 3 1 4)', 'equal'],
+        'TVM': ['(0 1 2 3 1 4)', 'estimate'],
         'SYM': ['6rate', 'equal'],
         'GTR': ['6rate', 'estimate']
     }
