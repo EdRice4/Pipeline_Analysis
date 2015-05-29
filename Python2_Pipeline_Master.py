@@ -113,7 +113,7 @@ class Garli(jModelTest):
                         'bootstrapreps =', 'ratematrix =',
                         'statefrequencies =', 'ratehetmodel =',
                         'numratecats =', 'invariantsites =']
-        garli_values = [self.path, self.identifier, str(args.bootstrap),
+        garli_values = [self.path, self.identifier, args.bootstrap,
                         Garli.models[str(model_selected)][0],
                         Garli.models[str(model_selected)][1]]
         if het:
@@ -311,8 +311,6 @@ class BEAST(ToleranceCheck):
             beast_run.stdout.close()
             run_number += 1
             self.resume_beast(BEAST_log_file)
-        else:
-            pass
 
 
 class bGMYC(BEAST):
@@ -413,7 +411,7 @@ arg_parser.add_argument('t2', type=int, help=('value of t1 for bGMYC analysis '
                         'see instructions in bGMYC documentation'))
 args = arg_parser.parse_args()
 
-if not args.tol_value:
+if args.tolerance and not args.tol_value:
     args.tol_value = 100
 if not args.burnin_BEAST:
     args.burnin_BEAST = int(round(args.MCMC_BEAST * 0.25))
@@ -466,12 +464,15 @@ for sequence in NexusFile:
     print('-----------------------------------------------------------------')
     print('Sequence file: %s' % sequence.path)
     print('Run identifier: %s' % sequence.identifier)
-    print('Garli bootstrap replications: %s' % args.bootstrap)
-    print('Length of MCMC chain: %s' % args.MCMC_BEAST)
-    print('Sample frequency: %s' % args.store_every)
-    print('Burnin: %s' % args.burnin_BEAST)
+    #print('Garli bootstrap replications: %s' % args.bootstrap)
+    print('MCMC BEAST: %s' % args.MCMC_BEAST)
+    print('Burnin BEAST: %s' % args.burnin_BEAST)
     if args.tolerance:
         print('Tolerance: %s' % args.tol_value)
+    print('Sample frequency BEAST: %s' % args.store_every)
+    print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
+    print('Burnin bGMYC: %s' % args.burnin_bGMYC)
+    print('Sample frequency bGMYC: %s' % args.thinning)
     print('-----------------------------------------------------------------')
     sequence.run_jModelTest()
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
