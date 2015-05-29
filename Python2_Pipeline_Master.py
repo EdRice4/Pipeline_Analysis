@@ -113,7 +113,7 @@ class Garli(jModelTest):
                         'bootstrapreps =', 'ratematrix =',
                         'statefrequencies =', 'ratehetmodel =',
                         'numratecats =', 'invariantsites =']
-        garli_values = [self.path, self.identifier, args.bootstrap,
+        garli_values = [self.path, self.identifier, str(args.bootstrap),
                         Garli.models[str(model_selected)][0],
                         Garli.models[str(model_selected)][1]]
         if het:
