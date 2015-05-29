@@ -411,6 +411,8 @@ arg_parser.add_argument('t2', type=int, help=('value of t1 for bGMYC analysis '
                         'see instructions in bGMYC documentation'))
 args = arg_parser.parse_args()
 
+if not args.bootstrap:
+    args.bootstrap = 0
 if args.tolerance and not args.tol_value:
     args.tol_value = 100
 if not args.burnin_BEAST:
