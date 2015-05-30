@@ -369,7 +369,7 @@ class NexusFile(CleanUp):
 
     def __init__(self, seq_name, path, seq_file):
         self.path = str(path)
-        self.sequence_name = self.path.strip('.nex')
+        self.sequence_name = self.path.replace('.nex', '')
         self.nexus_file = seq_file.readlines()
         self.identifier = str(seq_name) + '_' + str(randrange(0, 999999999))
         self.JMT_ID = 'jModelTest_%s.out' % self.identifier
