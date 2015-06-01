@@ -5,6 +5,8 @@ from numpy import genfromtxt
 from acor import acor
 import argparse
 import pyper
+import os
+from re import sub
 
 
 class CommonMethods(object):
@@ -274,40 +276,42 @@ class BEAST(ToleranceCheck):
 
     def beast_finalize(self):
         log.set('fileName', self.BEAST_ID)
-        beast.write(self.BEAST_XML, pretty_print=True, xml_declaration=True, encoding='UTF-8', standalone=False)
+        beast.write(self.BEAST_XML, pretty_print=True, xml_declaration=True,
+                    encoding='UTF-8', standalone=False)
         with open(self.BEAST_XML, 'r+') as beast_xml_file:
-            beast_xml = beast_xml_file.readlines()
-        for num, item in enumerate(beast_xml):
-            item = item.replace('replace_taxon', str(self.sequence_name))
-            beast_xml[num] = item
+            beast_xml = beast_xml_file.read()
+        beast_xml = sub('replace_taxon', self.sequence_name, beast_xml)
         with open(self.BEAST_XML, 'w') as beast_xml_file:
-            beast_xml_file.write(''.join(beast_xml))
+            beast_xml_file.write(beast_xml)
 
     def run_beast(self):
+        os.mkdir(self.identifier)
         BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, self.identifier,
                                                str(randrange(0, 999999)),
                                                self.BEAST_XML)
-        beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+        beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
+                          stdin=PIPE)
         for line in iter(beast_run.stdout.readline, ''):
             print(line.strip())
         beast_run.stdout.close()
 
     def resume_beast(self, BEAST_log_file):
-        eff_sample_size = self.calculate_statistics(BEAST_log_file)
-        eff_sample_size = filter(lambda x: x < args.tolerance, eff_sample_size)
-        run_number = 1
-        if eff_sample_size:
-            os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % (self.sequence_name, run_number))
-            BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (args.BEAST,
-                                                                randrange(0, 999999),
-                                                                self.BEAST_XML)
+        ess = 1
+        run_count = 1
+        while ess:
+            run = self.identifer + '_RUN_' + str(run_count)
+            os.mkdir(run)
+            BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
+                                                   randrange(0, 999999999),
+                                                   self.BEAST_XML)
             beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(beast_run.stdout.readline, ''):
                 print(line.strip())
             beast_run.stdout.close()
-            run_number += 1
-            self.resume_beast(BEAST_log_file)
+            run_count += 1
+            ess = self.calculate_statistics(BEAST_log_file)
+            ess = filter(lambda x: x < args.tolerance, ess)
 
 
 class bGMYC(BEAST):
@@ -315,26 +319,30 @@ class bGMYC(BEAST):
     """A class used to run bGMYC in R with pypeR module."""
 
     def bGMYC(self):
-        os.chdir(str(self.identifier))
         threshold = int(round((args.t1 + args.t2) / 2))
-        r = pyper.R()
-        r("library(ape)")
-        r("library(bGMYC)")
-        r("read.nexus(file='%s.trees') -> trees" % self.sequence_name)
-        r("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, t1=%i, "
-          "t2=%i, start=c(1,1,%i)) -> result.multi" % (args.MCMC_bGMYC,
-                                                       args.burnin_bGMYC,
-                                                       args.thinning,
-                                                       args.t1, args.t2,
-                                                       threshold))
-        r("svg('%s_mcmc.svg')" % self.identifier)
-        r("plot(result.multi)")
-        r("dev.off()")
-        r('bgmyc.spec(result.multi, filename="%s.txt") -> result.spec' % self.identifier)
-        r('spec.probmat(result.multi) -> result.probmat')
-        r('svg("%s_prob.svg")' % self.identifier)
-        r('plot(result.probmat, trees[[1]])')
-        r('dev.off()')
+        cwd = os.getcwd()
+        fid = os.listdir(cwd)
+        BEAST_directories = filter(lambda x: '_RUN_' in x, fid)
+        for i in BEAST_directories:
+            os.chdir(i)
+            r = pyper.R()
+            r("library(ape)")
+            r("library(bGMYC)")
+            r("read.nexus(file='%s.trees') -> trees" % self.sequence_name)
+            r("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, "
+              "t1= &i, t2=%i, start=c(1,1,%i)) -> result.multi" % (args.MCMC_bGMYC,
+                                                                   args.burnin_bGMYC,
+                                                                   args.thinning,
+                                                                   args.t1, args.t2,
+                                                                   threshold))
+            r("svg('%s_mcmc.svg')" % self.identifier)
+            r("plot(result.multi)")
+            r("dev.off()")
+            r('bgmyc.spec(result.multi, filename="%s.txt") -> result.spec' % self.identifier)
+            r('spec.probmat(result.multi) -> result.probmat')
+            r('svg("%s_prob.svg")' % self.identifier)
+            r('plot(result.probmat, trees[[1]])')
+            r('dev.off()')
 
 
 class CleanUp(bGMYC):
@@ -370,7 +378,7 @@ class NexusFile(CleanUp):
         self.path = str(path)
         self.sequence_name = self.path.replace('.nex', '')
         self.nexus_file = seq_file.readlines()
-        self.identifier = str(seq_name) + '_' + str(randrange(0, 999999999))
+        self.identifier = seq_name + '_' + str(randrange(0, 999999999))
         self.JMT_ID = 'jModelTest_%s.out' % self.identifier
         self.parameters = {}
         self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
@@ -456,7 +464,7 @@ else:
         path_to_sequence[str(class_name)] = str(path)
 
 for key in path_to_sequence:
-    with open(str(path_to_sequence[key]), 'r') as sequence_file:
+    with open(path_to_sequence[key], 'r') as sequence_file:
         NexusFile(key, path_to_sequence[key], sequence_file)
 
 for sequence in NexusFile:
@@ -486,11 +494,9 @@ for sequence in NexusFile:
     sequence.w_beast_rates()
     sequence.w_beast_taxon()
     sequence.beast_finalize()
-    os.mkdir(str(sequence.identifier))
-    sequence.run_beast()
     if args.tolerance:
-        os.chdir(str(sequence.identifier))
         sequence.resume_beast(sequence.BEAST_ID)
-        os.chdir('..')
+    else:
+        sequence.run_beast()
     sequence.clean_up()
     sequence.bGMYC()
