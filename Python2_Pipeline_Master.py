@@ -313,6 +313,19 @@ class BEAST(ToleranceCheck):
             ess = self.calculate_statistics(BEAST_log_file)
             ess = filter(lambda x: x < args.tolerance, ess)
 
+    def log_combine(self):
+        cwd = os.getcwd()
+        fid = os.listdir(cwd)
+        burnin_perc = int(args.burnin_BEAST / args.MCMC_BEAST)
+        bdirs = filter(lambda x: '_RUN_' in x, fid)
+        bdirs = map(lambda x: '-log ' + x + self.BEAST_ID, bdirs)
+        com = './%s %s -b %s -o %s_Master.out' % (args.lcom, ' '.join(bdirs),
+                                                burnin_perc, self.BEAST_ID)
+        lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+        for line in iter(lcom.stdout.readline, ''):
+            print(line.strip())
+        lcom.stdout.close()
+
 
 class bGMYC(BEAST):
 
@@ -322,8 +335,8 @@ class bGMYC(BEAST):
         threshold = int(round((args.t1 + args.t2) / 2))
         cwd = os.getcwd()
         fid = os.listdir(cwd)
-        BEAST_directories = filter(lambda x: '_RUN_' in x, fid)
-        for i in BEAST_directories:
+        bdirs = filter(lambda x: '_RUN_' in x, fid)
+        for i in bdirs:
             os.chdir(i)
             r = pyper.R()
             r("library(ape)")
@@ -386,34 +399,36 @@ class NexusFile(CleanUp):
         self.registry.append(self)
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('jMT', type=str, help='path to jModelTest.jar')
-arg_parser.add_argument('BEAST', type=str, help='path to beast.jar')
-arg_parser.add_argument('-b', '--batch', help=('run script in batch mode '
-                        'for multiple nexus files'), action='store_true')
-arg_parser.add_argument('-g', '--garli', help=('run garli analysis prior to '
-                        'BEAST'), action='store_true')
+arg_parser.add_argument('jMT', type=str, help='Path to jModelTest.jar.')
+arg_parser.add_argument('BEAST', type=str, help='Path to beast.jar.')
+arg_parser.add_argument('-b', '--batch', help=('Run script in batch mode '
+                        'for multiple nexus files.'), action='store_true')
+arg_parser.add_argument('-g', '--garli', help=('Run garli analysis prior to '
+                        'BEAST.'), action='store_true')
 arg_parser.add_argument('-bsr', '--bootstrap', type=int, help=('# of bootstrap'
-                        ' replications for garli analysis'))
-arg_parser.add_argument('MCMC_BEAST', type=int, help=('length of MCMC chain '
-                        'for BEAST analysis'))
-arg_parser.add_argument('store_every', type=int, help=('sample interval '
-                        'for BEAST analysis'))
-arg_parser.add_argument('-t', '--tolerance', help=('run script in tolerance '
-                        'mode for BEAST run'), action='store_true')
-arg_parser.add_argument('--tol_value', type=int, help=('value of toelrance '
-                        'for BEAST run'))
-arg_parser.add_argument('--burnin_BEAST', type=int, help=('burnin for BEAST '
-                        'run default = 0.25 of chain length'))
-arg_parser.add_argument('MCMC_bGMYC', type=int, help=('length of MCM chain '
-                        'for bGMYC analysis'))
-arg_parser.add_argument('--burnin_bGMYC', type=int, help=('burnin for bGMYC '
-                        'run default = 0.25 of chain length'))
-arg_parser.add_argument('thinning', type=int, help=('sample interval for '
-                        ' bGMYC analysis'))
-arg_parser.add_argument('t1', type=int, help=('value of t1 for bGMYC analysis '
-                        'see instructions in bGMYC documentation'))
-arg_parser.add_argument('t2', type=int, help=('value of t1 for bGMYC analysis '
-                        'see instructions in bGMYC documentation'))
+                        ' replications for garli analysis.'))
+arg_parser.add_argument('MCMC_BEAST', type=int, help=('Length of MCMC chain '
+                        'for BEAST analysis.'))
+arg_parser.add_argument('store_every', type=int, help=('Sample interval '
+                        'for BEAST analysis.'))
+arg_parser.add_argument('-t', '--tolerance', help=('Run script in tolerance '
+                        'mode for BEAST run.'), action='store_true')
+arg_parser.add_argument('--tol_value', type=int, help=('Value of toelrance '
+                        'for BEAST run.'))
+arg_parser.add_argument('--lcom', type=str, help=('Path to logcombiner. Only '
+                        'necessary if running in tolerance mode.'))
+arg_parser.add_argument('--burnin_BEAST', type=int, help=('Burnin for BEAST '
+                        'run default = 0.25 of chain length.'))
+arg_parser.add_argument('MCMC_bGMYC', type=int, help=('Length of MCMC chain '
+                        'for bGMYC analysis.'))
+arg_parser.add_argument('--burnin_bGMYC', type=int, help=('Burnin for bGMYC '
+                        'run default = 0.25 of chain length.'))
+arg_parser.add_argument('thinning', type=int, help=('Sample interval for '
+                        ' bGMYC analysis.'))
+arg_parser.add_argument('t1', type=int, help=('Value of t1 for bGMYC analysis '
+                        'see instructions in bGMYC documentation.'))
+arg_parser.add_argument('t2', type=int, help=('Value of t1 for bGMYC analysis '
+                        'see instructions in bGMYC documentation.'))
 args = arg_parser.parse_args()
 
 if not args.bootstrap:
@@ -496,6 +511,7 @@ for sequence in NexusFile:
     sequence.beast_finalize()
     if args.tolerance:
         sequence.resume_beast(sequence.BEAST_ID)
+        sequence.log_combine()
     else:
         sequence.run_beast()
     sequence.clean_up()
