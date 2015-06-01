@@ -223,7 +223,6 @@ class BEAST(ToleranceCheck):
                                   'upper': '1.0'})
             p_inv.text = '0.0'
 
-    # May be able to consolidate this.
     def w_beast_rates(self):
         xml_nodes = []
         model_selected = (self.parameters['Model']).translate(None, '+IG')
@@ -300,7 +299,7 @@ class BEAST(ToleranceCheck):
         if eff_sample_size:
             os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % (self.sequence_name, run_number))
             BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (args.BEAST,
-                                                                str(randrange(0, 999999)),
+                                                                randrange(0, 999999),
                                                                 self.BEAST_XML)
             beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
