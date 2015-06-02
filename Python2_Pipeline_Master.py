@@ -299,7 +299,7 @@ class BEAST(ToleranceCheck):
         ess = 1
         run_count = 1
         while ess:
-            run = self.identifer + '_RUN_' + str(run_count)
+            run = self.identifier + '_RUN_' + str(run_count)
             os.mkdir(run)
             BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
                                                    randrange(0, 999999999),
