@@ -510,8 +510,7 @@ for sequence in NexusFile:
     sequence.w_beast_taxon()
     sequence.beast_finalize()
     if args.tolerance:
-        sequence.resume_beast(ssequence.BEAST_ID)
-        s.
+        sequence.resume_beast(sequence.BEAST_ID)
         sequence.log_combine()
     else:
         sequence.run_beast()
