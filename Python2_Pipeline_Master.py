@@ -144,7 +144,7 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        data = (genfromtxt(data_file, comments='#', usecols=range(1, 17)))[1:-1]
+        data = (genfromtxt(data_file, comments='#', usecols=range(1, 17)))[1:]
         data = zip(*data)
         stats = map(lambda x: acor(x), data)
         auto_cor_times = (zip(*stats))[0]
@@ -310,7 +310,7 @@ class BEAST(ToleranceCheck):
                 print(line.strip())
             beast_run.stdout.close()
             run_count += 1
-            ess = self.calculate_statistics(BEAST_log_file)
+            ess = self.calculate_statistics(run + '/' + BEAST_log_file)
             ess = filter(lambda x: x < args.tolerance, ess)
 
     def log_combine(self):
@@ -510,7 +510,8 @@ for sequence in NexusFile:
     sequence.w_beast_taxon()
     sequence.beast_finalize()
     if args.tolerance:
-        sequence.resume_beast(sequence.BEAST_ID)
+        sequence.resume_beast(ssequence.BEAST_ID)
+        s.
         sequence.log_combine()
     else:
         sequence.run_beast()
