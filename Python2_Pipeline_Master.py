@@ -320,7 +320,7 @@ class BEAST(ToleranceCheck):
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         bdirs = map(lambda x: '-log ' + x + self.BEAST_ID, bdirs)
         com = './%s %s -b %s -o %s_Master.out' % (args.lcom, ' '.join(bdirs),
-                                                burnin_perc, self.BEAST_ID)
+                                                  burnin_perc, self.BEAST_ID)
         lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
         for line in iter(lcom.stdout.readline, ''):
             print(line.strip())
@@ -367,8 +367,8 @@ class CleanUp(bGMYC):
         files_in_dir = os.listdir(cwd)
         output_files = filter(lambda x: self.identifier in x, files_in_dir)
         for i in output_files:
-            move(i, self.identifier)
-        copy(self.path, self.identifier)
+            os.move(i, self.identifier)
+        os.copy(self.path, self.identifier)
 
 
 class IterRegistry(type):
