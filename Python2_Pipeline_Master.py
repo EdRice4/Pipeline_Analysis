@@ -321,10 +321,10 @@ class BEAST(ToleranceCheck):
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         if len(bdirs) > 1:
             bdirs = map(lambda x: '-log ' + x + '/' + self.BEAST_ID, bdirs)
-            com = './%s %s -b %s -o %s_Master.out' % (args.lcom,
-                                                      ' '.join(bdirs),
-                                                      burnin_perc,
-                                                      self.BEAST_ID)
+            com = './%s %s -b %s -o Master_%s' % (args.lcom,
+                                                  ' '.join(bdirs),
+                                                  burnin_perc,
+                                                  self.BEAST_ID)
             lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
             for line in iter(lcom.stdout.readline, ''):
                 print(line.strip())
