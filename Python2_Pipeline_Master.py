@@ -368,7 +368,7 @@ class CleanUp(bGMYC):
         files_in_dir = os.listdir(cwd)
         output_files = filter(lambda x: self.identifier in x, files_in_dir)
         master_dir = self.identifier + '_MASTER'
-        os.mkidr(master_dir)
+        os.mkdir(master_dir)
         for i in output_files:
             move(i, master_dir)
         copy(self.path, master_dir)
