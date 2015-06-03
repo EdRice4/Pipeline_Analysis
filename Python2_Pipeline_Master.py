@@ -3,10 +3,11 @@ from lxml import etree as ET
 from random import randrange
 from numpy import genfromtxt
 from acor import acor
+from re import sub
+from shutil import move, copy
 import argparse
 import pyper
 import os
-from re import sub
 
 
 class CommonMethods(object):
@@ -366,9 +367,11 @@ class CleanUp(bGMYC):
         cwd = os.getcwd()
         files_in_dir = os.listdir(cwd)
         output_files = filter(lambda x: self.identifier in x, files_in_dir)
+        master_dir = self.identifier + '_MASTER'
+        os.mkidr(master_dir)
         for i in output_files:
-            os.move(i, self.identifier)
-        os.copy(self.path, self.identifier)
+            move(i, master_dir)
+        copy(self.path, master_dir)
 
 
 class IterRegistry(type):
