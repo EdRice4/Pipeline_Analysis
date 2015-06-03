@@ -319,13 +319,16 @@ class BEAST(ToleranceCheck):
         fid = os.listdir(cwd)
         burnin_perc = int(args.burnin_BEAST / args.MCMC_BEAST)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
-        bdirs = map(lambda x: '-log ' + x + self.BEAST_ID, bdirs)
-        com = './%s %s -b %s -o %s_Master.out' % (args.lcom, ' '.join(bdirs),
-                                                  burnin_perc, self.BEAST_ID)
-        lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
-        for line in iter(lcom.stdout.readline, ''):
-            print(line.strip())
-        lcom.stdout.close()
+        if len(bdirs) > 1:
+            bdirs = map(lambda x: '-log ' + x + '/' + self.BEAST_ID, bdirs)
+            com = './%s %s -b %s -o %s_Master.out' % (args.lcom,
+                                                      ' '.join(bdirs),
+                                                      burnin_perc,
+                                                      self.BEAST_ID)
+            lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+            for line in iter(lcom.stdout.readline, ''):
+                print(line.strip())
+            lcom.stdout.close()
 
 
 class bGMYC(BEAST):
