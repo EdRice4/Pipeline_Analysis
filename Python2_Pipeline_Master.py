@@ -321,7 +321,7 @@ class BEAST(ToleranceCheck):
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         if len(bdirs) > 1:
             bdirs = map(lambda x: '-log ' + x + '/' + self.BEAST_ID, bdirs)
-            com = './%s %s -b %s -o Master_%s' % (args.lcom,
+            com = './%s %s -b %s -o MASTER_%s' % (args.lcom,
                                                   ' '.join(bdirs),
                                                   burnin_perc,
                                                   self.BEAST_ID)
@@ -337,6 +337,7 @@ class bGMYC(BEAST):
 
     def bGMYC(self):
         threshold = int(round((args.t1 + args.t2) / 2))
+        os.chdir(self.master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
@@ -360,6 +361,7 @@ class bGMYC(BEAST):
             r('svg("%s_prob.svg")' % self.identifier)
             r('plot(result.probmat, trees[[1]])')
             r('dev.off()')
+            os.chdir('../')
 
 
 class CleanUp(bGMYC):
@@ -370,11 +372,10 @@ class CleanUp(bGMYC):
         cwd = os.getcwd()
         files_in_dir = os.listdir(cwd)
         output_files = filter(lambda x: self.identifier in x, files_in_dir)
-        master_dir = self.identifier + '_MASTER'
-        os.mkdir(master_dir)
+        os.mkdir(self.master_dir)
         for i in output_files:
-            move(i, master_dir)
-        copy(self.path, master_dir)
+            move(i, self.master_dir)
+        copy(self.path, self.master_dir)
 
 
 class IterRegistry(type):
@@ -402,6 +403,7 @@ class NexusFile(CleanUp):
         self.parameters = {}
         self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
         self.BEAST_ID = 'BEAST_%s.out' % self.identifier
+        self.master_dir = self.identifier + '_MASTER'
         self.registry.append(self)
 
 arg_parser = argparse.ArgumentParser()
