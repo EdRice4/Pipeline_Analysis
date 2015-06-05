@@ -347,12 +347,12 @@ class bGMYC(BEAST):
             r("library(ape)")
             r("library(bGMYC)")
             r("read.nexus(file='%s.trees') -> trees" % self.sequence_name)
-            r("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, "
-              "t1= &i, t2=%i, start=c(1,1,%i)) -> result.multi" % (args.MCMC_bGMYC,
-                                                                   args.burnin_bGMYC,
-                                                                   args.thinning,
-                                                                   args.t1, args.t2,
-                                                                   threshold))
+            r(("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, "
+               "t1=&i, t2=%i, start=c(1,1,%i)) -> result.multi") % (args.MCMC_bGMYC,
+                                                                    args.burnin_bGMYC,
+                                                                    args.thinning,
+                                                                    args.t1, args.t2,
+                                                                    threshold))
             r("svg('%s_mcmc.svg')" % self.identifier)
             r("plot(result.multi)")
             r("dev.off()")
