@@ -336,31 +336,23 @@ class bGMYC(BEAST):
     """A class used to run bGMYC in R with pypeR module."""
 
     def bGMYC(self):
-        threshold = int(round((args.t1 + args.t2) / 2))
+        threshold = round((args.t1 + args.t2) / 2)
+        parameters = [self.sequence_name, self.identifier, args.MCMC_bGMYC,
+                      args.burnin_bGMYC, args.thinning, args.t1, args.t2,
+                      threshold]
+        parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         for i in bdirs:
             os.chdir(i)
-            r = pyper.R()
-            r("library(ape)")
-            r("library(bGMYC)")
-            r("read.nexus(file='%s.trees') -> trees" % self.sequence_name)
-            r(("bgmyc.multiphylo(trees, mcmc=%i, burnin=%i, thinning=%i, "
-               "t1=%i, t2=%i, start=c(1,1,%i)) -> result.multi") % (args.MCMC_bGMYC,
-                                                                    args.burnin_bGMYC,
-                                                                    args.thinning,
-                                                                    args.t1, args.t2,
-                                                                    threshold))
-            r("svg('%s_mcmc.svg')" % self.identifier)
-            r("plot(result.multi)")
-            r("dev.off()")
-            r('bgmyc.spec(result.multi, filename="%s.txt") -> result.spec' % self.identifier)
-            r('spec.probmat(result.multi) -> result.probmat')
-            r('svg("%s_prob.svg")' % self.identifier)
-            r('plot(result.probmat, trees[[1]])')
-            r('dev.off()')
+            Rscript = 'Rscript bGMYC.R %s' % ' '.join(parameters)
+            bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
+                              stdin=PIPE)
+            for line in iter(bGMYC_run.stdout.readline, ''):
+                print(line.strip())
+            bGMYC.stdout.close()
             os.chdir('../')
 
 
