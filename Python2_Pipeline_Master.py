@@ -408,10 +408,10 @@ arg_parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description='A pipeline between jModelTest, Garli, BEAST and bGMYC.',
         epilog=('Note: Additional parameters for bGMYC analysis (t1, t2, py, '
-                'pc, th) should be provided in tab delimited .txt file along '
-                'with taxon name, where the taxon name is the name of the '
-                'corresponding nexus file sans .nex. For instance, if the '
-                'nexus file is Taxon.nex, the .txt entry would be: '
+                'pc, th) should be provided in tab delimited Dictionary.txt '
+                'file along with taxon name, where the taxon name is the name '
+                'of the corresponding nexus file sans .nex. For instance, if '
+                'the nexus file is Taxon.nex, the .txt entry would be: '
                 'Taxon\\t2\\t40\\t1\\t1\\t21\\n'))
 arg_parser.add_argument(
         'jMT', type=str, help='Path to jModelTest.jar.')
@@ -532,4 +532,5 @@ for sequence in NexusFile:
     else:
         sequence.run_beast()
     sequence.clean_up()
-    sequence.bGMYC()
+    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
+    sequence.bGMYC(bGMYC_parameters)
