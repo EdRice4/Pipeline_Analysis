@@ -397,21 +397,33 @@ class NexusFile(CleanUp):
         self.master_dir = self.identifier + '_MASTER'
         self.registry.append(self)
 
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('jMT', type=str, help='Path to jModelTest.jar.')
-arg_parser.add_argument('BEAST', type=str, help='Path to beast.jar.')
-arg_parser.add_argument('-b', '--batch', help=('Run script in batch mode '
-                        'for multiple nexus files.'), action='store_true')
+arg_parser = argparse.ArgumentParser(
+        prog='Pipeline',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description=('A pipeline between jModelTest, Garli, BEAST and bGMYC.'))
+arg_parser.add_argument(
+        'jMT', type=str, help='Path to jModelTest.jar.')
+arg_parser.add_argument(
+        'BEAST', type=str, help='Path to beast.jar.')
+arg_parser.add_argument(
+        '-b', '--batch', help=('Run script in batch mode for multiple nexus '
+                               'files.'),
+        action='store_true')
 arg_parser.add_argument('-g', '--garli', help=('Run garli analysis prior to '
-                        'BEAST.'), action='store_true')
+                                               'BEAST.'),
+                        action='store_true')
 arg_parser.add_argument('-bsr', '--bootstrap', type=int, help=('# of bootstrap'
-                        ' replications for garli analysis.'))
+                                                               ' replications'
+                                                               ' for garli '
+                                                               'analysis.'),
+                        action='store_true')
 arg_parser.add_argument('MCMC_BEAST', type=int, help=('Length of MCMC chain '
-                        'for BEAST analysis.'))
+                                                      'for BEAST analysis.'))
 arg_parser.add_argument('store_every', type=int, help=('Sample interval '
-                        'for BEAST analysis.'))
+                                                       'for BEAST analysis.'))
 arg_parser.add_argument('-t', '--tolerance', help=('Run script in tolerance '
-                        'mode for BEAST run.'), action='store_true')
+                                                   'mode for BEAST run.'),
+                        action='store_true')
 arg_parser.add_argument('--tol_value', type=int, help=('Value of toelrance '
                         'for BEAST run.'))
 arg_parser.add_argument('--lcom', type=str, help=('Path to logcombiner. Only '
