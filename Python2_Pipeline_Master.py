@@ -6,7 +6,6 @@ from acor import acor
 from re import sub
 from shutil import move, copy
 import argparse
-#import pyper
 import os
 
 
