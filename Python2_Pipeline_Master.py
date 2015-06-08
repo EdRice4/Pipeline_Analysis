@@ -6,7 +6,7 @@ from acor import acor
 from re import sub
 from shutil import move, copy
 import argparse
-import pyper
+#import pyper
 import os
 
 
@@ -352,7 +352,7 @@ class bGMYC(BEAST):
                               stdin=PIPE)
             for line in iter(bGMYC_run.stdout.readline, ''):
                 print(line.strip())
-            bGMYC.stdout.close()
+            bGMYC_run.stdout.close()
             os.chdir('../')
 
 
