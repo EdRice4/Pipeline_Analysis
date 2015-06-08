@@ -20,14 +20,19 @@ class CommonMethods(object):
         return range_start, range_end
 
     def filter_output(self, output, start, end):
-        output = map(lambda x: x.translate(None, ' \r\n)'),
-                     output[start:end])
+        output = map(
+                lambda x: x.translate(None, ' \r\n)'),
+                output[start:end]
+                )
         for num, i in enumerate(output):
             if '(ti/tv' in i:
                 tmp = (output.pop(num)).split('(')
                 output.insert(num, tmp[0])
                 output.append(tmp[1])
-        output = map(lambda x: x.translate(None, '('), output)
+        output = map(
+                lambda x: x.translate(None, '('),
+                output
+                )
         return output
 
     def dict_check(self, string, dict):
@@ -41,8 +46,10 @@ class CommonMethods(object):
         for num, i in enumerate(file_to_edit):
             if i.strip() in lines_to_edit:
                     lines.append(num)
-            tmpl = map(lambda x, y: x + ' ' + y + '\n', lines_to_edit,
-                       values_to_insert)
+            tmpl = map(
+                    lambda x, y: x + ' ' + y + '\n',
+                    lines_to_edit, values_to_insert
+                    )
             tmpd = dict(zip(tmpl, lines))
             for i in tmpd:
                 file_to_edit[tmpd[i]] = i
@@ -63,8 +70,10 @@ class jModelTest(CommonMethods):
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
-        jMT_run = Popen(jModelTest.split(), stderr=STDOUT, stdout=PIPE,
-                        universal_newlines=True)
+        jMT_run = Popen(
+                jModelTest.split(), stderr=STDOUT, stdout=PIPE,
+                universal_newlines=True
+                )
         with open(self.JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 if line != 'Cannot perform output.\n':
@@ -73,8 +82,9 @@ class jModelTest(CommonMethods):
             jMT_run.stdout.close()
 
     def r_jModelTest_parameters(self, jModelTest_file):
-        start, end = self.get_range(jModelTest_file, ' Model selected: \n',
-                                    ' \n')
+        start, end = self.get_range(
+                jModelTest_file, ' Model selected: \n', ' \n'
+                )
         data = self.filter_output(jModelTest_file, start + 1, end)
         for i in data:
             self.parameters[i.rpartition('=')[0]] = i.rpartition('=')[-1]
@@ -109,7 +119,7 @@ class Garli(jModelTest):
         'TVM': ['(0 1 2 3 1 4)', 'estimate'],
         'SYM': ['6rate', 'equal'],
         'GTR': ['6rate', 'estimate']
-    }
+        }
 
     def w_garli_conf(self, garli_file):
         model_selected = self.parameters['Model']
@@ -119,10 +129,12 @@ class Garli(jModelTest):
         garli_params = ['datafname =', 'ofprefix =',
                         'bootstrapreps =', 'ratematrix =',
                         'statefrequencies =', 'ratehetmodel =',
-                        'numratecats =', 'invariantsites =']
+                        'numratecats =', 'invariantsites ='
+                        ]
         garli_values = [self.path, self.identifier, str(args.bootstrap),
                         Garli.models[str(model_selected)][0],
-                        Garli.models[str(model_selected)][1]]
+                        Garli.models[str(model_selected)][1]
+                        ]
         if het:
             garli_values.extend(['gamma', '4'])
         else:
@@ -138,8 +150,9 @@ class Garli(jModelTest):
 
     def run_garli(self):
         garli = './Garli -b garli_%s.conf' % self.identifier
-        garli_run = Popen(garli.split(), stderr=STDOUT, stdout=PIPE,
-                          stdin=PIPE)
+        garli_run = Popen(
+                garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
+                )
         for line in iter(garli_run.stdout.readline, ''):
             print(line.strip())
         garli_run.stdout.close()
