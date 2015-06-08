@@ -155,8 +155,8 @@ class ToleranceCheck(Garli):
         data = zip(*data)
         stats = map(lambda x: acor(x), data)
         auto_cor_times = (zip(*stats))[0]
-        chain_length = args.MCMC_BEAST - args.burnin_BEAST
-        eff_sample_size = map(lambda x: chain_length/x, auto_cor_times)
+        chain_length = args.MCMC_BEAST - (1 - args.burnin_BEAST)
+        eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
         return eff_sample_size
 
 
@@ -323,13 +323,12 @@ class BEAST(ToleranceCheck):
     def log_combine(self):
         cwd = os.getcwd()
         fid = os.listdir(cwd)
-        burnin_perc = int(args.burnin_BEAST / args.MCMC_BEAST)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         if len(bdirs) > 1:
             bdirs = map(lambda x: '-log ' + x + '/' + self.BEAST_ID, bdirs)
             com = './%s %s -b %s -o MASTER_%s' % (args.lcom,
                                                   ' '.join(bdirs),
-                                                  burnin_perc,
+                                                  args.burnin_BEAST,
                                                   self.BEAST_ID)
             lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
             for line in iter(lcom.stdout.readline, ''):
@@ -342,9 +341,10 @@ class bGMYC(BEAST):
     """A class used to run bGMYC in R with pypeR module."""
 
     def bGMYC(self, parameter_dict):
+        burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
         parameters = [
                 self.sequence_name, self.identifier, args.MCMC_bGMYC,
-                args.burnin_bGMYC, args.thinning
+                burnin_bGMYC, args.thinning
                 ] + parameter_dict[self.sequence_name]
         parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
