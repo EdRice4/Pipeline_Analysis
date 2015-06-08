@@ -59,7 +59,9 @@ class CommonMethods(object):
         parameters = genfromtxt(
                 dict_file, dtype=str, delimiter='\t'
                 )
-        dictionary = dict([(i[0], map(lambda x: int(x), i[2:5])) for i in parameters])
+        dictionary = dict(
+                [(i[0], map(lambda x: int(x), i[2:5])) for i in parameters]
+                )
         return dictionary
 
 
@@ -164,7 +166,7 @@ class ToleranceCheck(Garli):
        columns."""
 
     def calculate_statistics(self, data_file):
-        data = (genfromtxt(data_file, comments='#', usecols=range(1, 17)))[1:]
+        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
         data = zip(*data)
         stats = map(lambda x: acor(x), data)
         auto_cor_times = (zip(*stats))[0]
@@ -202,47 +204,75 @@ class BEAST(ToleranceCheck):
         screen_log.set('logEvery', '%s' % args.store_every)
         tree_log.set('logEvery', '%s' % args.store_every)
         if Garli.models[str(model_selected)][1] == 'estimate':
-            freq = ET.SubElement(state, 'parameter', attrib={
-                                 'dimension': '4',
-                                 'id': 'freqParameter.s:%s' % self.sequence_name,
-                                 'lower': '0.0', 'name': 'stateNode',
-                                 'upper': '1.0'})
+            freq = ET.SubElement(
+                    state, 'parameter',
+                    attrib={
+                            'dimension': '4',
+                            'id': 'freqParameter.s:%s' % self.sequence_name,
+                            'lower': '0.0', 'name': 'stateNode',
+                            'upper': '1.0'
+                            }
+                    )
             freq.text = '0.25'
-            freq_log = ET.SubElement(log, 'parameter', attrib={
-                                     'idref': 'freqParameter.s:%s' % self.sequence_name,
-                                     'name': 'log'})
+            freq_log = ET.SubElement(
+                    log, 'parameter',
+                    attrib={
+                            'idref': 'freqParameter.s:%s' % self.sequence_name,
+                            'name': 'log'
+                            }
+                    )
         if Garli.models[str(model_selected)][1] == 'equal':
-            freq = ET.SubElement(substmodel, 'frequencies', attrib={
-                                 'data': '@%s' % self.sequence_name,
-                                 'estimate': 'false',
-                                 'id': 'equalFreqs.s:%s' % self.sequence_name,
-                                 'spec': 'Frequencies'})
+            freq = ET.SubElement(
+                    substmodel, 'frequencies',
+                    attrib={
+                            'data': '@%s' % self.sequence_name,
+                            'estimate': 'false',
+                            'id': 'equalFreqs.s:%s' % self.sequence_name,
+                            'spec': 'Frequencies'
+                            }
+                    )
         if het:
             sitemodel.set('gammaCategoryCount', '4')
-            gamma_shape = ET.SubElement(sitemodel, 'parameter', attrib={
-                                        'estimate': 'false',
-                                        'id': 'gammaShape.s:%s' % self.sequence_name,
-                                        'name': 'shape'})
+            gamma_shape = ET.SubElement(
+                    sitemodel, 'parameter',
+                    attrib={
+                            'estimate': 'false',
+                            'id': 'gammaShape.s:%s' % self.sequence_name,
+                            'name': 'shape'
+                            }
+                    )
             gamma_shape.text = self.parameters['gammashape']
         else:
-            gamma_shape = ET.SubElement(sitemodel, 'parameter', attrib={
-                                        'estimate': 'false',
-                                        'id': 'gammaShape.s:%s' % self.sequence_name,
-                                        'name': 'shape'})
+            gamma_shape = ET.SubElement(
+                    sitemodel, 'parameter',
+                    attrib={
+                            'estimate': 'false',
+                            'id': 'gammaShape.s:%s' % self.sequence_name,
+                            'name': 'shape'
+                            }
+                    )
             gamma_shape.text = '0.0'
         if inv:
-            p_inv = ET.SubElement(sitemodel, 'parameter', attrib={
-                                  'estimate': 'false',
-                                  'id': 'proportionInvariant.s:%s' % self.sequence_name,
-                                  'lower': '0.0', 'name': 'proportionInvariant',
-                                  'upper': '1.0'})
+            p_inv = ET.SubElement(
+                    sitemodel, 'parameter',
+                    attrib={
+                            'estimate': 'false',
+                            'id': 'proportionInvariant.s:%s' % self.sequence_name,
+                            'lower': '0.0', 'name': 'proportionInvariant',
+                            'upper': '1.0'
+                            }
+                    )
             p_inv.text = self.parameters['p-inv']
         else:
-            p_inv = ET.SubElement(sitemodel, 'parameter', attrib={
-                                  'estimate': 'false',
-                                  'id': 'proportionInvariant.s:%s' % self.sequence_name,
-                                  'lower': '0.0', 'name': 'proportionInvariant',
-                                  'upper': '1.0'})
+            p_inv = ET.SubElement(
+                    sitemodel, 'parameter',
+                    attrib={
+                            'estimate': 'false',
+                            'id': 'proportionInvariant.s:%s' % self.sequence_name,
+                            'lower': '0.0', 'name': 'proportionInvariant',
+                            'upper': '1.0'
+                            }
+                    )
             p_inv.text = '0.0'
 
     def w_beast_rates(self):
@@ -286,7 +316,9 @@ class BEAST(ToleranceCheck):
             while sequence_start <= sequence_end:
                 species_id = (self.nexus_file[int(sequence_start)].rpartition(
                               "\t")[0]).strip()
-                species_sequence = (self.nexus_file[int(sequence_start)].rpartition("\t")[-1]).strip()
+                species_sequence = (
+                        self.nexus_file[int(sequence_start)].rpartition("\t")[-1]
+                        ).strip()
                 sequence = ET.SubElement(data, 'sequence', attrib={
                                          'id': 'seq_%s' % species_id,
                                          'taxon': '%s' % species_id,
