@@ -449,15 +449,6 @@ arg_parser.add_argument(
         default=10000)
 args = arg_parser.parse_args()
 
-if not args.bootstrap:
-    args.bootstrap = 0
-if args.tolerance and not args.tol_value:
-    args.tol_value = 100
-if not args.burnin_BEAST:
-    args.burnin_BEAST = int(round(args.MCMC_BEAST * 0.25))
-if not args.burnin_bGMYC:
-    args.burnin_bGMYC = int(round(args.MCMC_bGMYC * 0.25))
-
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard.xml', XML_parser)
 data = beast.find('data')
@@ -488,8 +479,8 @@ if args.batch:
         class_name = i.strip('.nex')
         path_to_sequence[str(class_name)] = str(path)
 else:
-    print ('The program will prompt you for the path to each sequence file ' +
-           'as well as a unique name for each instantiated class.')
+    print('The program will prompt you for the path to each sequence file ' +
+          'as well as a unique name for each instantiated class.')
     no_runs = raw_input('How many runs would you like to perform? ')
     for i in range(int(no_runs)):
         path = raw_input('Path to sequence: ')
@@ -504,7 +495,7 @@ for sequence in NexusFile:
     print('-----------------------------------------------------------------')
     print('Sequence file: %s' % sequence.path)
     print('Run identifier: %s' % sequence.identifier)
-    #print('Garli bootstrap replications: %s' % args.bootstrap)
+    print('Garli bootstrap replications: %s' % args.bootstrap)
     print('MCMC BEAST: %s' % args.MCMC_BEAST)
     print('Burnin BEAST: %s' % args.burnin_BEAST)
     if args.tolerance:
