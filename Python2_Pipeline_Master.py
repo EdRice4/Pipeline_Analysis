@@ -342,12 +342,12 @@ class bGMYC(BEAST):
                       threshold]
         parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
-        cwd = os.getcwd()
+        cwd = os.getcwd()  # required?
         fid = os.listdir(cwd)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         for i in bdirs:
             os.chdir(i)
-            Rscript = 'Rscript --save bGMYC.R %s' % ' '.join(parameters)
+            Rscript = 'Rscript --save ../../bGMYC.R %s' % ' '.join(parameters)
             bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(bGMYC_run.stdout.readline, ''):
