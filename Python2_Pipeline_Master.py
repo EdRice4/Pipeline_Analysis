@@ -417,11 +417,11 @@ arg_parser.add_argument(
                                                ' for garli analysis.'),
         default=0)
 arg_parser.add_argument(
-        'MCMC_BEAST', type=int, help=('Length of MCMC chain for BEAST '
-                                      'analysis.'),
+        '--MCMC_BEAST', type=int, help=('Length of MCMC chain for BEAST '
+                                        'analysis.'),
         default=50000000)
 arg_parser.add_argument(
-        'store_every', type=int, help='Sample interval for BEAST analysis.',
+        '--store_every', type=int, help='Sample interval for BEAST analysis.',
         default=1000)
 arg_parser.add_argument(
         '-t', '--tolerance', help=('Run script in tolerance mode for BEAST '
@@ -429,20 +429,19 @@ arg_parser.add_argument(
         default=0)
 arg_parser.add_argument(
         '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
-                                  'running in tolerance mode.'),
-        action='store_true')
+                                  'running in tolerance mode.'))
 arg_parser.add_argument(
-        '--burnin_BEAST', type=int, help='Burnin (%) for BEAST analysis.',
+        '--burnin_BEAST', type=int, help='Burnin (%%) for BEAST analysis.',
         default=0.25)
 arg_parser.add_argument(
-        'MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
-                                      'analysis.'),
+        '--MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
+                                        'analysis.'),
         default=50000000)
 arg_parser.add_argument(
-        '--burnin_bGMYC', type=int, help='Burnin (%) for bGMYC analysis.',
+        '--burnin_bGMYC', type=int, help='Burnin (%%) for bGMYC analysis.',
         default=0.25)
 arg_parser.add_argument(
-        'thinning', type=int, help='Sample interval for bGMYC analysis.',
+        '--thinning', type=int, help='Sample interval for bGMYC analysis.',
         default=10000)
 #arg_parser.add_argument('t1', type=int, help=('Value of t1 for bGMYC analysis '
                         #'see instructions in bGMYC documentation.'))
