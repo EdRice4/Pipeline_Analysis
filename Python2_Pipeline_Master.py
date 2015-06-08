@@ -48,6 +48,13 @@ class CommonMethods(object):
                 file_to_edit[tmpd[i]] = i
         return file_to_edit
 
+    def build_dict_bGMYC_params(dict_file):
+        parameters = genfromtxt(
+                dict_file, dtype=str, delimiter='\t'
+                )
+        dictionary = dict([(i[0], map(lambda x: int(x), i[2:5])) for i in parameters])
+        return dictionary
+
 
 class jModelTest(CommonMethods):
 
@@ -334,15 +341,14 @@ class bGMYC(BEAST):
 
     """A class used to run bGMYC in R with pypeR module."""
 
-    def bGMYC(self):
-        threshold = round((args.t1 + args.t2) / 2)
-        parameters = [self.sequence_name, self.identifier, args.MCMC_bGMYC,
-                      args.burnin_bGMYC, args.thinning, args.t1, args.t2,
-                      threshold]
+    def bGMYC(self, parameter_dict):
+        parameters = [
+                self.sequence_name, self.identifier, args.MCMC_bGMYC,
+                args.burnin_bGMYC, args.thinning
+                ] + parameter_dict[self.sequence_name]
         parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
-        cwd = os.getcwd()  # required?
-        fid = os.listdir(cwd)
+        fid = os.listdir(self.master_dir)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         for i in bdirs:
             os.chdir(i)
