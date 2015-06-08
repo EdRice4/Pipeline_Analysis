@@ -402,8 +402,8 @@ arg_parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description='A pipeline between jModelTest, Garli, BEAST and bGMYC.',
         epilog=('Note: Additional parameters for bGMYC analysis (t1, t2, py, '
-                'pc, th) should be provided in tab delimited file along with '
-                'corresponding taxon name. For instance: '
+                'pc, th) should be provided in tab delimited .txt file along '
+                'with corresponding taxon name. For instance: '
                 'Taxon\\t2\\t40\\t1\\t1\\t21\\n'))
 arg_parser.add_argument(
         'jMT', type=str, help='Path to jModelTest.jar.')
