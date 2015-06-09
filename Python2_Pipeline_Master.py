@@ -97,46 +97,48 @@ class Garli(jModelTest):
     """Run garli and store parameters associated with output."""
 
     models = {
-        'JC': ['1rate', 'equal'],
-        'F81': ['1rate', 'estimate'],
-        'K80': ['2rate', 'equal'],
-        'HKY': ['2rate', 'estimate'],
-        'TrNef': ['(0 1 0 0 2 0)', 'equal'],
-        'TrN': ['(0 1 0 0 2 0)', 'estimate'],
-        'TPM1': ['(0 1 2 2 1 0)', 'equal'],
-        'TPM1uf': ['(0 1 2 2 1 0)', 'estimate'],
-        'TPM2': ['(0 1 0 2 1 2)', 'equal'],
-        'TPM2uf': ['(0 1 0 2 1 2)', 'estimate'],
-        'TPM3': ['(0 1 2 0 1 2)', 'equal'],
-        'TPM3uf': ['(0 1 2 0 1 2)', 'estimate'],
-        'K3P': ['(0 1 2 2 1 0)', 'equal'],
-        'K3Puf': ['(0 1 2 2 1 0)', 'estimate'],
-        'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate.
-        'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate.
-        'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
-        'TM2': ['((0 1 0 2 3 2))', 'estimate'],
-        'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
-        'TM3': ['(0 1 2 0 3 2)', 'estimate'],
-        'TVMef': ['(0 1 2 3 1 4)', 'equal'],
-        'TVM': ['(0 1 2 3 1 4)', 'estimate'],
-        'SYM': ['6rate', 'equal'],
-        'GTR': ['6rate', 'estimate']
-        }
+            'JC': ['1rate', 'equal'],
+            'F81': ['1rate', 'estimate'],
+            'K80': ['2rate', 'equal'],
+            'HKY': ['2rate', 'estimate'],
+            'TrNef': ['(0 1 0 0 2 0)', 'equal'],
+            'TrN': ['(0 1 0 0 2 0)', 'estimate'],
+            'TPM1': ['(0 1 2 2 1 0)', 'equal'],
+            'TPM1uf': ['(0 1 2 2 1 0)', 'estimate'],
+            'TPM2': ['(0 1 0 2 1 2)', 'equal'],
+            'TPM2uf': ['(0 1 0 2 1 2)', 'estimate'],
+            'TPM3': ['(0 1 2 0 1 2)', 'equal'],
+            'TPM3uf': ['(0 1 2 0 1 2)', 'estimate'],
+            'K3P': ['(0 1 2 2 1 0)', 'equal'],
+            'K3Puf': ['(0 1 2 2 1 0)', 'estimate'],
+            'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate.
+            'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate.
+            'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
+            'TM2': ['((0 1 0 2 3 2))', 'estimate'],
+            'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
+            'TM3': ['(0 1 2 0 3 2)', 'estimate'],
+            'TVMef': ['(0 1 2 3 1 4)', 'equal'],
+            'TVM': ['(0 1 2 3 1 4)', 'estimate'],
+            'SYM': ['6rate', 'equal'],
+            'GTR': ['6rate', 'estimate']
+            }
 
     def w_garli_conf(self, garli_file):
         model_selected = self.parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        garli_params = ['datafname =', 'ofprefix =',
-                        'bootstrapreps =', 'ratematrix =',
-                        'statefrequencies =', 'ratehetmodel =',
-                        'numratecats =', 'invariantsites ='
-                        ]
-        garli_values = [self.path, self.identifier, str(args.bootstrap),
-                        Garli.models[str(model_selected)][0],
-                        Garli.models[str(model_selected)][1]
-                        ]
+        garli_params = [
+                'datafname =', 'ofprefix =',
+                'bootstrapreps =', 'ratematrix =',
+                'statefrequencies =', 'ratehetmodel =',
+                'numratecats =', 'invariantsites ='
+                ]
+        garli_values = [
+                self.path, self.identifier, str(args.bootstrap),
+                Garli.models[str(model_selected)][0],
+                Garli.models[str(model_selected)][1]
+                ]
         if het:
             garli_values.extend(['gamma', '4'])
         else:
