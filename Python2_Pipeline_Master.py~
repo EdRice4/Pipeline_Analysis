@@ -463,8 +463,10 @@ arg_parser.add_argument(
 arg_parser.add_argument(
         'BEAST', type=str, help='Path to beast.jar.')
 arg_parser.add_argument(
-        '-b', '--batch', help=('Run script in batch mode for multiple nexus '
-                               'files.'),
+        '-b', '--batch', help=(
+                'Run script in batch mode for multiple nexus '
+                'files.'
+                ),
         action='store_true')
 arg_parser.add_argument(
         '-g', '--garli', help='Run garli analysis prior to BEAST.',
@@ -481,8 +483,8 @@ arg_parser.add_argument(
         '--store_every', type=int, help='Sample interval for BEAST analysis.',
         default=1000)
 arg_parser.add_argument(
-        '-t', '--tolerance', help=('Run script in tolerance mode for BEAST '
-                                   'analysis.'),
+        '-t', '--tolerance', type=int, help=('Run script in tolerance mode '
+                                             'for BEAST analysis.'),
         default=0)
 arg_parser.add_argument(
         '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
@@ -502,80 +504,81 @@ arg_parser.add_argument(
         default=10000)
 args = arg_parser.parse_args()
 
-XML_parser = ET.XMLParser(remove_blank_text=True)
-beast = ET.parse('Standard.xml', XML_parser)
-data = beast.find('data')
-run = beast.find('run')
-for element in run.iter():
-    if element.tag == 'state':
-        state = element
-    if element.tag == 'substModel':
-        substmodel = element
-    if element.tag == 'siteModel':
-        sitemodel = element
-for element in run.iterfind('logger'):
-    if element.get('id') == 'tracelog':
-        log = element
-    if element.get('id') == 'screenlog':
-        screen_log = element
-    if 'treelog.t:' in element.get('id'):
-        tree_log = element
+print(args)
+#XML_parser = ET.XMLParser(remove_blank_text=True)
+#beast = ET.parse('Standard.xml', XML_parser)
+#data = beast.find('data')
+#run = beast.find('run')
+#for element in run.iter():
+    #if element.tag == 'state':
+        #state = element
+    #if element.tag == 'substModel':
+        #substmodel = element
+    #if element.tag == 'siteModel':
+        #sitemodel = element
+#for element in run.iterfind('logger'):
+    #if element.get('id') == 'tracelog':
+        #log = element
+    #if element.get('id') == 'screenlog':
+        #screen_log = element
+    #if 'treelog.t:' in element.get('id'):
+        #tree_log = element
 
-path_to_sequence = {}
+#path_to_sequence = {}
 
-if args.batch:
-    cwd = os.getcwd()
-    files_in_dir = os.listdir(cwd)
-    nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
-    for i in nexus_files:
-        path = i
-        class_name = i.strip('.nex')
-        path_to_sequence[str(class_name)] = str(path)
-else:
-    print('The program will prompt you for the path to each sequence file ' +
-          'as well as a unique name for each instantiated class.')
-    no_runs = raw_input('How many runs would you like to perform? ')
-    for i in range(int(no_runs)):
-        path = raw_input('Path to sequence: ')
-        class_name = raw_input('Name of class: ')
-        path_to_sequence[str(class_name)] = str(path)
+#if args.batch:
+    #cwd = os.getcwd()
+    #files_in_dir = os.listdir(cwd)
+    #nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
+    #for i in nexus_files:
+        #path = i
+        #class_name = i.strip('.nex')
+        #path_to_sequence[str(class_name)] = str(path)
+#else:
+    #print('The program will prompt you for the path to each sequence file ' +
+          #'as well as a unique name for each instantiated class.')
+    #no_runs = raw_input('How many runs would you like to perform? ')
+    #for i in range(int(no_runs)):
+        #path = raw_input('Path to sequence: ')
+        #class_name = raw_input('Name of class: ')
+        #path_to_sequence[str(class_name)] = str(path)
 
-for key in path_to_sequence:
-    with open(path_to_sequence[key], 'r') as sequence_file:
-        NexusFile(key, path_to_sequence[key], sequence_file)
+#for key in path_to_sequence:
+    #with open(path_to_sequence[key], 'r') as sequence_file:
+        #NexusFile(key, path_to_sequence[key], sequence_file)
 
-for sequence in NexusFile:
-    print('-----------------------------------------------------------------')
-    print('Sequence file: %s' % sequence.path)
-    print('Run identifier: %s' % sequence.identifier)
-    print('Garli bootstrap replications: %s' % args.bootstrap)
-    print('MCMC BEAST: %s' % args.MCMC_BEAST)
-    print('Burnin BEAST: %s' % args.burnin_BEAST)
-    if args.tolerance:
-        print('Tolerance: %s' % args.tolerance)
-    print('Sample frequency BEAST: %s' % args.store_every)
-    print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
-    print('Burnin bGMYC: %s' % args.burnin_bGMYC)
-    print('Sample frequency bGMYC: %s' % args.thinning)
-    print('-----------------------------------------------------------------')
-    sequence.run_jModelTest()
-    with open(str(sequence.JMT_ID), 'r') as JMT_output:
-        JMT_output = JMT_output.readlines()
-    sequence.r_jModelTest_parameters(JMT_output)
-    if args.garli:
-        with open('garli.conf', 'r') as garli_conf:
-            garli_conf = garli_conf.readlines()
-        sequence.w_garli_conf(garli_conf)
-        sequence.run_garli()
-    sequence.w_beast_submodel()
-    sequence.w_beast_rates()
-    sequence.w_beast_taxon()
-    sequence.beast_finalize()
-    if args.tolerance:
-        sequence.resume_beast()
-        sequence.log_combine()
-    else:
-        sequence.run_beast()
-    sequence.clean_up()
-    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
-    sequence.bGMYC(bGMYC_parameters)
+#for sequence in NexusFile:
+    #print('-----------------------------------------------------------------')
+    #print('Sequence file: %s' % sequence.path)
+    #print('Run identifier: %s' % sequence.identifier)
+    #print('Garli bootstrap replications: %s' % args.bootstrap)
+    #print('MCMC BEAST: %s' % args.MCMC_BEAST)
+    #print('Burnin BEAST: %s' % args.burnin_BEAST)
+    #if args.tolerance:
+        #print('Tolerance: %s' % args.tolerance)
+    #print('Sample frequency BEAST: %s' % args.store_every)
+    #print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
+    #print('Burnin bGMYC: %s' % args.burnin_bGMYC)
+    #print('Sample frequency bGMYC: %s' % args.thinning)
+    #print('-----------------------------------------------------------------')
+    #sequence.run_jModelTest()
+    #with open(str(sequence.JMT_ID), 'r') as JMT_output:
+        #JMT_output = JMT_output.readlines()
+    #sequence.r_jModelTest_parameters(JMT_output)
+    #if args.garli:
+        #with open('garli.conf', 'r') as garli_conf:
+            #garli_conf = garli_conf.readlines()
+        #sequence.w_garli_conf(garli_conf)
+        #sequence.run_garli()
+    #sequence.w_beast_submodel()
+    #sequence.w_beast_rates()
+    #sequence.w_beast_taxon()
+    #sequence.beast_finalize()
+    #if args.tolerance:
+        #sequence.resume_beast()
+        #sequence.log_combine()
+    #else:
+        #sequence.run_beast()
+    #sequence.clean_up()
+    #bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
+    #sequence.bGMYC(bGMYC_parameters)
