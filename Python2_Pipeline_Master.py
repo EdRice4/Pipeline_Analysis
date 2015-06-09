@@ -488,14 +488,14 @@ arg_parser.add_argument(
         '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
                                   'running in tolerance mode.'))
 arg_parser.add_argument(
-        '--burnin_BEAST', type=int, help='Burnin (%%) for BEAST analysis.',
+        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
         default=0.25)
 arg_parser.add_argument(
         '--MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
                                         'analysis.'),
         default=50000000)
 arg_parser.add_argument(
-        '--burnin_bGMYC', type=int, help='Burnin (%%) for bGMYC analysis.',
+        '--burnin_bGMYC', type=float, help='Burnin (%%) for bGMYC analysis.',
         default=0.25)
 arg_parser.add_argument(
         '--thinning', type=int, help='Sample interval for bGMYC analysis.',
