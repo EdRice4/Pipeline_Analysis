@@ -170,7 +170,7 @@ class ToleranceCheck(Garli):
         data = zip(*data)
         stats = map(lambda x: acor(x), data)
         auto_cor_times = (zip(*stats))[0]
-        chain_length = args.MCMC_BEAST - (1 - args.burnin_BEAST)
+        chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
         eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
         return eff_sample_size
 
