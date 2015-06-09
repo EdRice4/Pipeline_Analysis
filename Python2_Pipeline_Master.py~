@@ -552,7 +552,7 @@ for sequence in NexusFile:
     print('MCMC BEAST: %s' % args.MCMC_BEAST)
     print('Burnin BEAST: %s' % args.burnin_BEAST)
     if args.tolerance:
-        print('Tolerance: %s' % args.tol_value)
+        print('Tolerance: %s' % args.tolerance)
     print('Sample frequency BEAST: %s' % args.store_every)
     print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
     print('Burnin bGMYC: %s' % args.burnin_bGMYC)
