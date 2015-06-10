@@ -56,11 +56,11 @@ class CommonMethods(object):
         return file_to_edit
 
     def build_dict_bGMYC_params(self, dict_file):
-        parameters = genfromtxt(
-                dict_file, dtype=str, delimiter='\t'
-                )
+        parameters = list(genfromtxt(
+                dict_file, dtype=str, delimiter=','
+                ))
         dictionary = dict(
-                [(i[0], map(lambda x: int(x), i[2:5])) for i in parameters]
+                [(i[0], map(lambda x: int(x), i[1:6])) for i in parameters]
                 )
         return dictionary
 
@@ -455,11 +455,11 @@ arg_parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description='A pipeline between jModelTest, Garli, BEAST and bGMYC.',
         epilog=('Note: Additional parameters for bGMYC analysis (t1, t2, py, '
-                'pc, th) should be provided in tab delimited Dictionary.txt '
-                'file along with taxon name, where the taxon name is the name '
-                'of the corresponding nexus file sans .nex. For instance, if '
-                'the nexus file is Taxon.nex, the .txt entry would be: '
-                'Taxon\\t2\\t40\\t1\\t1\\t21\\n'))
+                'pc, th) should be provided in a comma delimited '
+                'Dictionary.txt file along with taxon name, where the taxon '
+                'name is the name of the corresponding nexus file sans .nex. '
+                'For instance, if the nexus file is Taxon.nex, the .txt entry '
+                'would be: Taxon,2,40,1,1,21\\n'))
 arg_parser.add_argument(
         'jMT', type=str, help='Path to jModelTest.jar.')
 arg_parser.add_argument(
