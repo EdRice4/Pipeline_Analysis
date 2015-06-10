@@ -55,7 +55,7 @@ class CommonMethods(object):
                 file_to_edit[tmpd[i]] = i
         return file_to_edit
 
-    def build_dict_bGMYC_params(dict_file):
+    def build_dict_bGMYC_params(self, dict_file):
         parameters = genfromtxt(
                 dict_file, dtype=str, delimiter='\t'
                 )
