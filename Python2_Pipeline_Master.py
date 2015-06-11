@@ -56,12 +56,16 @@ class CommonMethods(object):
         return file_to_edit
 
     def build_dict_bGMYC_params(self, dict_file):
+        dictionary = {}
         parameters = list(genfromtxt(
                 dict_file, dtype=str, delimiter=','
                 ))
-        dictionary = dict(
-                [(i[0], map(lambda x: int(x), i[1:6])) for i in parameters]
-                )
+        if len(parameters) == 1:
+            dictionary[parameters[0]] = map(lambda x: int(x), parameters[1:6])
+        else:
+            dictionary[i[0]] = [
+                    map(lambda x: int(x), i[1:6]) for i in parameters
+                    ]
         return dictionary
 
 
