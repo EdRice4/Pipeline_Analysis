@@ -57,9 +57,9 @@ class CommonMethods(object):
 
     def build_dict_bGMYC_params(self, dict_file):
         dictionary = {}
-        parameters = list(genfromtxt(
+        parameters = [list(genfromtxt(
                 dict_file, dtype=str, delimiter=','
-                ))
+                ))]
         if len(parameters) == 1:
             dictionary[parameters[0]] = map(lambda x: int(x), parameters[1:6])
         else:
