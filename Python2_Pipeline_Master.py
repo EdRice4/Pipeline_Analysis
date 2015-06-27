@@ -396,7 +396,8 @@ class bGMYC(BEAST):
                 ] + parameter_dict[self.sequence_name]
         parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
-        fid = os.listdir(self.master_dir)
+        cwd = os.getcwd()
+        fid = os.listdir(cwd)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         for i in bdirs:
             os.chdir(i)
