@@ -398,6 +398,7 @@ class bGMYC(BEAST):
         os.chdir(self.master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
+        print(fid)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         for i in bdirs:
             os.chdir(i)
