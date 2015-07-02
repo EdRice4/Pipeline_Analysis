@@ -340,7 +340,7 @@ class BEAST(ToleranceCheck):
             beast_xml_file.write(beast_xml)
 
     def run_beast(self):
-        os.mkdir(self.identifier)
+        os.mkdir(self.identifier + '_RUN_1')
         BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, self.identifier,
                                                str(randrange(0, 999999)),
                                                self.BEAST_XML)
