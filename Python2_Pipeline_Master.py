@@ -402,12 +402,13 @@ class bGMYC(BEAST):
         for i in bdirs:
             os.chdir(i)
             Rscript = 'Rscript --save ../../bGMYC.R %s' % ' '.join(parameters)
-            bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
-                              stdin=PIPE)
-            for line in iter(bGMYC_run.stdout.readline, ''):
-                print(line.strip())
-            bGMYC_run.stdout.close()
-            os.chdir('../')
+            print(Rscript)
+            #bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
+                              #stdin=PIPE)
+            #for line in iter(bGMYC_run.stdout.readline, ''):
+                #print(line.strip())
+            #bGMYC_run.stdout.close()
+            #os.chdir('../')
 
 
 class CleanUp(bGMYC):
