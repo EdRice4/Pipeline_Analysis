@@ -484,6 +484,9 @@ arg_parser.add_argument(
                                         'analysis.'),
         default=50000000)
 arg_parser.add_argument(
+        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
+        default=0.25)
+arg_parser.add_argument(
         '--store_every', type=int, help='Sample interval for BEAST analysis.',
         default=1000)
 arg_parser.add_argument(
@@ -493,9 +496,6 @@ arg_parser.add_argument(
 arg_parser.add_argument(
         '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
                                   'running in tolerance mode.'))
-arg_parser.add_argument(
-        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
-        default=0.25)
 arg_parser.add_argument(
         '--MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
                                         'analysis.'),
