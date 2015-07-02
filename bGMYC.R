@@ -30,10 +30,12 @@ specHeatmap <- function(result) {
     result.probmat <- spec.probmat(result)
 }
 
+args
 trees <- readNexus(args[[1]])
-result.multi <- bGMYC(trees, args[[3]], args[[4]], args[[5]], args[[6]],
-                      args[[7]], args[[8]])
-outputSVG(result.multi, paste0(args[[2]], '_MCMC'))
-specTableOutput(result.multi, ags[[2]])
-result.probmat <- specHeatmap(result.multi)
-outputSVG(result.multi, paste0(args[[2]], '_prob'))
+trees
+#result.multi <- bGMYC(trees, args[[3]], args[[4]], args[[5]], args[[6]],
+                      #args[[7]], args[[8]])
+#outputSVG(result.multi, paste0(args[[2]], '_MCMC'))
+#specTableOutput(result.multi, ags[[2]])
+#result.probmat <- specHeatmap(result.multi)
+#outputSVG(result.multi, paste0(args[[2]], '_prob'))
