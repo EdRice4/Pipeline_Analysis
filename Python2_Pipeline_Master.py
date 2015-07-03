@@ -589,5 +589,5 @@ for sequence in NexusFile:
     else:
         sequence.run_beast()
     sequence.clean_up()
-    #bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
+    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
     sequence.bGMYC(bGMYC_parameters)
