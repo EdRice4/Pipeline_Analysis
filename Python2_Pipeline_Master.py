@@ -55,6 +55,7 @@ class CommonMethods(object):
                 file_to_edit[tmpd[i]] = i
         return file_to_edit
 
+    # Only run once.
     def build_dict_bGMYC_params(self, dict_file):
         cwd = os.getcwd()
         fid = os.listdir(cwd)
@@ -65,7 +66,7 @@ class CommonMethods(object):
             d = map(lambda x: x.strip(), d)
             d = map(lambda x: x.split(','), d)
             for i in d:
-                dictionary[i[0]] = map(lambda x: int(x), i[1:6])
+                dictionary[i[0]] = i[1:]
             return dictionary
 
 
