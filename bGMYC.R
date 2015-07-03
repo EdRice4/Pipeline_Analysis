@@ -2,7 +2,8 @@ library(ape)
 library(bGMYC)
 
 args <- as.list(commandArgs(TRUE))
-args[3:8] <- as.integer(args[3:8])
+output <- args[1:2]
+params <- as.integer(tail(args, length(args) - 2))
 
 outputSVG <- function(result, output) {
     svg(paste0(output, '.svg'))
@@ -15,10 +16,9 @@ readNexus <- function(treesFile) {
     trees <- read.nexus(file=treesFile)
 }
 
-bGMYC <- function(trees, MCMC, burnin, thinning, t1, t2, threshold) {
-    result.multi <- bgmyc.multiphylo(trees, mcmc=MCMC, burnin=burnin,
-                                     thinning=thinning, t1=t1, t2=t2,
-                                     start=c(1,1,threshold))
+bGMYC <- function(trees, MCMC, burnin, thinning, ...) {
+    bgmyc.multiphylo(trees, mcmc=MCMC, burnin=burnin,
+                     thinning=thinning, ...)
 }
 
 specTableOutput <- function(result, output) {
@@ -30,12 +30,10 @@ specHeatmap <- function(result) {
     result.probmat <- spec.probmat(result)
 }
 
-args
-trees <- readNexus(args[[1]])
-trees
-#result.multi <- bGMYC(trees, args[[3]], args[[4]], args[[5]], args[[6]],
-                      #args[[7]], args[[8]])
-#outputSVG(result.multi, paste0(args[[2]], '_MCMC'))
-#specTableOutput(result.multi, ags[[2]])
-#result.probmat <- specHeatmap(result.multi)
-#outputSVG(result.multi, paste0(args[[2]], '_prob'))
+trees <- readNexus(output[[1]])
+result.multi <- bGMYC(trees, args[[3]], args[[4]], args[[5]], args[[6]],
+                      args[[7]], args[[8]], args[[9]], args[[10]])
+outputSVG(result.multi, paste0(output[[2]], '_MCMC'))
+specTableOutput(result.multi, output[[2]])
+result.probmat <- specHeatmap(result.multi)
+outputSVG(result.multi, paste0(output[[2]], '_prob'))
