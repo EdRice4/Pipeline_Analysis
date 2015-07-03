@@ -56,14 +56,17 @@ class CommonMethods(object):
         return file_to_edit
 
     def build_dict_bGMYC_params(self, dict_file):
-        dictionary = {}
-        with open(dict_file, 'r') as d:
-            d = d.readlines()
-        d = map(lambda x: x.strip(), d)
-        d = map(lambda x: x.split(','), d)
-        for i in d:
-            dictionary[i[0]] = map(lambda x: int(x), i[1:6])
-        return dictionary
+        cwd = os.getcwd()
+        fid = os.listdir(cwd)
+        if 'Dictionary.txt' in fid:
+            dictionary = {}
+            with open(dict_file, 'r') as d:
+                d = d.readlines()
+            d = map(lambda x: x.strip(), d)
+            d = map(lambda x: x.split(','), d)
+            for i in d:
+                dictionary[i[0]] = map(lambda x: int(x), i[1:6])
+            return dictionary
 
 
 class jModelTest(CommonMethods):
@@ -394,7 +397,7 @@ class bGMYC(BEAST):
         parameters = [
                 self.sequence_name, self.identifier, args.MCMC_bGMYC,
                 burnin_bGMYC, args.thinning
-                ] + parameter_dict[self.sequence_name]
+                ]  # + parameter_dict[self.sequence_name]
         parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
         cwd = os.getcwd()
@@ -404,7 +407,7 @@ class bGMYC(BEAST):
             os.chdir(i)
             cwd = os.getcwd()
             fid = os.listdir(cwd)
-            Rscript = 'Rscript --save ../../bGMYC.R %s' % ' '.join(parameters)
+            Rscript = 'Rscript --save ../../bGMYC.R --args %s' % ' '.join(parameters)
             bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(bGMYC_run.stdout.readline, ''):
@@ -586,5 +589,5 @@ for sequence in NexusFile:
     else:
         sequence.run_beast()
     sequence.clean_up()
-    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
+    #bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
     sequence.bGMYC(bGMYC_parameters)

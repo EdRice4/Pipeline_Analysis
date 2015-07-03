@@ -1,1 +1,1 @@
-Adetomyrma,1,92,1,1,45
+Adetomyrma,-t1=1,-t2=92
