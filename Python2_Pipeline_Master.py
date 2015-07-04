@@ -116,7 +116,7 @@ class jModelTest(CommonMethods):
         models = map(lambda x: filter(None, x), models)
         models = map(lambda x: x[1:], models)
         models = map(lambda x: '\t'.join(x), models)
-        models = map(lambda x: x.replace('N\A', 'NA'), models)
+        models = map(lambda x: x.replace('N\A', 'NA'), models)  # Not necessary?
 
     def r_jModelTest_params(self, names, models):
         dtypes = (
