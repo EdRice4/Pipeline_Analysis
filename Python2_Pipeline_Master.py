@@ -91,11 +91,11 @@ class jModelTest(CommonMethods):
 
     def r_jModelTest_file(self, jModelTest_file):
         delimiter = jModelTest_file.index('::Best Models::\n')
-        models = jModelTest_file[delimiter + 2:]
-        if models[-1].startswith('There'):
-            models.pop()
-        names = jModelTest_file[0]
-        models = jModelTest_file[2:]
+        jmtf = jModelTest_file[delimiter + 2:]
+        if jmtf[-1].startswith('There'):
+            jmtf.pop()
+        names = jmtf[0]
+        models = jmtf[2:]
         return names, models
         #start, end = self.get_range(
                 #jModelTest_file, ' Model selected: \n', ' \n'
@@ -107,24 +107,22 @@ class jModelTest(CommonMethods):
     def r_jModelTest_names(self, names):
         names = names.split('\t')
         names = filter(None, names)
-        names = map(lambda x: x.strip(' '), names)
-        names = '\t'.join(names)
+        names = map(lambda x: x.strip(), names)
+        return names
+        #names = '\t'.join(names)
 
     def r_jModelTest_models(self, models):
         models = map(lambda x: x.replace('\t', ' '), models)
         models = map(lambda x: x.split(' '), models)
         models = map(lambda x: filter(None, x), models)
         models = map(lambda x: x[1:], models)
-        models = map(lambda x: '\t'.join(x), models)
-        models = map(lambda x: x.replace('N\A', 'NA'), models)  # Not necessary?
+        models = map(lambda x: x.strip(), models)
+        return models
+        #models = map(lambda x: '\t'.join(x), models)
+        #models = map(lambda x: x.replace('N\A', 'NA'), models)  # Not necessary?
 
     def r_jModelTest_params(self, names, models):
-        dtypes = (
-                'S10,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,'
-                '<f8'
-                )
-        data = names + models
-        data = genfromtxt(StringIO(data), dtype=dtypes, names=True)
+        self.parameters = dict((i, list(j)) for i, j in zip(names, models))
 
 class Garli(jModelTest):
 
