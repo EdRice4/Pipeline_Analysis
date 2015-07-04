@@ -5,6 +5,7 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move, copy
+from StringIO import StringIO
 import argparse
 import os
 
@@ -13,27 +14,27 @@ class CommonMethods(object):
 
     """Returns the range of user specified start and end sequences."""
 
-    def get_range(self, range_file, start, end):
-        range_start = range_file.index(start)
-        range_file = range_file[range_start:]
-        range_end = range_file.index(end) + range_start
-        return range_start, range_end
+    #def get_range(self, range_file, start, end):
+        #range_start = range_file.index(start)
+        #range_file = range_file[range_start:]
+        #range_end = range_file.index(end) + range_start
+        #return range_start, range_end
 
-    def filter_output(self, output, start, end):
-        output = map(
-                lambda x: x.translate(None, ' \r\n)'),
-                output[start:end]
-                )
-        for num, i in enumerate(output):
-            if '(ti/tv' in i:
-                tmp = (output.pop(num)).split('(')
-                output.insert(num, tmp[0])
-                output.append(tmp[1])
-        output = map(
-                lambda x: x.translate(None, '('),
-                output
-                )
-        return output
+    #def filter_output(self, output, start, end):
+        #output = map(
+                #lambda x: x.translate(None, ' \r\n)'),
+                #output[start:end]
+                #)
+        #for num, i in enumerate(output):
+            #if '(ti/tv' in i:
+                #tmp = (output.pop(num)).split('(')
+                #output.insert(num, tmp[0])
+                #output.append(tmp[1])
+        #output = map(
+                #lambda x: x.translate(None, '('),
+                #output
+                #)
+        #return output
 
     def dict_check(self, string, dict):
         if string in dict:
@@ -88,14 +89,42 @@ class jModelTest(CommonMethods):
                     output.write(str(line))
             jMT_run.stdout.close()
 
-    def r_jModelTest_parameters(self, jModelTest_file):
-        start, end = self.get_range(
-                jModelTest_file, ' Model selected: \n', ' \n'
-                )
-        data = self.filter_output(jModelTest_file, start + 1, end)
-        for i in data:
-            self.parameters[i.rpartition('=')[0]] = i.rpartition('=')[-1]
+    def r_jModelTest_file(self, jModelTest_file):
+        delimiter = jModelTest_file.index('::Best Models::\n')
+        models = jModelTest_file[delimiter + 2:]
+        if models[-1].startswith('There'):
+            models.pop()
+        names = jModelTest_file[0]
+        models = jModelTest_file[2:]
+        return names, models
+        #start, end = self.get_range(
+                #jModelTest_file, ' Model selected: \n', ' \n'
+                #)
+        #data = self.filter_output(jModelTest_file, start + 1, end)
+        #for i in data:
+        #    self.parameters[i.rpartition('=')[0]] = i.rpartition('=')[-1]
 
+    def r_jModelTest_names(self, names):
+        names = names.split('\t')
+        names = filter(None, names)
+        names = map(lambda x: x.strip(' '), names)
+        names = '\t'.join(names)
+
+    def r_jModelTest_models(self, models):
+        models = map(lambda x: x.replace('\t', ' '), models)
+        models = map(lambda x: x.split(' '), models)
+        models = map(lambda x: filter(None, x), models)
+        models = map(lambda x: x[1:], models)
+        models = map(lambda x: '\t'.join(x), models)
+        models = map(lambda x: x.replace('N\A', 'NA'), models)
+
+    def r_jModelTest_params(self, names, models):
+        dtypes = (
+                'S10,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,'
+                '<f8'
+                )
+        data = names + models
+        data = genfromtxt(StringIO(data), dtype=dtypes, names=True)
 
 class Garli(jModelTest):
 
