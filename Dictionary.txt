@@ -1,1 +1,1 @@
--taxon=Adetomyrma,-t1=1,-t2=92
+Adetomyrma,-taxon=Adetomyrma,-t1=1,-t2=92

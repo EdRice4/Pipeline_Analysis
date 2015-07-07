@@ -59,7 +59,7 @@ class CommonMethods(object):
     def build_dict_bGMYC_params(self, dict_file):
         cwd = os.getcwd()
         fid = os.listdir(cwd)
-        if 'Dictionary.txt' in fid:
+        if dict_file in fid:
             dictionary = {}
             with open(dict_file, 'r') as d:
                 d = d.readlines()
@@ -395,11 +395,7 @@ class bGMYC(BEAST):
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
-        parameters = [
-                self.sequence_name, self.identifier, args.MCMC_bGMYC,
-                burnin_bGMYC, args.thinning
-                ]  # + parameter_dict[self.sequence_name]
-        parameters = map(lambda x: str(x), parameters)
+        parameters = parameter_dict[self.sequence_name]
         os.chdir(self.master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
@@ -408,7 +404,14 @@ class bGMYC(BEAST):
             os.chdir(i)
             cwd = os.getcwd()
             fid = os.listdir(cwd)
-            Rscript = 'Rscript --save ../../bGMYC.R --args %s' % ' '.join(parameters)
+            Rscript = (
+                    'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
+                    '-mcmc={2} -burning={3} -thinning={4} {5}'
+                    ).format(
+                            self.sequence_name, self.identifier,
+                            args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
+                            ' '.join(parameters)
+                            )
             bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(bGMYC_run.stdout.readline, ''):
