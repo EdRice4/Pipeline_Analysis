@@ -1,10 +1,11 @@
 library(ape)
 library(bGMYC)
-library(R.utils)
+suppressMessages(library(R.utils))
 
 args <- commandArgs(
                 trailingOnly=TRUE, asValues=TRUE,
                 defaults=c(
+                        taxon=NULL,
                         py1=0, py2=2, pc1=0, pc2=2, t1=2, t2=51,
                         scale=c(20, 10, 5), start=c(1, 0.5, 50)
                         ),
@@ -38,14 +39,14 @@ specHeatmap <- function(result) {
     result.probmat <- spec.probmat(result)
 }
 
-trees <- readNexus(args[[2]])
+trees <- readNexus(args$taxon)
 result.multi <- bGMYC(
-        trees, args[[MCMC]], args[[burnin]], args[[thinning]], args[[py1]],
-        args[[py2]], args[[pc1]], args[[pc2]], args[[t1]], args[[t2]],
-        c(args[[scale1]], args[[scale2]], args[[scale3]]),
-        c(args[[start1]], args[[start2]], args[[start3]])
+        trees, args$MCMC, args$burnin, args$thinning, args$py1,
+        args$py2, args$pc1, args$pc2, args$t1, args$t2,
+        c(args$scale1, args$scale2, args$scale3),
+        c(args$start1, args$start2, args$start3)
         )
-outputSVG(result.multi, paste0(args[[3]], '_MCMC'))
-specTableOutput(result.multi, args[[3]])
+outputSVG(result.multi, paste0(args$taxon, '_MCMC'))
+specTableOutput(result.multi, args$taxon)
 result.probmat <- specHeatmap(result.multi)
-outputSVG(result.multi, paste0(args[[3]], '_prob'))
+outputSVG(result.multi, paste0(args$taxon, '_prob'))
