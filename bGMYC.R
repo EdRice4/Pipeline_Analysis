@@ -11,44 +11,48 @@ args <- commandArgs(
                         ),
                 adhoc=TRUE)
 
-print(args)
+outputSVG <- function(result, output) {
+    svg(paste0(output, '.svg'))
+    plot(result)
+    dev.off()
+}
 
-#outputSVG <- function(result, output) {
-    #svg(paste0(output, '.svg'))
-    #plot(result)
-    #dev.off()
-#}
+readNexus <- function(treesFile) {
+    treesFile <- paste0(treesFile, '.trees')
+    trees <- read.nexus(file=treesFile)
+}
 
-#readNexus <- function(treesFile) {
-    #treesFile <- paste0(treesFile, '.trees')
-    #trees <- read.nexus(file=treesFile)
-#}
+bGMYC <- function(
+        trees, MCMC, burnin, thinning, py1, py2, pc1, pc2, t1, t2, scale,
+        start) {
+    result.multi <- bgmyc.multiphylo(
+            trees, mcmc=MCMC, burnin=burnin, thinning=thinning, py1=py1,
+            py2=py2, pc1=pc1, pc2=pc2, t1=t1, t2=t2, scale=scale, start=start)
+}
 
-#bGMYC <- function(
-        #trees, MCMC, burnin, thinning, py1, py2, pc1, pc2, t1, t2, scale,
-        #start) {
-    #result.multi <- bgmyc.multiphylo(
-            #trees, mcmc=MCMC, burnin=burnin, thinning=thinning, py1=py1,
-            #py2=py2, pc1=pc1, pc2=pc2, t1=t1, t2=t2, scale=scale, start=start)
-#}
+specTableOutput <- function(result, output) {
+    output <- paste0(output, '.txt')
+    bgmyc.spec(result, output)
+}
 
-#specTableOutput <- function(result, output) {
-    #output <- paste0(output, '.txt')
-    #bgmyc.spec(result, output)
-#}
+specHeatmap <- function(result) {
+    result.probmat <- spec.probmat(result)
+}
 
-#specHeatmap <- function(result) {
-    #result.probmat <- spec.probmat(result)
-#}
-
-#trees <- readNexus(args$taxon)
+trees <- readNexus(args$taxon)
+result.multi <- bgmyc.multiphylo(
+        trees, mcmc=args$mcmc, burnin=args$burnin, thinning=args$thinning,
+        py1=args$py1, py2=args$py2, pc1=args$pc1, pc2=args$pc2, t1=args$t1,
+        t2=args$t2, start=c(args$scale1, args$scale2, args$scale3),
+        scale=c(args$start1, args$start2, args$start3)
+        )
 #result.multi <- bGMYC(
         #trees, args$MCMC, args$burnin, args$thinning, args$py1,
         #args$py2, args$pc1, args$pc2, args$t1, args$t2,
         #c(args$scale1, args$scale2, args$scale3),
         #c(args$start1, args$start2, args$start3)
-        #)
-#outputSVG(result.multi, paste0(args$taxon, '_MCMC'))
-#specTableOutput(result.multi, args$taxon)
-#result.probmat <- specHeatmap(result.multi)
-#outputSVG(result.multi, paste0(args$taxon, '_prob'))
+#        )
+outputSVG(result.multi, paste0(args$taxon, '_MCMC'))
+specTableOutput(result.multi, args$taxon)
+result.probmat <- specHeatmap(result.multi)
+outputSVG(result.multi, paste0(args$taxon, '_prob'))

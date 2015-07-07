@@ -406,7 +406,7 @@ class bGMYC(BEAST):
             fid = os.listdir(cwd)
             Rscript = (
                     'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
-                    '-mcmc={2} -burning={3} -thinning={4} {5}'
+                    '-mcmc={2} -burnin={3} -thinning={4} {5}'
                     ).format(
                             self.sequence_name, self.identifier,
                             args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
