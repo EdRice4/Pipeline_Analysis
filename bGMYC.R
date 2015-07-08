@@ -41,8 +41,8 @@ specHeatmap <- function(result) {
 
 trees <- readNexus(args$taxon)
 result.multi <- bgmyc.multiphylo(
-        trees, mcmc=args$mcmc, burnin=args$burnin, thinning=args$thinning
-        )
+        trees, mcmc=args$mcmc, burnin=args$burnin, thinning=args$thinning,
+        py1=args$py1)
         #py1=args$py1, py2=args$py2, pc1=args$pc1, pc2=args$pc2, t1=args$t1,
         #t2=args$t2, start=c(args$scale1, args$scale2, args$scale3),
         #scale=c(args$start1, args$start2, args$start3)
