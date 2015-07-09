@@ -97,32 +97,26 @@ class jModelTest(CommonMethods):
         names = jmtf[0]
         models = jmtf[2:]
         return names, models
-        #start, end = self.get_range(
-                #jModelTest_file, ' Model selected: \n', ' \n'
-                #)
-        #data = self.filter_output(jModelTest_file, start + 1, end)
-        #for i in data:
-        #    self.parameters[i.rpartition('=')[0]] = i.rpartition('=')[-1]
 
     def r_jModelTest_names(self, names):
         names = names.split('\t')
         names = filter(None, names)
         names = map(lambda x: x.strip(), names)
         return names
-        #names = '\t'.join(names)
 
     def r_jModelTest_models(self, models):
+        models_stripped = []
         models = map(lambda x: x.replace('\t', ' '), models)
         models = map(lambda x: x.split(' '), models)
         models = map(lambda x: filter(None, x), models)
         models = map(lambda x: x[1:], models)
-        models = map(lambda x: x.strip(), models)
-        return models
-        #models = map(lambda x: '\t'.join(x), models)
-        #models = map(lambda x: x.replace('N\A', 'NA'), models)  # Not necessary?
+        for i in models:
+            models_stripped.append(map(lambda x: x.strip(), i))
+        return models_stripped
 
     def r_jModelTest_params(self, names, models):
         self.parameters = dict((i, list(j)) for i, j in zip(names, models))
+
 
 class Garli(jModelTest):
 
