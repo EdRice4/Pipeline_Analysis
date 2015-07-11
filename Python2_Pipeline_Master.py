@@ -14,28 +14,6 @@ class CommonMethods(object):
 
     """Returns the range of user specified start and end sequences."""
 
-    #def get_range(self, range_file, start, end):
-        #range_start = range_file.index(start)
-        #range_file = range_file[range_start:]
-        #range_end = range_file.index(end) + range_start
-        #return range_start, range_end
-
-    #def filter_output(self, output, start, end):
-        #output = map(
-                #lambda x: x.translate(None, ' \r\n)'),
-                #output[start:end]
-                #)
-        #for num, i in enumerate(output):
-            #if '(ti/tv' in i:
-                #tmp = (output.pop(num)).split('(')
-                #output.insert(num, tmp[0])
-                #output.append(tmp[1])
-        #output = map(
-                #lambda x: x.translate(None, '('),
-                #output
-                #)
-        #return output
-
     def dict_check(self, string, dict):
         if string in dict:
             return dict[string]
@@ -95,8 +73,8 @@ class jModelTest(CommonMethods):
         if jmtf[-1].startswith('There'):
             jmtf.pop()
         names = jmtf[0]
-        models = jmtf[2:]
-        return names, models
+        model = jmtf[2]
+        return names, model
 
     def r_jModelTest_names(self, names):
         names = names.split('\t')
@@ -104,18 +82,16 @@ class jModelTest(CommonMethods):
         names = map(lambda x: x.strip(), names)
         return names
 
-    def r_jModelTest_models(self, models):
-        models_stripped = []
-        models = map(lambda x: x.replace('\t', ' '), models)
-        models = map(lambda x: x.split(' '), models)
-        models = map(lambda x: filter(None, x), models)
-        models = map(lambda x: x[1:], models)
-        for i in models:
-            models_stripped.append(map(lambda x: x.strip(), i))
-        return models_stripped
+    def r_jModelTest_models(self, model):
+        model = model.replace('\t', ' ')
+        model = model.split(' ')
+        model = filter(None, model)
+        model = model[1:]
+        model = map(lambda x: x.strip(), model)
+        return model
 
-    def r_jModelTest_params(self, names, models):
-        self.parameters = dict((i, list(j)) for i, j in zip(names, models))
+    def r_jModelTest_params(self, names, model):
+        self.parameters = dict((i, j) for i, j in zip(names, model))
 
 
 class Garli(jModelTest):
