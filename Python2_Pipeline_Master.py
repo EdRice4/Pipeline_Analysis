@@ -396,7 +396,10 @@ class bGMYC(BEAST):
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
-        parameters = parameter_dict[self.sequence_name]
+        if parameter_dict.get(self.sequence_name):
+            parameters = parameter_dict[self.sequence_name]
+        else:
+            parameters = []
         os.chdir(self.master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
