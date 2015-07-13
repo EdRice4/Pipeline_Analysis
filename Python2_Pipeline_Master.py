@@ -469,13 +469,21 @@ class NexusFile(CleanUp):
 arg_parser = argparse.ArgumentParser(
         prog='Pipeline',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description='A pipeline between jModelTest, Garli, BEAST and bGMYC.',
-        epilog=('Note: Additional parameters for bGMYC analysis (t1, t2, py, '
+        description=(
+                'A modular python script providing the backbone for '
+                'customizable, ad hoc pipeline analyses. For instance, '
+                'originally developed to function between jModelTest, Garli, '
+                'BEAST and bGMYC. Also provides batch functionality for '
+                'relatively large datasets.'
+                ),
+        epilog=(
+                'Note: Additional parameters for bGMYC analysis (t1, t2, py, '
                 'pc, th) should be provided in a comma delimited '
                 'Dictionary.txt file along with taxon name, where the taxon '
                 'name is the name of the corresponding nexus file sans .nex. '
                 'For instance, if the nexus file is Taxon.nex, the .txt entry '
-                'would be: Taxon,2,40,1,1,21\\n'))
+                'would be: Taxon,2,40,1,1,21\\n')
+        )
 arg_parser.add_argument(
         'jMT', type=str, help='Path to jModelTest.jar.')
 arg_parser.add_argument(
