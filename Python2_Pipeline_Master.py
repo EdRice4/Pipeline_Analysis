@@ -14,12 +14,6 @@ class CommonMethods(object):
 
     """Returns the range of user specified start and end sequences."""
 
-#    def dict_check(self, string, dict):
-        #if string in dict:
-            #return dict[string]
-        #else:
-#            return 'None.'
-
     def get_range(self, range_file, start, end):
         range_start = range_file.index(start)
         range_file = range_file[range_start:]
@@ -200,8 +194,6 @@ class BEAST(ToleranceCheck):
         for i in xml_nodes:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
                 i.text = self.parameters['titv']
-            #if i == rateAG or i == rateCT:
-            #    i.text = self.parameters['titv']
             else:
                 i.text = '1.0'
 
@@ -314,8 +306,6 @@ class BEAST(ToleranceCheck):
                 xml_nodes.append(element)
         if BEAST.sub_models.get(model_selected):
             BEAST.sub_models[model_selected](self, xml_nodes)
-        #if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
-        #    BEAST.sub_models[str(model_selected)](xml_nodes)
         else:
             rateAC.text = '%s' % self.parameters['Ra']
             rateAG.text = '%s' % self.parameters['Rb']
@@ -595,11 +585,11 @@ for sequence in NexusFile:
     sequence.w_beast_rates()
     sequence.w_beast_taxon()
     sequence.beast_finalize()
-    #if args.tolerance:
-        #sequence.resume_beast()
-        #sequence.log_combine()
-    #else:
-        #sequence.run_beast()
-    #sequence.clean_up()
-    #bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
-    #sequence.bGMYC(bGMYC_parameters)
+    if args.tolerance:
+        sequence.resume_beast()
+        sequence.log_combine()
+    else:
+        sequence.run_beast()
+    sequence.clean_up()
+    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
+    sequence.bGMYC(bGMYC_parameters)
