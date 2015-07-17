@@ -356,6 +356,26 @@ class BEAST(ToleranceCheck):
             print(line.strip())
         beast_run.stdout.close()
 
+<<<<<<< HEAD
+    def resume_beast(self, BEAST_log_file):
+        delimiter = ('Sample\tposterior\tlikelihood\tprior'
+                     '\ttreeLikelihood\tTreeHeight\tYuleModel'
+                     '\tbirthRate\tmutationRate\tfreqParameter.1'
+                     '\tfreqParameter.2\tfreqParameter.3\t'
+                     'freqParameter.4\tfreqParameter.1\t'
+                     'freqParameter.2\tfreqParameter.3\t'
+                     'freqParameter.4\t\n')
+        rows = data_file.index(delimiter) + 1
+        cols = range(1, 16)
+        eff_sample_size = self.calculate_statistics(BEAST_log_file, rows, cols)
+        eff_sample_size = filter(lambda x: x < args.tolerance, eff_sample_size)
+        run_number = 1
+        if eff_sample_size:
+            os.rename('%s.trees' % self.sequence_name, '%s_%s.trees.bu' % (self.sequence_name, run_number))
+            BEAST = 'java -jar ../%s -resume -seed %s ../%s' % (args.BEAST,
+                                                                str(randrange(0, 999999)),
+                                                                self.BEAST_XML)
+=======
     def resume_beast(self):
         ess = 1
         run_count = 1
@@ -365,6 +385,7 @@ class BEAST(ToleranceCheck):
             BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
                                                    randrange(0, 999999999),
                                                    self.BEAST_XML)
+>>>>>>> cluster
             beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(beast_run.stdout.readline, ''):

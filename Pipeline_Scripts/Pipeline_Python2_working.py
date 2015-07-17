@@ -5,7 +5,6 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move, copy
-from StringIO import StringIO
 import argparse
 import os
 
@@ -19,6 +18,28 @@ class CommonMethods(object):
         range_file = range_file[range_start:]
         range_end = range_file.index(end) + range_start
         return range_start, range_end
+
+    def filter_output(self, output, start, end):
+        output = map(
+                lambda x: x.translate(None, ' \r\n)'),
+                output[start:end]
+                )
+        for num, i in enumerate(output):
+            if '(ti/tv' in i:
+                tmp = (output.pop(num)).split('(')
+                output.insert(num, tmp[0])
+                output.append(tmp[1])
+        output = map(
+                lambda x: x.translate(None, '('),
+                output
+                )
+        return output
+
+    def dict_check(self, string, dict):
+        if string in dict:
+            return dict[string]
+        else:
+            return 'None.'
 
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
         lines = []
@@ -34,19 +55,15 @@ class CommonMethods(object):
                 file_to_edit[tmpd[i]] = i
         return file_to_edit
 
-    # Only run once.
     def build_dict_bGMYC_params(self, dict_file):
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
-        if dict_file in fid:
-            dictionary = {}
-            with open(dict_file, 'r') as d:
-                d = d.readlines()
-            d = map(lambda x: x.strip(), d)
-            d = map(lambda x: x.split(','), d)
-            for i in d:
-                dictionary[i[0]] = i[1:]
-            return dictionary
+        dictionary = {}
+        with open(dict_file, 'r') as d:
+            d = d.readlines()
+        d = map(lambda x: x.strip(), d)
+        d = map(lambda x: x.split(','), d)
+        for i in d:
+            dictionary[i[0]] = map(lambda x: int(x), i[1:6])
+        return dictionary
 
 
 class jModelTest(CommonMethods):
@@ -67,34 +84,13 @@ class jModelTest(CommonMethods):
                     output.write(str(line))
             jMT_run.stdout.close()
 
-    def r_jModelTest_file(self, jModelTest_file):
-        delimiter = jModelTest_file.index('::Best Models::\n')
-        jmtf = jModelTest_file[delimiter + 2:]
-        if jmtf[-1].startswith('There'):
-            jmtf.pop()
-        names = jmtf[0]
-        model = jmtf[2]
-        return names, model
-
-    def r_jModelTest_names(self, names):
-        names = names.split('\t')
-        names = filter(None, names)
-        names = map(lambda x: x.strip(), names)
-        return names
-
-    def r_jModelTest_model(self, model):
-        model = model.replace('\t', ' ')
-        model = model.split(' ')
-        model = filter(None, model)
-        model = model[1:]
-        model = map(lambda x: x.strip(), model)
-        return model
-
     def r_jModelTest_parameters(self, jModelTest_file):
-        names, model = self.r_jModelTest_file(jModelTest_file)
-        names = self.r_jModelTest_names(names)
-        model = self.r_jModelTest_model(model)
-        self.parameters = dict((i, j) for i, j in zip(names, model))
+        start, end = self.get_range(
+                jModelTest_file, ' Model selected: \n', ' \n'
+                )
+        data = self.filter_output(jModelTest_file, start + 1, end)
+        for i in data:
+            self.parameters[i.rpartition('=')[0]] = i.rpartition('=')[-1]
 
 
 class Garli(jModelTest):
@@ -186,14 +182,14 @@ class BEAST(ToleranceCheck):
 
     """Run BEAST and store parameters associated with output."""
 
-    def JC_F81(self, xml_nodes):
+    def JC_F81(self, *xml_nodes):
         for i in xml_nodes:
             i.text = '1.0'
 
-    def K80_HKY(self, xml_nodes):
+    def K80_HKY(self, *xml_nodes):
         for i in xml_nodes:
-            if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
-                i.text = self.parameters['titv']
+            if i == rateAG or i == rateCT:
+                i.text = self.parameters['ti/tv']
             else:
                 i.text = '1.0'
 
@@ -284,7 +280,7 @@ class BEAST(ToleranceCheck):
 
     def w_beast_rates(self):
         xml_nodes = []
-        model_selected = self.parameters['Model'].translate(None, '+IG')
+        model_selected = (self.parameters['Model']).translate(None, '+IG')
         for element in substmodel.iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
@@ -304,20 +300,19 @@ class BEAST(ToleranceCheck):
             if 'rateGT.s:' in element.get('id'):
                 rateGT = element
                 xml_nodes.append(element)
-        if BEAST.sub_models.get(model_selected):
-            BEAST.sub_models[model_selected](self, xml_nodes)
+        if self.dict_check(str(model_selected), BEAST.sub_models) != 'None.':
+            BEAST.sub_models[str(model_selected)](xml_nodes)
         else:
-            rateAC.text = '%s' % self.parameters['Ra']
-            rateAG.text = '%s' % self.parameters['Rb']
-            rateAT.text = '%s' % self.parameters['Rc']
-            rateCG.text = '%s' % self.parameters['Rd']
-            rateCT.text = '%s' % self.parameters['Re']
-            rateGT.text = '%s' % self.parameters['Rf']
+            rateAC.text = '%s' % self.parameters['Ra[AC]']
+            rateAG.text = '%s' % self.parameters['Rb[AG]']
+            rateAT.text = '%s' % self.parameters['Rc[AT]']
+            rateCG.text = '%s' % self.parameters['Rd[CG]']
+            rateCT.text = '%s' % self.parameters['Re[CT]']
+            rateGT.text = '%s' % self.parameters['Rf[GT]']
 
     def w_beast_taxon(self):
-        sequence_start, sequence_end = self.get_range(
-                self.nexus_file, 'matrix\n', ';\n'
-                )
+        sequence_start, sequence_end = self.get_range(self.nexus_file,
+                                                      'matrix\n', ';\n')
         sequence_start += 1
         sequence_end -= 1
         for line in self.nexus_file:
@@ -345,9 +340,8 @@ class BEAST(ToleranceCheck):
             beast_xml_file.write(beast_xml)
 
     def run_beast(self):
-        run = self.identifier + '_RUN_1'
-        os.mkdir(run)
-        BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
+        os.mkdir(self.identifier)
+        BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, self.identifier,
                                                str(randrange(0, 999999)),
                                                self.BEAST_XML)
         beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
@@ -396,26 +390,17 @@ class bGMYC(BEAST):
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
-        if parameter_dict.get(self.sequence_name):
-            parameters = parameter_dict[self.sequence_name]
-        else:
-            parameters = []
+        parameters = [
+                self.sequence_name, self.identifier, args.MCMC_bGMYC,
+                burnin_bGMYC, args.thinning
+                ] + parameter_dict[self.sequence_name]
+        parameters = map(lambda x: str(x), parameters)
         os.chdir(self.master_dir)
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
+        fid = os.listdir(self.master_dir)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         for i in bdirs:
             os.chdir(i)
-            cwd = os.getcwd()
-            fid = os.listdir(cwd)
-            Rscript = (
-                    'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
-                    '-mcmc={2} -burnin={3} -thinning={4} {5}'
-                    ).format(
-                            self.sequence_name, self.identifier,
-                            args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
-                            ' '.join(parameters)
-                            )
+            Rscript = 'Rscript --save ../../bGMYC.R %s' % ' '.join(parameters)
             bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(bGMYC_run.stdout.readline, ''):
@@ -469,21 +454,13 @@ class NexusFile(CleanUp):
 arg_parser = argparse.ArgumentParser(
         prog='Pipeline',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description=(
-                'A modular python script providing the backbone for '
-                'customizable, ad hoc pipeline analyses. For instance, '
-                'originally developed to function between jModelTest, Garli, '
-                'BEAST and bGMYC. Also provides batch functionality for '
-                'relatively large datasets.'
-                ),
-        epilog=(
-                'Note: Additional parameters for bGMYC analysis (t1, t2, py, '
+        description='A pipeline between jModelTest, Garli, BEAST and bGMYC.',
+        epilog=('Note: Additional parameters for bGMYC analysis (t1, t2, py, '
                 'pc, th) should be provided in a comma delimited '
                 'Dictionary.txt file along with taxon name, where the taxon '
                 'name is the name of the corresponding nexus file sans .nex. '
                 'For instance, if the nexus file is Taxon.nex, the .txt entry '
-                'would be: Taxon,2,40,1,1,21\\n')
-        )
+                'would be: Taxon,2,40,1,1,21\\n'))
 arg_parser.add_argument(
         'jMT', type=str, help='Path to jModelTest.jar.')
 arg_parser.add_argument(
@@ -506,9 +483,6 @@ arg_parser.add_argument(
                                         'analysis.'),
         default=50000000)
 arg_parser.add_argument(
-        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
-        default=0.25)
-arg_parser.add_argument(
         '--store_every', type=int, help='Sample interval for BEAST analysis.',
         default=1000)
 arg_parser.add_argument(
@@ -518,6 +492,9 @@ arg_parser.add_argument(
 arg_parser.add_argument(
         '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
                                   'running in tolerance mode.'))
+arg_parser.add_argument(
+        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
+        default=0.25)
 arg_parser.add_argument(
         '--MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
                                         'analysis.'),
