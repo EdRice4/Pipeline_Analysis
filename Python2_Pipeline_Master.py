@@ -5,7 +5,6 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move, copy
-from StringIO import StringIO
 import argparse
 import os
 
@@ -52,6 +51,17 @@ class CommonMethods(object):
 class jModelTest(CommonMethods):
 
     """Run jModelTest and store parameters associated with output."""
+
+    @staticmethod
+    def add_args():
+        args_jMT = arg_parser.add_argument_group(
+                'jMT', 'Arguments for running jModelTest module.'
+                )
+        args_jMT.add_argument(
+                'jMT', type=str, help='Path to jModelTest.jar.'
+                )
+
+    #def __init__(self):
 
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
@@ -485,8 +495,6 @@ arg_parser = argparse.ArgumentParser(
                 'would be: Taxon,2,40,1,1,21\\n')
         )
 arg_parser.add_argument(
-        'jMT', type=str, help='Path to jModelTest.jar.')
-arg_parser.add_argument(
         'BEAST', type=str, help='Path to beast.jar.')
 arg_parser.add_argument(
         '-b', '--batch', help=(
@@ -528,6 +536,9 @@ arg_parser.add_argument(
 arg_parser.add_argument(
         '--thinning', type=int, help='Sample interval for bGMYC analysis.',
         default=10000)
+if __name__ == '__main__':
+   jModelTest.add_args()
+   #arg_parser.add_argument('foo')
 args = arg_parser.parse_args()
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
