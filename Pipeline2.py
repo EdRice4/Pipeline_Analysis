@@ -5,7 +5,6 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move, copy
-from StringIO import StringIO
 import argparse
 import os
 
