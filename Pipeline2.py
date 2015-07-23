@@ -247,7 +247,7 @@ class BEAST(ToleranceCheck):
                             'name': 'shape'
                             }
                     )
-            gamma_shape.text = self.parameters['gammashape']
+            gamma_shape.text = self.parameters['gamma']
         else:
             gamma_shape = ET.SubElement(
                     sitemodel, 'parameter',
