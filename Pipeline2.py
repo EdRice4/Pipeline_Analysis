@@ -268,7 +268,7 @@ class BEAST(ToleranceCheck):
                             'upper': '1.0'
                             }
                     )
-            p_inv.text = self.parameters['p-inv']
+            p_inv.text = self.parameters['pInv']
         else:
             p_inv = ET.SubElement(
                     sitemodel, 'parameter',
