@@ -138,6 +138,22 @@ class Garli(jModelTest):
             'GTR': ['6rate', 'estimate']
             }
 
+    @staticmethod
+    def add_args():
+        args_garli = arg_parser.add_argument_group(
+                'garli', 'Arguments for running garli module.'
+                )
+        args_garli.add_argument(
+                '-g', '--garli', help='Run garli analysis.',
+                action='store_true')
+        args_garli.add_argument(
+                '--bstr', type=int, help=(
+                        '# of bootstrap replications for garli analysis, if '
+                        'applicable.'
+                        ),
+                default=0
+                )
+
     def w_garli_conf(self, garli_file):
         model_selected = self.parameters['Model']
         het = '+G' in model_selected
@@ -503,13 +519,6 @@ arg_parser.add_argument(
                 ),
         action='store_true')
 arg_parser.add_argument(
-        '-g', '--garli', help='Run garli analysis prior to BEAST.',
-        action='store_true')
-arg_parser.add_argument(
-        '-bsr', '--bootstrap', type=int, help=('# of bootstrap replications'
-                                               ' for garli analysis.'),
-        default=0)
-arg_parser.add_argument(
         '--MCMC_BEAST', type=int, help=('Length of MCMC chain for BEAST '
                                         'analysis.'),
         default=50000000)
@@ -537,8 +546,8 @@ arg_parser.add_argument(
         '--thinning', type=int, help='Sample interval for bGMYC analysis.',
         default=10000)
 if __name__ == '__main__':
-   jModelTest.add_args()
-   #arg_parser.add_argument('foo')
+    jModelTest.add_args()
+    Garli.add_args()
 args = arg_parser.parse_args()
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
