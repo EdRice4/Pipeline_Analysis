@@ -1,3 +1,4 @@
+# {{{ Imports
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -7,8 +8,10 @@ from re import sub
 from shutil import move, copy
 import argparse
 import os
+# }}}
 
 
+# {{{ CommonMethods
 class CommonMethods(object):
 
     """Returns the range of user specified start and end sequences."""
@@ -32,22 +35,10 @@ class CommonMethods(object):
             for i in tmpd:
                 file_to_edit[tmpd[i]] = i
         return file_to_edit
-
-    # Only run once.
-    def build_dict_bGMYC_params(self, dict_file):
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
-        if dict_file in fid:
-            dictionary = {}
-            with open(dict_file, 'r') as d:
-                d = d.readlines()
-            d = map(lambda x: x.strip(), d)
-            d = map(lambda x: x.split(','), d)
-            for i in d:
-                dictionary[i[0]] = i[1:]
-            return dictionary
+# }}}
 
 
+# {{{ jModelTest
 class jModelTest(CommonMethods):
 
     """Run jModelTest and store parameters associated with output."""
@@ -105,8 +96,10 @@ class jModelTest(CommonMethods):
         names = self.r_jModelTest_names(names)
         model = self.r_jModelTest_model(model)
         self.parameters = dict((i, j) for i, j in zip(names, model))
+# }}}
 
 
+# {{{ Garli
 class Garli(jModelTest):
 
     """Run garli and store parameters associated with output."""
@@ -191,24 +184,10 @@ class Garli(jModelTest):
         for line in iter(garli_run.stdout.readline, ''):
             print(line.strip())
         garli_run.stdout.close()
+# }}}
 
 
-class ToleranceCheck(Garli):
-
-    """A class that can calculate statistics of data in a file separated into
-       columns."""
-
-    def calculate_statistics(self, data_file):
-        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
-        data = zip(*data)[1:]
-        stats = map(lambda x: acor(x), data)
-        auto_cor_times = zip(*stats)[0]
-        chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
-        eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
-        return eff_sample_size
-
-
-class BEAST(ToleranceCheck):
+class BEAST(Garli):
 
     """Run BEAST and store parameters associated with output."""
 
@@ -225,6 +204,15 @@ class BEAST(ToleranceCheck):
 
     sub_models = {'JC': JC_F81, 'F81': JC_F81,
                   'K80': K80_HKY, 'HKY': K80_HKY}
+
+    def calculate_statistics(self, data_file):
+        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
+        data = zip(*data)[1:]
+        stats = map(lambda x: acor(x), data)
+        auto_cor_times = zip(*stats)[0]
+        chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
+        eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
+        return eff_sample_size
 
     def w_beast_submodel(self):
         model_selected = self.parameters['Model']
@@ -419,6 +407,20 @@ class BEAST(ToleranceCheck):
 class bGMYC(BEAST):
 
     """A class used to run bGMYC in R with pypeR module."""
+
+    # Only run once.
+    def build_dict_bGMYC_params(self, dict_file):
+        cwd = os.getcwd()
+        fid = os.listdir(cwd)
+        if dict_file in fid:
+            dictionary = {}
+            with open(dict_file, 'r') as d:
+                d = d.readlines()
+            d = map(lambda x: x.strip(), d)
+            d = map(lambda x: x.split(','), d)
+            for i in d:
+                dictionary[i[0]] = i[1:]
+            return dictionary
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
