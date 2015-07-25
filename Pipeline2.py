@@ -187,6 +187,7 @@ class Garli(jModelTest):
 # }}}
 
 
+# {{{ BEAST
 class BEAST(Garli):
 
     """Run BEAST and store parameters associated with output."""
@@ -402,8 +403,10 @@ class BEAST(Garli):
             for line in iter(lcom.stdout.readline, ''):
                 print(line.strip())
             lcom.stdout.close()
+# }}}
 
 
+# {{{ bGMYC
 class bGMYC(BEAST):
 
     """A class used to run bGMYC in R with pypeR module."""
@@ -450,8 +453,10 @@ class bGMYC(BEAST):
                 print(line.strip())
             bGMYC_run.stdout.close()
             os.chdir('../')
+# }}}
 
 
+# {{{ CleanUp
 class CleanUp(bGMYC):
 
     """A class used to consolidate all output in run."""
@@ -464,16 +469,20 @@ class CleanUp(bGMYC):
         for i in output_files:
             move(i, self.master_dir)
         copy(self.path, self.master_dir)
+# }}}
 
 
+# {{{ IterRegistry
 class IterRegistry(type):
 
     """A metaclass to allow for iteration over instances of NexusFile class."""
 
     def __iter__(cls):
         return iter(cls.registry)
+# }}}
 
 
+# {{{ NexusFile
 class NexusFile(CleanUp):
 
     """A class in which we will store the parameters associated with the
@@ -493,7 +502,9 @@ class NexusFile(CleanUp):
         self.BEAST_ID = 'BEAST_%s.out' % self.identifier
         self.master_dir = self.identifier + '_MASTER'
         self.registry.append(self)
+# }}}
 
+# {{{ ArgParser
 arg_parser = argparse.ArgumentParser(
         prog='Pipeline',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -551,6 +562,7 @@ if __name__ == '__main__':
     jModelTest.add_args()
     Garli.add_args()
 args = arg_parser.parse_args()
+# }}}
 
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard.xml', XML_parser)
