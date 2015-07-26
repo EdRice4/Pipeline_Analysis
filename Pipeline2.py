@@ -14,7 +14,15 @@ import os
 # {{{ CommonMethods
 class CommonMethods(object):
 
-    """Returns the range of user specified start and end sequences."""
+    """ {{{ Docstrings
+    Methods utilized by multiple functions.
+
+    1.) get_range returns the index of a user-specified start and end sequence,
+        given these and a user-specified list (for instance, a file read in
+        with the 'readlines()' function.
+
+    2.) file_edit returns a modified file, given the original file,
+    }}} """
 
     def get_range(self, range_file, start, end):
         range_start = range_file.index(start)
@@ -23,18 +31,12 @@ class CommonMethods(object):
         return range_start, range_end
 
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
-        lines = []
-        for num, i in enumerate(file_to_edit):
-            if i.strip() in lines_to_edit:
-                    lines.append(num)
-            tmpl = map(
-                    lambda x, y: x + ' ' + y + '\n',
-                    lines_to_edit, values_to_insert
+        new_file = file_to_edit
+        for i, j in zip(lines_to_edit, values_to_insert):
+            new_file[new_file.index(i)] = '{0}'.format(
+                    new_file[new_file.index(i)] + j + '\n'
                     )
-            tmpd = dict(zip(tmpl, lines))
-            for i in tmpd:
-                file_to_edit[tmpd[i]] = i
-        return file_to_edit
+        return new_file
 # }}}
 
 
