@@ -1,3 +1,5 @@
+# {{{ Imports
+from time import strftime
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -7,50 +9,84 @@ from re import sub
 from shutil import move, copy
 import argparse
 import os
+# }}}
 
 
+# {{{ CommonMethods
 class CommonMethods(object):
 
-    """Returns the range of user specified start and end sequences."""
+    """ {{{ Docstrings
+    Methods utilized by multiple functions.
+
+    1.) get_range returns the index of a user-specified start and end sequence,
+        given these and a list (for instance, a file read in with the
+        'readlines()' function.
+
+    2.) file_edit returns a modified configuration file, given the original
+        file, a list corresponding to the string values of the lines to be
+        edited, and the values which are to be inserted.
+    }}} """
 
     def get_range(self, range_file, start, end):
+
+        """ {{{ Docstrings
+        The 'start' and 'end' arguments must match corresponding lines in
+        range_file exactly, including any whitespace characters.
+
+        For instance, in parsing the nexus file, the line immediately before
+        the data block (the section containing the sequences and their
+        respective IDs) should be 'matrix\n' and the line immediately below
+        should be ';\n' to ensure that every sequence is parsed, nothing more,
+        nothing less.
+        }}} """
+
         range_start = range_file.index(start)
-        range_file = range_file[range_start:]
-        range_end = range_file.index(end) + range_start
+        #range_file = range_file[range_start:]
+        #range_end = range_file.index(end) + range_start
+        range_end = range_file.index(end)
         return range_start, range_end
 
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
-        lines = []
-        for num, i in enumerate(file_to_edit):
-            if i.strip() in lines_to_edit:
-                    lines.append(num)
-            tmpl = map(
-                    lambda x, y: x + ' ' + y + '\n',
-                    lines_to_edit, values_to_insert
+
+        """ {{{ Docstrings
+        The values of 'lines_to_edit' and 'values_to_insert' arguments should
+        be in corresponding order so that the first value of the former
+        corresponds the the value you wish that parameter to have in the later.
+        }}} """
+
+        for i, j in zip(lines_to_edit, values_to_insert):
+            file_to_edit[file_to_edit.index(i)] = '{0}'.format(
+                    file_to_edit[file_to_edit.index(i)].strip() + j + '\n'
                     )
-            tmpd = dict(zip(tmpl, lines))
-            for i in tmpd:
-                file_to_edit[tmpd[i]] = i
         return file_to_edit
-
-    # Only run once.
-    def build_dict_bGMYC_params(self, dict_file):
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
-        if dict_file in fid:
-            dictionary = {}
-            with open(dict_file, 'r') as d:
-                d = d.readlines()
-            d = map(lambda x: x.strip(), d)
-            d = map(lambda x: x.split(','), d)
-            for i in d:
-                dictionary[i[0]] = i[1:]
-            return dictionary
+# }}}
 
 
+# {{{ jModelTest
 class jModelTest(CommonMethods):
 
-    """Run jModelTest and store parameters associated with output."""
+    """ {{{ Docstrings
+    Run jModelTest and store parameters associated with output.
+    }}} """
+
+    # {{{ add_args
+    @staticmethod
+    def add_args():
+        args_jMT = arg_parser.add_argument_group(
+                'jMT', 'Arguments for running jModelTest module.'
+                )
+        args_jMT.add_argument(
+                'jMT', type=str, help='Path to jModelTest.jar.'
+                )
+    # }}}
+
+    # {{{ __init__
+    def __init__(self):
+        self.jMT_ID = 'jModelTest_{0}.out'.format(
+                self.identifier
+                )
+        self.parameters = {}
+    # }}}
 
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
@@ -94,8 +130,10 @@ class jModelTest(CommonMethods):
         names = self.r_jModelTest_names(names)
         model = self.r_jModelTest_model(model)
         self.parameters = dict((i, j) for i, j in zip(names, model))
+# }}}
 
 
+# {{{ Garli
 class Garli(jModelTest):
 
     """Run garli and store parameters associated with output."""
@@ -127,19 +165,35 @@ class Garli(jModelTest):
             'GTR': ['6rate', 'estimate']
             }
 
+    @staticmethod
+    def add_args():
+        args_garli = arg_parser.add_argument_group(
+                'garli', 'Arguments for running garli module.'
+                )
+        args_garli.add_argument(
+                '-g', '--garli', help='Run garli analysis.',
+                action='store_true')
+        args_garli.add_argument(
+                '--bstr', type=int, help=(
+                        '# of bootstrap replications for garli analysis, if '
+                        'applicable.'
+                        ),
+                default=0
+                )
+
     def w_garli_conf(self, garli_file):
         model_selected = self.parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
         garli_params = [
-                'datafname =', 'ofprefix =',
-                'bootstrapreps =', 'ratematrix =',
-                'statefrequencies =', 'ratehetmodel =',
-                'numratecats =', 'invariantsites ='
+                'datafname =\n', 'ofprefix =\n',
+                'bootstrapreps =\n', 'ratematrix =\n',
+                'statefrequencies =\n', 'ratehetmodel =\n',
+                'numratecats =\n', 'invariantsites =\n'
                 ]
         garli_values = [
-                self.path, self.identifier, str(args.bootstrap),
+                self.path, self.identifier, str(args.bstr),
                 Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
@@ -164,26 +218,61 @@ class Garli(jModelTest):
         for line in iter(garli_run.stdout.readline, ''):
             print(line.strip())
         garli_run.stdout.close()
+# }}}
 
 
-class ToleranceCheck(Garli):
+# {{{ BEAST
+class BEAST(Garli):
 
-    """A class that can calculate statistics of data in a file separated into
-       columns."""
+    """ {{{ Docstrings
+    Run BEAST and store parameters associated with output.
+    }}} """
 
-    def calculate_statistics(self, data_file):
-        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
-        data = zip(*data)[1:]
-        stats = map(lambda x: acor(x), data)
-        auto_cor_times = zip(*stats)[0]
-        chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
-        eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
-        return eff_sample_size
+    # {{{ add_args
+    @staticmethod
+    def add_args():
+        args_BEAST = arg_parser.add_argument_group(
+                'BEAST', 'Arguments for running BEAST module.'
+                )
+        args_BEAST.add_argument(
+                  'BEAST', type=str, help='Path to beast.jar.'
+                  )
+        args_BEAST.add_argument(
+                '--MCMC_BEAST', type=int, help=(
+                        'Length of MCMC chain for BEAST '
+                        'analysis.'),
+                default=50000000)
+        args_BEAST.add_argument(
+                '--burnin_BEAST', type=float, help=(
+                        'Burnin (%%) for BEAST analysis.'
+                        ),
+                default=0.25)
+        args_BEAST.add_argument(
+                '--store_every', type=int, help=(
+                            'Sample interval for BEAST analysis.'
+                            ),
+                default=1000)
+        args_BEAST.add_argument(
+                '-t', '--tolerance', type=int, help=(
+                        'Run script in tolerance mode '
+                        'for BEAST analysis.'),
+                default=0)
+        args_BEAST.add_argument(
+                '--lcom', type=str, help=(
+                        'Path to logcombiner. Only necessary if '
+                        'running in tolerance mode.')
+                )
+    # }}}
 
-
-class BEAST(ToleranceCheck):
-
-    """Run BEAST and store parameters associated with output."""
+    def __init__(self):
+        self.BEAST_XML = 'BEAST_{0}.xml'.format(
+                self.identifier
+                )
+        #self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
+        self.BEAST_ID = 'BEAST_{0}.out'.format(
+                self.identifier
+                )
+        #self.BEAST_ID = 'BEAST_%s.out' % self.identifier
 
     def JC_F81(self, xml_nodes):
         for i in xml_nodes:
@@ -198,6 +287,15 @@ class BEAST(ToleranceCheck):
 
     sub_models = {'JC': JC_F81, 'F81': JC_F81,
                   'K80': K80_HKY, 'HKY': K80_HKY}
+
+    def calculate_statistics(self, data_file):
+        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
+        data = zip(*data)[1:]
+        stats = map(lambda x: acor(x), data)
+        auto_cor_times = zip(*stats)[0]
+        chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
+        eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
+        return eff_sample_size
 
     def w_beast_submodel(self):
         model_selected = self.parameters['Model']
@@ -313,18 +411,18 @@ class BEAST(ToleranceCheck):
             rateCT.text = '%s' % self.parameters['Re']
             rateGT.text = '%s' % self.parameters['Rf']
 
-    def w_beast_taxon(self):
+    def w_beast_taxon(self, nexus_file):
         sequence_start, sequence_end = self.get_range(
-                self.nexus_file, 'matrix\n', ';\n'
+                nexus_file, 'matrix\n', ';\n'
                 )
         sequence_start += 1
         sequence_end -= 1
-        for line in self.nexus_file:
+        for line in nexus_file:
             while sequence_start <= sequence_end:
-                species_id = (self.nexus_file[int(sequence_start)].rpartition(
+                species_id = (nexus_file[int(sequence_start)].rpartition(
                               "\t")[0]).strip()
                 species_sequence = (
-                        self.nexus_file[int(sequence_start)].rpartition("\t")[-1]
+                        nexus_file[int(sequence_start)].rpartition("\t")[-1]
                         ).strip()
                 sequence = ET.SubElement(data, 'sequence', attrib={
                                          'id': 'seq_%s' % species_id,
@@ -387,11 +485,67 @@ class BEAST(ToleranceCheck):
             for line in iter(lcom.stdout.readline, ''):
                 print(line.strip())
             lcom.stdout.close()
+# }}}
 
 
+# {{{ bGMYC
 class bGMYC(BEAST):
 
     """A class used to run bGMYC in R with pypeR module."""
+
+    @staticmethod
+    def add_args():
+        args_bGMYC = arg_parser.add_argument_group(
+                'bGMYC', 'Arguments for running bGMYC module.'
+                )
+        args_bGMYC.add_argument(
+                '--MCMC_bGMYC', type=int, help=(
+                        'Length of MCMC chain for bGMYC '
+                        'analysis.'
+                        ),
+                default=50000000)
+        args_bGMYC.add_argument(
+                '--burnin_bGMYC', type=float, help=(
+                        'Burnin (%%) for bGMYC analysis.'
+                        ),
+                default=0.25)
+        args_bGMYC.add_argument(
+                '--thinning', type=int, help=(
+                        'Sample interval for bGMYC analysis.'
+                        ),
+                default=10000)
+        args_bGMYC.add_argument(
+                '--bGMYC_params', type=str, help=(
+                        'Name of the file containing additional arguments for '
+                        'the bGMYC, if applicable. These parameters should be '
+                        'specified in a tab delimited format along with the '
+                        'taxon name, where the taxon name corresponds to the '
+                        'respecitve nexus file sans the \'.nex\' extension. '
+                        'For instance, if I wanted to run a bGMYC analysis on '
+                        'Periplaneta americana, the American cockroach, and '
+                        'wanted to modify the \'t1\' and \'start\' variables '
+                        '(see documentation provided by Noah for explanation '
+                        'of parameters), then my files would perhaps look '
+                        'like: P_americana.nex, P_americana.txt and the .txt '
+                        'file would contain: P_americana\\t-t1=32\\tstart1=0'
+                        '\\tstart2=0\\tstart3=0.5. Notice how each value of '
+                        'start vector must be specified seperately.'
+                        ),
+                )
+
+    # {{{ build_dict_bGMYC_params
+    # Only run once.
+    @staticmethod
+    def build_dict_bGMYC_params(dict_file):
+        dictionary = {}
+        with open(dict_file, 'r') as d:
+            d = d.readlines()
+        d = map(lambda x: x.strip(), d)
+        d = map(lambda x: x.split('\t'), d)
+        for i in d:
+            dictionary[i[0]] = i[1:]
+        return dictionary
+    # }}}
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
@@ -421,12 +575,20 @@ class bGMYC(BEAST):
                 print(line.strip())
             bGMYC_run.stdout.close()
             os.chdir('../')
+# }}}
 
 
+# {{{ CleanUp
 class CleanUp(bGMYC):
 
-    """A class used to consolidate all output in run."""
+    """ {{{ Docstrings
+    A class used to consolidate all output.
+    }}} """
 
+    def __init__(self):
+        self.master_dir = self.identifier + '_MASTER'
+
+    # {{{ clean_up
     def clean_up(self):
         cwd = os.getcwd()
         files_in_dir = os.listdir(cwd)
@@ -435,36 +597,113 @@ class CleanUp(bGMYC):
         for i in output_files:
             move(i, self.master_dir)
         copy(self.path, self.master_dir)
+    # }}}
+# }}}
 
 
+# {{{ IterRegistry
 class IterRegistry(type):
 
-    """A metaclass to allow for iteration over instances of NexusFile class."""
+    """ {{{ Docstrings
+    A metaclass to allow for iteration over instances of NexusFile class.
+    }}} """
 
+    # {{{ __iter__
     def __iter__(cls):
         return iter(cls.registry)
+    # }}}
+# }}}
 
 
+# {{{ NexusFile
 class NexusFile(CleanUp):
 
-    """A class in which we will store the parameters associated with the
-       given nexus file."""
+    """ {{{ Docstrings
+    A class in which we will store the parameters associated with the
+    given nexus file.
+    }}} """
 
+    # {{{ __metaclass__
     __metaclass__ = IterRegistry
     registry = []
+    # }}}
 
-    def __init__(self, seq_name, path, seq_file):
+    # {{{ add_args
+    @staticmethod
+    def add_args():
+        args_nex = arg_parser.add_argument_group(
+                'Nexus', 'Arguments for parsing nexus files.'
+                )
+        args_nex.add_argument(
+                '-b', '--batch', help=(
+                        'Run script in batch mode for multiple nexus files. '
+                        'Note: All nexus files should have the extension '
+                        '\'.nex\', NOT \'.nexus\' and the line immediately '
+                        'above the data block (section containing the '
+                        'sequences and their respective IDs) should read '
+                        '\'matrix\\n\' while the line immediately below '
+                        'should read \';\\n\'. Furthermore, if running in '
+                        'batch mode, ensure that the nexus files are the only '
+                        'files present in the directory containing the string '
+                        '\'nex\' in their name, including the extension.'
+                        ),
+                action='store_true')
+    # }}}
+
+    # {{{ __init__
+    def __init__(self, path):
         self.path = str(path)
         self.sequence_name = self.path.replace('.nex', '')
-        self.nexus_file = seq_file.readlines()
-        self.identifier = seq_name + '_' + str(randrange(0, 999999999))
-        self.JMT_ID = 'jModelTest_%s.out' % self.identifier
-        self.parameters = {}
-        self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
-        self.BEAST_ID = 'BEAST_%s.out' % self.identifier
-        self.master_dir = self.identifier + '_MASTER'
+        self.identifier = '{0}_{1}'.format(
+                self.sequence_name, randrange(0, 999999999)
+                )
+        jModelTest.__init__(self)
+        BEAST.__init__(self)
+        CleanUp.__init__(self)
         self.registry.append(self)
+    # }}}
 
+    # {{{ write_call_file
+    def write_call_file(self, bGMYC_parameters):
+
+        """ {{{ Docstrings
+        For each instance of NexusFile class, writes a name file, corresponding
+        to the unique identifier, that contains: The run initiation date/time,
+        the sequence path, the sequence identifier, and how the script was
+        called (the Namespace [arguments given to script]).
+        }}} """
+
+        call_file = 'call_{0}.txt'.format(
+                self.identifier
+                )
+        # Local date (MM/DD/YY) and local time (HH:MM:SS [24 fmt])
+        call_time = 'Initiation date|time: {0}\n'.format(
+                strftime('%x|%X')
+                )
+        call_id = 'Sequence file: {0}\n'.format(
+                self.identifier
+                )
+        # Convert args to dictionary
+        opts = vars(args)
+        with open(call_file, 'w') as call:
+            call.write(call_time)
+            call.write(call_id)
+            for i in opts:
+                # bGMYC parameters handled by subsequent if statment
+                if i != 'bGMYC_params':
+                    f = '{0}={1}\n'.format(
+                            i, opts[i]
+                            )
+                    call.write(f)
+            if bGMYC_parameters.get(self.sequence_name):
+                call.write('bGMYC parameters: ')
+                call.write(str(bGMYC_parameters[self.sequence_name]))
+            else:
+                call.write('bGMYC parameters: Defaults')
+    # }}}
+# }}}
+
+# {{{ ArgParser
 arg_parser = argparse.ArgumentParser(
         prog='Pipeline',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -473,62 +712,22 @@ arg_parser = argparse.ArgumentParser(
                 'customizable, ad hoc pipeline analyses. For instance, '
                 'originally developed to function between jModelTest, Garli, '
                 'BEAST and bGMYC. Also provides batch functionality for '
-                'relatively large datasets.'
-                ),
-        epilog=(
-                'Note: Additional parameters for bGMYC analysis (t1, t2, py, '
-                'pc, th) should be provided in a comma delimited '
-                'Dictionary.txt file along with taxon name, where the taxon '
-                'name is the name of the corresponding nexus file sans .nex. '
-                'For instance, if the nexus file is Taxon.nex, the .txt entry '
-                'would be: Taxon,2,40,1,1,21\\n')
+                'relatively large datasets and supports HPC environments.'
+                )
         )
-arg_parser.add_argument(
-        'jMT', type=str, help='Path to jModelTest.jar.')
-arg_parser.add_argument(
-        'BEAST', type=str, help='Path to beast.jar.')
-arg_parser.add_argument(
-        '-b', '--batch', help=(
-                'Run script in batch mode for multiple nexus '
-                'files.'
-                ),
-        action='store_true')
-arg_parser.add_argument(
-        '-g', '--garli', help='Run garli analysis prior to BEAST.',
-        action='store_true')
-arg_parser.add_argument(
-        '-bsr', '--bootstrap', type=int, help=('# of bootstrap replications'
-                                               ' for garli analysis.'),
-        default=0)
-arg_parser.add_argument(
-        '--MCMC_BEAST', type=int, help=('Length of MCMC chain for BEAST '
-                                        'analysis.'),
-        default=50000000)
-arg_parser.add_argument(
-        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
-        default=0.25)
-arg_parser.add_argument(
-        '--store_every', type=int, help='Sample interval for BEAST analysis.',
-        default=1000)
-arg_parser.add_argument(
-        '-t', '--tolerance', type=int, help=('Run script in tolerance mode '
-                                             'for BEAST analysis.'),
-        default=0)
-arg_parser.add_argument(
-        '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
-                                  'running in tolerance mode.'))
-arg_parser.add_argument(
-        '--MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
-                                        'analysis.'),
-        default=50000000)
-arg_parser.add_argument(
-        '--burnin_bGMYC', type=float, help='Burnin (%%) for bGMYC analysis.',
-        default=0.25)
-arg_parser.add_argument(
-        '--thinning', type=int, help='Sample interval for bGMYC analysis.',
-        default=10000)
-args = arg_parser.parse_args()
 
+# Run add_args for each class when passing '-h' flag and prior to instantiating
+# instances of any class.
+if __name__ == '__main__':
+    jModelTest.add_args()
+    Garli.add_args()
+    BEAST.add_args()
+    bGMYC.add_args()
+    NexusFile.add_args()
+args = arg_parser.parse_args()
+# }}}
+
+# {{{ XML Parser
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard.xml', XML_parser)
 data = beast.find('data')
@@ -547,35 +746,36 @@ for element in run.iterfind('logger'):
         screen_log = element
     if 'treelog.t:' in element.get('id'):
         tree_log = element
+# }}}
 
-path_to_sequence = {}
-
+# {{{ Batch
 if args.batch:
     cwd = os.getcwd()
     files_in_dir = os.listdir(cwd)
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
-    for i in nexus_files:
-        path = i
-        class_name = i.strip('.nex')
-        path_to_sequence[str(class_name)] = str(path)
 else:
-    print('The program will prompt you for the path to each sequence file ' +
-          'as well as a unique name for each instantiated class.')
+    nexus_files = []
+    print('The program will prompt you for the path to each sequence file.')
     no_runs = raw_input('How many runs would you like to perform? ')
     for i in range(int(no_runs)):
-        path = raw_input('Path to sequence: ')
-        class_name = raw_input('Name of class: ')
-        path_to_sequence[str(class_name)] = str(path)
+        nexus_files.append(raw_input('Path to sequence file: '))
+# }}}
 
-for key in path_to_sequence:
-    with open(path_to_sequence[key], 'r') as sequence_file:
-        NexusFile(key, path_to_sequence[key], sequence_file)
+# {{{ Instantiate instances of NexusFile class
+for i in nexus_files:
+    NexusFile(i)
+# }}}
+
+if args.bGMYC_params:
+    bGMYC_parameters = NexusFile.build_dict_bGMYC_params(args.bGMYC_params)
+else:
+    bGMYC_parameters = {}
 
 for sequence in NexusFile:
     print('-----------------------------------------------------------------')
     print('Sequence file: %s' % sequence.path)
     print('Run identifier: %s' % sequence.identifier)
-    print('Garli bootstrap replications: %s' % args.bootstrap)
+    print('Garli bootstrap replications: %s' % args.bstr)
     print('MCMC BEAST: %s' % args.MCMC_BEAST)
     print('Burnin BEAST: %s' % args.burnin_BEAST)
     if args.tolerance:
@@ -585,6 +785,9 @@ for sequence in NexusFile:
     print('Burnin bGMYC: %s' % args.burnin_bGMYC)
     print('Sample frequency bGMYC: %s' % args.thinning)
     print('-----------------------------------------------------------------')
+    sequence.write_call_file(bGMYC_parameters)
+    with open(sequence.path, 'r') as nex:
+        nexus_file = nex.readlines()
     sequence.run_jModelTest()
     with open(str(sequence.JMT_ID), 'r') as JMT_output:
         JMT_output = JMT_output.readlines()
@@ -604,5 +807,4 @@ for sequence in NexusFile:
     else:
         sequence.run_beast()
     sequence.clean_up()
-    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
     sequence.bGMYC(bGMYC_parameters)
