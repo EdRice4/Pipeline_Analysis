@@ -465,6 +465,28 @@ class bGMYC(BEAST):
 
     """A class used to run bGMYC in R with pypeR module."""
 
+    @staticmethod
+    def add_args():
+        args_bGMYC = arg_parser.add_argument_group(
+                'bGMYC', 'Arguments for running bGMYC module.'
+                )
+        args_bGMYC.add_argument(
+                '--MCMC_bGMYC', type=int, help=(
+                        'Length of MCMC chain for bGMYC '
+                        'analysis.'
+                        ),
+                default=50000000)
+        args_bGMYC.add_argument(
+                '--burnin_bGMYC', type=float, help=(
+                        'Burnin (%%) for bGMYC analysis.'
+                        ),
+                default=0.25)
+        args_bGMYC.add_argument(
+                '--thinning', type=int, help=(
+                        'Sample interval for bGMYC analysis.'
+                        ),
+                default=10000)
+
     # Only run once.
     def build_dict_bGMYC_params(self, dict_file):
         cwd = os.getcwd()
@@ -585,33 +607,6 @@ arg_parser.add_argument(
                 'files.'
                 ),
         action='store_true')
-arg_parser.add_argument(
-        '--MCMC_BEAST', type=int, help=('Length of MCMC chain for BEAST '
-                                        'analysis.'),
-        default=50000000)
-arg_parser.add_argument(
-        '--burnin_BEAST', type=float, help='Burnin (%%) for BEAST analysis.',
-        default=0.25)
-arg_parser.add_argument(
-        '--store_every', type=int, help='Sample interval for BEAST analysis.',
-        default=1000)
-arg_parser.add_argument(
-        '-t', '--tolerance', type=int, help=('Run script in tolerance mode '
-                                             'for BEAST analysis.'),
-        default=0)
-arg_parser.add_argument(
-        '--lcom', type=str, help=('Path to logcombiner. Only necessary if '
-                                  'running in tolerance mode.'))
-arg_parser.add_argument(
-        '--MCMC_bGMYC', type=int, help=('Length of MCMC chain for bGMYC '
-                                        'analysis.'),
-        default=50000000)
-arg_parser.add_argument(
-        '--burnin_bGMYC', type=float, help='Burnin (%%) for bGMYC analysis.',
-        default=0.25)
-arg_parser.add_argument(
-        '--thinning', type=int, help='Sample interval for bGMYC analysis.',
-        default=10000)
 if __name__ == '__main__':
     jModelTest.add_args()
     Garli.add_args()
