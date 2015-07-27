@@ -489,6 +489,23 @@ class bGMYC(BEAST):
                         'Sample interval for bGMYC analysis.'
                         ),
                 default=10000)
+        args_bGMYC.add_argument(
+                '--parameters', type=str, help=(
+                        'Name of the file containing additional arguments for '
+                        'the bGMYC, if applicable. These parameters should be '
+                        'specified in a tab delimited format along with the '
+                        'taxon name, where the taxon name corresponds to the '
+                        'respecitve nexus file sans the \'.nex\' extension. '
+                        'For instance, if I wanted to run a bGMYC analysis on '
+                        'Periplaneta americana, the American cockroach, and '
+                        'wanted to modify the \'t1\' and \'start\' variables '
+                        '(see documentation provided by Noah for explanation '
+                        'of parameters), then my files would perhaps look '
+                        'like: P_americana.nex, P_americana.txt and the .txt '
+                        'file would contain: P_americana\\t-t1=32\\tstart1=0'
+                        '\\tstart2=0\\tstart3=0.5.'
+                        ),
+                )
 
     # Only run once.
     def build_dict_bGMYC_params(self, dict_file):
@@ -499,7 +516,7 @@ class bGMYC(BEAST):
             with open(dict_file, 'r') as d:
                 d = d.readlines()
             d = map(lambda x: x.strip(), d)
-            d = map(lambda x: x.split(','), d)
+            d = map(lambda x: x.split('\t'), d)
             for i in d:
                 dictionary[i[0]] = i[1:]
             return dictionary
@@ -593,14 +610,7 @@ arg_parser = argparse.ArgumentParser(
                 'originally developed to function between jModelTest, Garli, '
                 'BEAST and bGMYC. Also provides batch functionality for '
                 'relatively large datasets and supports HPC environments.'
-                ),
-        epilog=(
-                'Note: Additional parameters for bGMYC analysis (t1, t2, py, '
-                'pc, th) should be provided in a comma delimited '
-                'Dictionary.txt file along with taxon name, where the taxon '
-                'name is the name of the corresponding nexus file sans .nex. '
-                'For instance, if the nexus file is Taxon.nex, the .txt entry '
-                'would be: Taxon,2,40,1,1,21\\n')
+                )
         )
 arg_parser.add_argument(
         '-b', '--batch', help=(
