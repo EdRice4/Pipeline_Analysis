@@ -585,6 +585,26 @@ class NexusFile(CleanUp):
     __metaclass__ = IterRegistry
     registry = []
 
+    @staticmethod
+    def add_args():
+        args_nex = arg_parser.add_argument_group(
+                'Nexus', 'Arguments for parsing nexus files.'
+                )
+        args_nex.add_argument(
+                '-b', '--batch', help=(
+                        'Run script in batch mode for multiple nexus files. '
+                        'Note: All nexus files should have the extension '
+                        '\'.nex\', NOT \'.nexus\' and the line immediately '
+                        'above the data block (section containing the '
+                        'sequences and their respective IDs) should read '
+                        '\'matrix\\n\' while the line immediately below '
+                        'should read \';\\n\'. Furthermore, if running in '
+                        'batch mode, ensure that the nexus files are the only '
+                        'files present in the directory containing the string '
+                        '\'nex\' in their name, including the extension.'
+                        ),
+                action='store_true')
+
     def __init__(self, seq_name, path, seq_file):
         self.path = str(path)
         self.sequence_name = self.path.replace('.nex', '')
@@ -610,17 +630,12 @@ arg_parser = argparse.ArgumentParser(
                 'relatively large datasets and supports HPC environments.'
                 )
         )
-arg_parser.add_argument(
-        '-b', '--batch', help=(
-                'Run script in batch mode for multiple nexus '
-                'files.'
-                ),
-        action='store_true')
 if __name__ == '__main__':
     jModelTest.add_args()
     Garli.add_args()
     BEAST.add_args()
     bGMYC.add_args()
+    NexusFile.add_args()
 args = arg_parser.parse_args()
 # }}}
 
