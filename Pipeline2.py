@@ -1,4 +1,5 @@
 # {{{ Imports
+from time import strftime
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
@@ -64,8 +65,11 @@ class CommonMethods(object):
 # {{{ jModelTest
 class jModelTest(CommonMethods):
 
-    """Run jModelTest and store parameters associated with output."""
+    """ {{{ Docstrings
+    Run jModelTest and store parameters associated with output.
+    }}} """
 
+    # {{{ add_args
     @staticmethod
     def add_args():
         args_jMT = arg_parser.add_argument_group(
@@ -74,8 +78,15 @@ class jModelTest(CommonMethods):
         args_jMT.add_argument(
                 'jMT', type=str, help='Path to jModelTest.jar.'
                 )
+    # }}}
 
-    #def __init__(self):
+    # {{{ __init__
+    def __init__(self):
+        self.jMT_ID = 'jModelTest_{0}.out'.format(
+                self.identifier
+                )
+        self.parameters = {}
+    # }}}
 
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
@@ -182,7 +193,7 @@ class Garli(jModelTest):
                 'numratecats =\n', 'invariantsites =\n'
                 ]
         garli_values = [
-                self.path, self.identifier, str(args.bootstrap),
+                self.path, self.identifier, str(args.bstr),
                 Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
@@ -213,8 +224,11 @@ class Garli(jModelTest):
 # {{{ BEAST
 class BEAST(Garli):
 
-    """Run BEAST and store parameters associated with output."""
+    """ {{{ Docstrings
+    Run BEAST and store parameters associated with output.
+    }}} """
 
+    # {{{ add_args
     @staticmethod
     def add_args():
         args_BEAST = arg_parser.add_argument_group(
@@ -248,6 +262,17 @@ class BEAST(Garli):
                         'Path to logcombiner. Only necessary if '
                         'running in tolerance mode.')
                 )
+    # }}}
+
+    def __init__(self):
+        self.BEAST_XML = 'BEAST_{0}.xml'.format(
+                self.identifier
+                )
+        #self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
+        self.BEAST_ID = 'BEAST_{0}.out'.format(
+                self.identifier
+                )
+        #self.BEAST_ID = 'BEAST_%s.out' % self.identifier
 
     def JC_F81(self, xml_nodes):
         for i in xml_nodes:
@@ -508,8 +533,10 @@ class bGMYC(BEAST):
                         ),
                 )
 
+    # {{{ build_dict_bGMYC_params
     # Only run once.
-    def build_dict_bGMYC_params(self, dict_file):
+    @staticmethod
+    def build_dict_bGMYC_params(dict_file):
         dictionary = {}
         with open(dict_file, 'r') as d:
             d = d.readlines()
@@ -518,6 +545,7 @@ class bGMYC(BEAST):
         for i in d:
             dictionary[i[0]] = i[1:]
         return dictionary
+    # }}}
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
@@ -553,8 +581,14 @@ class bGMYC(BEAST):
 # {{{ CleanUp
 class CleanUp(bGMYC):
 
-    """A class used to consolidate all output in run."""
+    """ {{{ Docstrings
+    A class used to consolidate all output.
+    }}} """
 
+    def __init__(self):
+        self.master_dir = self.identifier + '_MASTER'
+
+    # {{{ clean_up
     def clean_up(self):
         cwd = os.getcwd()
         files_in_dir = os.listdir(cwd)
@@ -563,16 +597,21 @@ class CleanUp(bGMYC):
         for i in output_files:
             move(i, self.master_dir)
         copy(self.path, self.master_dir)
+    # }}}
 # }}}
 
 
 # {{{ IterRegistry
 class IterRegistry(type):
 
-    """A metaclass to allow for iteration over instances of NexusFile class."""
+    """ {{{ Docstrings
+    A metaclass to allow for iteration over instances of NexusFile class.
+    }}} """
 
+    # {{{ __iter__
     def __iter__(cls):
         return iter(cls.registry)
+    # }}}
 # }}}
 
 
@@ -615,15 +654,52 @@ class NexusFile(CleanUp):
     def __init__(self, path):
         self.path = str(path)
         self.sequence_name = self.path.replace('.nex', '')
-        self.identifier = '{0}'.format(
-                self.sequence_name + '_' + str(randrange(0, 999999999))
+        self.identifier = '{0}_{1}'.format(
+                self.sequence_name, randrange(0, 999999999)
                 )
-        #self.JMT_ID = 'jModelTest_%s.out' % self.identifier
-        #self.parameters = {}
-        #self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
-        #self.BEAST_ID = 'BEAST_%s.out' % self.identifier
-        self.master_dir = self.identifier + '_MASTER'
+        jModelTest.__init__(self)
+        BEAST.__init__(self)
+        CleanUp.__init__(self)
         self.registry.append(self)
+    # }}}
+
+    # {{{ write_call_file
+    def write_call_file(self, bGMYC_parameters):
+
+        """ {{{ Docstrings
+        For each instance of NexusFile class, writes a name file, corresponding
+        to the unique identifier, that contains: The run initiation date/time,
+        the sequence path, the sequence identifier, and how the script was
+        called (the Namespace [arguments given to script]).
+        }}} """
+
+        call_file = 'call_{0}.txt'.format(
+                self.identifier
+                )
+        # Local date (MM/DD/YY) and local time (HH:MM:SS [24 fmt])
+        call_time = 'Initiation date|time: {0}\n'.format(
+                strftime('%x|%X')
+                )
+        call_id = 'Sequence file: {0}\n'.format(
+                self.identifier
+                )
+        # Convert args to dictionary
+        opts = vars(args)
+        with open(call_file, 'w') as call:
+            call.write(call_time)
+            call.write(call_id)
+            for i in opts:
+                # bGMYC parameters handled by subsequent if statment
+                if i != 'bGMYC_params':
+                    f = '{0}={1}\n'.format(
+                            i, opts[i]
+                            )
+                    call.write(f)
+            if bGMYC_parameters.get(self.sequence_name):
+                call.write('bGMYC parameters: ')
+                call.write(str(bGMYC_parameters[self.sequence_name]))
+            else:
+                call.write('bGMYC parameters: Defaults')
     # }}}
 # }}}
 
@@ -690,11 +766,16 @@ for i in nexus_files:
     NexusFile(i)
 # }}}
 
+if args.bGMYC_params:
+    bGMYC_parameters = NexusFile.build_dict_bGMYC_params(args.bGMYC_params)
+else:
+    bGMYC_parameters = {}
+
 for sequence in NexusFile:
     #print('-----------------------------------------------------------------')
     #print('Sequence file: %s' % sequence.path)
     #print('Run identifier: %s' % sequence.identifier)
-    #print('Garli bootstrap replications: %s' % args.bootstrap)
+    #print('Garli bootstrap replications: %s' % args.bstr)
     #print('MCMC BEAST: %s' % args.MCMC_BEAST)
     #print('Burnin BEAST: %s' % args.burnin_BEAST)
     #if args.tolerance:
@@ -704,10 +785,7 @@ for sequence in NexusFile:
     #print('Burnin bGMYC: %s' % args.burnin_bGMYC)
     #print('Sample frequency bGMYC: %s' % args.thinning)
     #print('-----------------------------------------------------------------')
-    print(
-            sequence.path, sequence.sequence_name, sequence.identifier,
-            sequence.master_dir
-            )
+    sequence.write_call_file(bGMYC_parameters)
     #with open(sequence.path, 'r') as nex:
         #nexus_file = nex.readlines()
     #sequence.run_jModelTest()
@@ -729,8 +807,4 @@ for sequence in NexusFile:
     #else:
         #sequence.run_beast()
     #sequence.clean_up()
-    #if args.bGMYC_params:
-        #bGMYC_parameters = sequence.build_dict_bGMYC_params(args.bGMYC_params)
-    #else:
-        #bGMYC_parameters = {}
     #sequence.bGMYC(bGMYC_parameters)
