@@ -490,7 +490,7 @@ class bGMYC(BEAST):
                         ),
                 default=10000)
         args_bGMYC.add_argument(
-                '--parameters', type=str, help=(
+                '--bGMYC_params', type=str, help=(
                         'Name of the file containing additional arguments for '
                         'the bGMYC, if applicable. These parameters should be '
                         'specified in a tab delimited format along with the '
@@ -503,23 +503,21 @@ class bGMYC(BEAST):
                         'of parameters), then my files would perhaps look '
                         'like: P_americana.nex, P_americana.txt and the .txt '
                         'file would contain: P_americana\\t-t1=32\\tstart1=0'
-                        '\\tstart2=0\\tstart3=0.5.'
+                        '\\tstart2=0\\tstart3=0.5. Notice how each value of '
+                        'start vector must be specified seperately.'
                         ),
                 )
 
     # Only run once.
     def build_dict_bGMYC_params(self, dict_file):
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
-        if dict_file in fid:
-            dictionary = {}
-            with open(dict_file, 'r') as d:
-                d = d.readlines()
-            d = map(lambda x: x.strip(), d)
-            d = map(lambda x: x.split('\t'), d)
-            for i in d:
-                dictionary[i[0]] = i[1:]
-            return dictionary
+        dictionary = {}
+        with open(dict_file, 'r') as d:
+            d = d.readlines()
+        d = map(lambda x: x.strip(), d)
+        d = map(lambda x: x.split('\t'), d)
+        for i in d:
+            dictionary[i[0]] = i[1:]
+        return dictionary
 
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
@@ -701,5 +699,8 @@ for sequence in NexusFile:
     else:
         sequence.run_beast()
     sequence.clean_up()
-    bGMYC_parameters = sequence.build_dict_bGMYC_params('Dictionary.txt')
+    if args.bGMYC_params:
+        bGMYC_parameters = sequence.build_dict_bGMYC_params(args.bGMYC_params)
+    else:
+        bGMYC_parameters = {}
     sequence.bGMYC(bGMYC_parameters)
