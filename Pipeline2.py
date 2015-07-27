@@ -27,18 +27,37 @@ class CommonMethods(object):
     }}} """
 
     def get_range(self, range_file, start, end):
+
+        """ {{{ Docstrings
+        The 'start' and 'end' arguments must match corresponding lines in
+        range_file exactly, including any whitespace characters.
+
+        For instance, in parsing the nexus file, the line immediately before
+        the data block (the section containing the sequences and their
+        respective IDs) should be 'matrix\n' and the line immediately below
+        should be ';\n' to ensure that every sequence is parsed, nothing more,
+        nothing less.
+        }}} """
+
         range_start = range_file.index(start)
-        range_file = range_file[range_start:]
-        range_end = range_file.index(end) + range_start
+        #range_file = range_file[range_start:]
+        #range_end = range_file.index(end) + range_start
+        range_end = range_file.index(end)
         return range_start, range_end
 
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
-        new_file = file_to_edit
+
+        """ {{{ Docstrings
+        The values of 'lines_to_edit' and 'values_to_insert' arguments should
+        be in corresponding order so that the first value of the former
+        corresponds the the value you wish that parameter to have in the later.
+        }}} """
+
         for i, j in zip(lines_to_edit, values_to_insert):
-            new_file[new_file.index(i)] = '{0}'.format(
-                    new_file[new_file.index(i)] + j + '\n'
+            file_to_edit[file_to_edit.index(i)] = '{0}'.format(
+                    file_to_edit[file_to_edit.index(i)].strip() + j + '\n'
                     )
-        return new_file
+        return file_to_edit
 # }}}
 
 
@@ -195,6 +214,37 @@ class Garli(jModelTest):
 class BEAST(Garli):
 
     """Run BEAST and store parameters associated with output."""
+
+    @staticmethod
+    def add_args():
+        args_BEAST = arg_parser.add_argument_group(
+                'BEAST', 'Arguments for running BEAST module.'
+                )
+        args_BEAST.add_argument(
+                '--MCMC_BEAST', type=int, help=(
+                        'Length of MCMC chain for BEAST '
+                        'analysis.'),
+                default=50000000)
+        args_BEAST.add_argument(
+                '--burnin_BEAST', type=float, help=(
+                        'Burnin (%%) for BEAST analysis.'
+                        ),
+                default=0.25)
+        args_BEAST.add_argument(
+                '--store_every', type=int, help=(
+                            'Sample interval for BEAST analysis.'
+                            ),
+                default=1000)
+        args_BEAST.add_argument(
+                '-t', '--tolerance', type=int, help=(
+                        'Run script in tolerance mode '
+                        'for BEAST analysis.'),
+                default=0)
+        args_BEAST.add_argument(
+                '--lcom', type=str, help=(
+                        'Path to logcombiner. Only necessary if '
+                        'running in tolerance mode.')
+                )
 
     def JC_F81(self, xml_nodes):
         for i in xml_nodes:
