@@ -386,18 +386,18 @@ class BEAST(Garli):
             rateCT.text = '%s' % self.parameters['Re']
             rateGT.text = '%s' % self.parameters['Rf']
 
-    def w_beast_taxon(self):
+    def w_beast_taxon(self, nexus_file):
         sequence_start, sequence_end = self.get_range(
-                self.nexus_file, 'matrix\n', ';\n'
+                nexus_file, 'matrix\n', ';\n'
                 )
         sequence_start += 1
         sequence_end -= 1
-        for line in self.nexus_file:
+        for line in nexus_file:
             while sequence_start <= sequence_end:
-                species_id = (self.nexus_file[int(sequence_start)].rpartition(
+                species_id = (nexus_file[int(sequence_start)].rpartition(
                               "\t")[0]).strip()
                 species_sequence = (
-                        self.nexus_file[int(sequence_start)].rpartition("\t")[-1]
+                        nexus_file[int(sequence_start)].rpartition("\t")[-1]
                         ).strip()
                 sequence = ET.SubElement(data, 'sequence', attrib={
                                          'id': 'seq_%s' % species_id,
@@ -705,6 +705,8 @@ for i in nexus_files:
     #print('Burnin bGMYC: %s' % args.burnin_bGMYC)
     #print('Sample frequency bGMYC: %s' % args.thinning)
     #print('-----------------------------------------------------------------')
+    #with open(sequence.path, 'r') as nex:
+        #nexus_file = nex.readlines()
     #sequence.run_jModelTest()
     #with open(str(sequence.JMT_ID), 'r') as JMT_output:
         #JMT_output = JMT_output.readlines()
