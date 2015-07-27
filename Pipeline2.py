@@ -615,9 +615,8 @@ class NexusFile(CleanUp):
     def __init__(self, path):
         self.path = str(path)
         self.sequence_name = self.path.replace('.nex', '')
-        #self.nexus_file = seq_file.readlines()
-        self.identifier = self.sequence_name + '_' + str(
-                randrange(0, 999999999)
+        self.identifier = '{0}'.format(
+                self.sequence_name + '_' + str(randrange(0, 999999999))
                 )
         #self.JMT_ID = 'jModelTest_%s.out' % self.identifier
         #self.parameters = {}
@@ -691,7 +690,7 @@ for i in nexus_files:
     NexusFile(i)
 # }}}
 
-#for sequence in NexusFile:
+for sequence in NexusFile:
     #print('-----------------------------------------------------------------')
     #print('Sequence file: %s' % sequence.path)
     #print('Run identifier: %s' % sequence.identifier)
@@ -705,6 +704,10 @@ for i in nexus_files:
     #print('Burnin bGMYC: %s' % args.burnin_bGMYC)
     #print('Sample frequency bGMYC: %s' % args.thinning)
     #print('-----------------------------------------------------------------')
+    print(
+            sequence.path, sequence.sequence_name, sequence.identifier,
+            sequence.master_dir
+            )
     #with open(sequence.path, 'r') as nex:
         #nexus_file = nex.readlines()
     #sequence.run_jModelTest()
