@@ -579,12 +579,17 @@ class IterRegistry(type):
 # {{{ NexusFile
 class NexusFile(CleanUp):
 
-    """A class in which we will store the parameters associated with the
-       given nexus file."""
+    """ {{{ Docstrings
+    A class in which we will store the parameters associated with the
+    given nexus file.
+    }}} """
 
+    # {{{ __metaclass__
     __metaclass__ = IterRegistry
     registry = []
+    # }}}
 
+    # {{{ add_args
     @staticmethod
     def add_args():
         args_nex = arg_parser.add_argument_group(
@@ -604,18 +609,23 @@ class NexusFile(CleanUp):
                         '\'nex\' in their name, including the extension.'
                         ),
                 action='store_true')
+    # }}}
 
-    def __init__(self, seq_name, path, seq_file):
+    # {{{ __init__
+    def __init__(self, path):
         self.path = str(path)
         self.sequence_name = self.path.replace('.nex', '')
-        self.nexus_file = seq_file.readlines()
-        self.identifier = seq_name + '_' + str(randrange(0, 999999999))
-        self.JMT_ID = 'jModelTest_%s.out' % self.identifier
-        self.parameters = {}
-        self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
-        self.BEAST_ID = 'BEAST_%s.out' % self.identifier
+        #self.nexus_file = seq_file.readlines()
+        self.identifier = self.sequence_name + '_' + str(
+                randrange(0, 999999999)
+                )
+        #self.JMT_ID = 'jModelTest_%s.out' % self.identifier
+        #self.parameters = {}
+        #self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
+        #self.BEAST_ID = 'BEAST_%s.out' % self.identifier
         self.master_dir = self.identifier + '_MASTER'
         self.registry.append(self)
+    # }}}
 # }}}
 
 # {{{ ArgParser
@@ -630,6 +640,9 @@ arg_parser = argparse.ArgumentParser(
                 'relatively large datasets and supports HPC environments.'
                 )
         )
+
+# Run add_args for each class when passing '-h' flag and prior to instantiating
+# instances of any class.
 if __name__ == '__main__':
     jModelTest.add_args()
     Garli.add_args()
@@ -639,6 +652,7 @@ if __name__ == '__main__':
 args = arg_parser.parse_args()
 # }}}
 
+# {{{ XML Parser
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard.xml', XML_parser)
 data = beast.find('data')
@@ -657,65 +671,61 @@ for element in run.iterfind('logger'):
         screen_log = element
     if 'treelog.t:' in element.get('id'):
         tree_log = element
+# }}}
 
-path_to_sequence = {}
-
+# {{{ Batch
 if args.batch:
     cwd = os.getcwd()
     files_in_dir = os.listdir(cwd)
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
-    for i in nexus_files:
-        path = i
-        class_name = i.strip('.nex')
-        path_to_sequence[str(class_name)] = str(path)
 else:
-    print('The program will prompt you for the path to each sequence file ' +
-          'as well as a unique name for each instantiated class.')
+    nexus_files = []
+    print('The program will prompt you for the path to each sequence file.')
     no_runs = raw_input('How many runs would you like to perform? ')
     for i in range(int(no_runs)):
-        path = raw_input('Path to sequence: ')
-        class_name = raw_input('Name of class: ')
-        path_to_sequence[str(class_name)] = str(path)
+        nexus_files.append(raw_input('Path to sequence file: '))
+# }}}
 
-for key in path_to_sequence:
-    with open(path_to_sequence[key], 'r') as sequence_file:
-        NexusFile(key, path_to_sequence[key], sequence_file)
+# {{{ Instantiate instances of NexusFile class
+for i in nexus_files:
+    NexusFile(i)
+# }}}
 
-for sequence in NexusFile:
-    print('-----------------------------------------------------------------')
-    print('Sequence file: %s' % sequence.path)
-    print('Run identifier: %s' % sequence.identifier)
-    print('Garli bootstrap replications: %s' % args.bootstrap)
-    print('MCMC BEAST: %s' % args.MCMC_BEAST)
-    print('Burnin BEAST: %s' % args.burnin_BEAST)
-    if args.tolerance:
-        print('Tolerance: %s' % args.tolerance)
-    print('Sample frequency BEAST: %s' % args.store_every)
-    print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
-    print('Burnin bGMYC: %s' % args.burnin_bGMYC)
-    print('Sample frequency bGMYC: %s' % args.thinning)
-    print('-----------------------------------------------------------------')
-    sequence.run_jModelTest()
-    with open(str(sequence.JMT_ID), 'r') as JMT_output:
-        JMT_output = JMT_output.readlines()
-    sequence.r_jModelTest_parameters(JMT_output)
-    if args.garli:
-        with open('garli.conf', 'r') as garli_conf:
-            garli_conf = garli_conf.readlines()
-        sequence.w_garli_conf(garli_conf)
-        sequence.run_garli()
-    sequence.w_beast_submodel()
-    sequence.w_beast_rates()
-    sequence.w_beast_taxon()
-    sequence.beast_finalize()
-    if args.tolerance:
-        sequence.resume_beast()
-        sequence.log_combine()
-    else:
-        sequence.run_beast()
-    sequence.clean_up()
-    if args.bGMYC_params:
-        bGMYC_parameters = sequence.build_dict_bGMYC_params(args.bGMYC_params)
-    else:
-        bGMYC_parameters = {}
-    sequence.bGMYC(bGMYC_parameters)
+#for sequence in NexusFile:
+    #print('-----------------------------------------------------------------')
+    #print('Sequence file: %s' % sequence.path)
+    #print('Run identifier: %s' % sequence.identifier)
+    #print('Garli bootstrap replications: %s' % args.bootstrap)
+    #print('MCMC BEAST: %s' % args.MCMC_BEAST)
+    #print('Burnin BEAST: %s' % args.burnin_BEAST)
+    #if args.tolerance:
+        #print('Tolerance: %s' % args.tolerance)
+    #print('Sample frequency BEAST: %s' % args.store_every)
+    #print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
+    #print('Burnin bGMYC: %s' % args.burnin_bGMYC)
+    #print('Sample frequency bGMYC: %s' % args.thinning)
+    #print('-----------------------------------------------------------------')
+    #sequence.run_jModelTest()
+    #with open(str(sequence.JMT_ID), 'r') as JMT_output:
+        #JMT_output = JMT_output.readlines()
+    #sequence.r_jModelTest_parameters(JMT_output)
+    #if args.garli:
+        #with open('garli.conf', 'r') as garli_conf:
+            #garli_conf = garli_conf.readlines()
+        #sequence.w_garli_conf(garli_conf)
+        #sequence.run_garli()
+    #sequence.w_beast_submodel()
+    #sequence.w_beast_rates()
+    #sequence.w_beast_taxon()
+    #sequence.beast_finalize()
+    #if args.tolerance:
+        #sequence.resume_beast()
+        #sequence.log_combine()
+    #else:
+        #sequence.run_beast()
+    #sequence.clean_up()
+    #if args.bGMYC_params:
+        #bGMYC_parameters = sequence.build_dict_bGMYC_params(args.bGMYC_params)
+    #else:
+        #bGMYC_parameters = {}
+    #sequence.bGMYC(bGMYC_parameters)
