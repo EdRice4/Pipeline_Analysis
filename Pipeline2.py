@@ -772,39 +772,39 @@ else:
     bGMYC_parameters = {}
 
 for sequence in NexusFile:
-    #print('-----------------------------------------------------------------')
-    #print('Sequence file: %s' % sequence.path)
-    #print('Run identifier: %s' % sequence.identifier)
-    #print('Garli bootstrap replications: %s' % args.bstr)
-    #print('MCMC BEAST: %s' % args.MCMC_BEAST)
-    #print('Burnin BEAST: %s' % args.burnin_BEAST)
-    #if args.tolerance:
-        #print('Tolerance: %s' % args.tolerance)
-    #print('Sample frequency BEAST: %s' % args.store_every)
-    #print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
-    #print('Burnin bGMYC: %s' % args.burnin_bGMYC)
-    #print('Sample frequency bGMYC: %s' % args.thinning)
-    #print('-----------------------------------------------------------------')
+    print('-----------------------------------------------------------------')
+    print('Sequence file: %s' % sequence.path)
+    print('Run identifier: %s' % sequence.identifier)
+    print('Garli bootstrap replications: %s' % args.bstr)
+    print('MCMC BEAST: %s' % args.MCMC_BEAST)
+    print('Burnin BEAST: %s' % args.burnin_BEAST)
+    if args.tolerance:
+        print('Tolerance: %s' % args.tolerance)
+    print('Sample frequency BEAST: %s' % args.store_every)
+    print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
+    print('Burnin bGMYC: %s' % args.burnin_bGMYC)
+    print('Sample frequency bGMYC: %s' % args.thinning)
+    print('-----------------------------------------------------------------')
     sequence.write_call_file(bGMYC_parameters)
-    #with open(sequence.path, 'r') as nex:
-        #nexus_file = nex.readlines()
-    #sequence.run_jModelTest()
-    #with open(str(sequence.JMT_ID), 'r') as JMT_output:
-        #JMT_output = JMT_output.readlines()
-    #sequence.r_jModelTest_parameters(JMT_output)
-    #if args.garli:
-        #with open('garli.conf', 'r') as garli_conf:
-            #garli_conf = garli_conf.readlines()
-        #sequence.w_garli_conf(garli_conf)
-        #sequence.run_garli()
-    #sequence.w_beast_submodel()
-    #sequence.w_beast_rates()
-    #sequence.w_beast_taxon()
-    #sequence.beast_finalize()
-    #if args.tolerance:
-        #sequence.resume_beast()
-        #sequence.log_combine()
-    #else:
-        #sequence.run_beast()
-    #sequence.clean_up()
-    #sequence.bGMYC(bGMYC_parameters)
+    with open(sequence.path, 'r') as nex:
+        nexus_file = nex.readlines()
+    sequence.run_jModelTest()
+    with open(str(sequence.JMT_ID), 'r') as JMT_output:
+        JMT_output = JMT_output.readlines()
+    sequence.r_jModelTest_parameters(JMT_output)
+    if args.garli:
+        with open('garli.conf', 'r') as garli_conf:
+            garli_conf = garli_conf.readlines()
+        sequence.w_garli_conf(garli_conf)
+        sequence.run_garli()
+    sequence.w_beast_submodel()
+    sequence.w_beast_rates()
+    sequence.w_beast_taxon()
+    sequence.beast_finalize()
+    if args.tolerance:
+        sequence.resume_beast()
+        sequence.log_combine()
+    else:
+        sequence.run_beast()
+    sequence.clean_up()
+    sequence.bGMYC(bGMYC_parameters)
