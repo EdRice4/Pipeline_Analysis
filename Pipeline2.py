@@ -221,6 +221,9 @@ class BEAST(Garli):
                 'BEAST', 'Arguments for running BEAST module.'
                 )
         args_BEAST.add_argument(
+                  'BEAST', type=str, help='Path to beast.jar.'
+                  )
+        args_BEAST.add_argument(
                 '--MCMC_BEAST', type=int, help=(
                         'Length of MCMC chain for BEAST '
                         'analysis.'),
@@ -589,7 +592,7 @@ arg_parser = argparse.ArgumentParser(
                 'customizable, ad hoc pipeline analyses. For instance, '
                 'originally developed to function between jModelTest, Garli, '
                 'BEAST and bGMYC. Also provides batch functionality for '
-                'relatively large datasets.'
+                'relatively large datasets and supports HPC environments.'
                 ),
         epilog=(
                 'Note: Additional parameters for bGMYC analysis (t1, t2, py, '
@@ -600,8 +603,6 @@ arg_parser = argparse.ArgumentParser(
                 'would be: Taxon,2,40,1,1,21\\n')
         )
 arg_parser.add_argument(
-        'BEAST', type=str, help='Path to beast.jar.')
-arg_parser.add_argument(
         '-b', '--batch', help=(
                 'Run script in batch mode for multiple nexus '
                 'files.'
@@ -610,6 +611,8 @@ arg_parser.add_argument(
 if __name__ == '__main__':
     jModelTest.add_args()
     Garli.add_args()
+    BEAST.add_args()
+    bGMYC.add_args()
 args = arg_parser.parse_args()
 # }}}
 
