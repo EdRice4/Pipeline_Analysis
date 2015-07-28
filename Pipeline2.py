@@ -27,6 +27,7 @@ class CommonMethods(object):
         edited, and the values which are to be inserted.
     }}} """
 
+    # {{{ get_range
     def get_range(self, range_file, start, end):
 
         """ {{{ Docstrings
@@ -41,11 +42,11 @@ class CommonMethods(object):
         }}} """
 
         range_start = range_file.index(start)
-        #range_file = range_file[range_start:]
-        #range_end = range_file.index(end) + range_start
         range_end = range_file.index(end)
         return range_start, range_end
+    # }}}
 
+    # {{{ file_edit
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
 
         """ {{{ Docstrings
@@ -59,6 +60,7 @@ class CommonMethods(object):
                     file_to_edit[file_to_edit.index(i)].strip() + j + '\n'
                     )
         return file_to_edit
+    # }}}
 # }}}
 
 
@@ -88,6 +90,7 @@ class jModelTest(CommonMethods):
         self.parameters = {}
     # }}}
 
+    # {{{ run_jModeltest
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
                      args.jMT, self.path)
@@ -101,7 +104,9 @@ class jModelTest(CommonMethods):
                     print(line.strip())
                     output.write(str(line))
             jMT_run.stdout.close()
+    # }}}
 
+    # {{{ r_jModelTest_file
     def r_jModelTest_file(self, jModelTest_file):
         delimiter = jModelTest_file.index('::Best Models::\n')
         jmtf = jModelTest_file[delimiter + 2:]
@@ -110,13 +115,17 @@ class jModelTest(CommonMethods):
         names = jmtf[0]
         model = jmtf[2]
         return names, model
+    # }}}
 
+    # {{{ r_jModelTest_names
     def r_jModelTest_names(self, names):
         names = names.split('\t')
         names = filter(None, names)
         names = map(lambda x: x.strip(), names)
         return names
+    # }}}
 
+    # {{{ r_jModelTest_model
     def r_jModelTest_model(self, model):
         model = model.replace('\t', ' ')
         model = model.split(' ')
@@ -124,20 +133,26 @@ class jModelTest(CommonMethods):
         model = model[1:]
         model = map(lambda x: x.strip(), model)
         return model
+    # }}}
 
+    # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
         names, model = self.r_jModelTest_file(jModelTest_file)
         names = self.r_jModelTest_names(names)
         model = self.r_jModelTest_model(model)
         self.parameters = dict((i, j) for i, j in zip(names, model))
+    # }}}
 # }}}
 
 
 # {{{ Garli
 class Garli(jModelTest):
 
-    """Run garli and store parameters associated with output."""
+    """ {{{ Docstrings
+    Run garli and store parameters associated with output.
+    }}} """
 
+    # {{{ models
     models = {
             'JC': ['1rate', 'equal'],
             'F81': ['1rate', 'estimate'],
@@ -164,7 +179,9 @@ class Garli(jModelTest):
             'SYM': ['6rate', 'equal'],
             'GTR': ['6rate', 'estimate']
             }
+    # }}}
 
+    # {{{ add_args
     @staticmethod
     def add_args():
         args_garli = arg_parser.add_argument_group(
@@ -180,7 +197,9 @@ class Garli(jModelTest):
                         ),
                 default=0
                 )
+    # }}}
 
+    # {{{ w_garli_conf
     def w_garli_conf(self, garli_file):
         model_selected = self.parameters['Model']
         het = '+G' in model_selected
@@ -209,7 +228,9 @@ class Garli(jModelTest):
         with open('garli_%s.conf' % self.identifier, 'w+') as garli_output:
             for i in garli_file:
                 garli_output.write(i)
+    # }}}
 
+    # {{{ run_garli
     def run_garli(self):
         garli = './Garli -b garli_%s.conf' % self.identifier
         garli_run = Popen(
@@ -218,6 +239,7 @@ class Garli(jModelTest):
         for line in iter(garli_run.stdout.readline, ''):
             print(line.strip())
         garli_run.stdout.close()
+    # }}}
 # }}}
 
 
@@ -264,20 +286,23 @@ class BEAST(Garli):
                 )
     # }}}
 
+    # {{{ __init__
     def __init__(self):
         self.BEAST_XML = 'BEAST_{0}.xml'.format(
                 self.identifier
                 )
-        #self.BEAST_XML = 'BEAST_%s.xml' % self.identifier
         self.BEAST_ID = 'BEAST_{0}.out'.format(
                 self.identifier
                 )
-        #self.BEAST_ID = 'BEAST_%s.out' % self.identifier
+    # }}}
 
+    # {{{ JC_F81
     def JC_F81(self, xml_nodes):
         for i in xml_nodes:
             i.text = '1.0'
+    # }}}
 
+    # {{{ K80_HKY
     def K80_HKY(self, xml_nodes):
         for i in xml_nodes:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
@@ -287,7 +312,9 @@ class BEAST(Garli):
 
     sub_models = {'JC': JC_F81, 'F81': JC_F81,
                   'K80': K80_HKY, 'HKY': K80_HKY}
+    # }}}
 
+    # {{{ calculate_statistics
     def calculate_statistics(self, data_file):
         data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
         data = zip(*data)[1:]
@@ -296,7 +323,9 @@ class BEAST(Garli):
         chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
         eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
         return eff_sample_size
+    # }}}
 
+    # {{{ w_beast_submodel
     def w_beast_submodel(self):
         model_selected = self.parameters['Model']
         het = '+G' in model_selected
@@ -378,7 +407,9 @@ class BEAST(Garli):
                             }
                     )
             p_inv.text = '0.0'
+    # }}}
 
+    # {{{ w_beast_rates
     def w_beast_rates(self):
         xml_nodes = []
         model_selected = self.parameters['Model'].translate(None, '+IG')
@@ -410,7 +441,9 @@ class BEAST(Garli):
             rateCG.text = '%s' % self.parameters['Rd']
             rateCT.text = '%s' % self.parameters['Re']
             rateGT.text = '%s' % self.parameters['Rf']
+    # }}}
 
+    # {{{ w_beast_taxon
     def w_beast_taxon(self, nexus_file):
         sequence_start, sequence_end = self.get_range(
                 nexus_file, 'matrix\n', ';\n'
@@ -430,7 +463,9 @@ class BEAST(Garli):
                                          'totalcount': '4',
                                          'value': '%s' % species_sequence})
                 sequence_start += 1
+    # }}}
 
+    # {{{ beast_finalize
     def beast_finalize(self):
         log.set('fileName', self.BEAST_ID)
         beast.write(self.BEAST_XML, pretty_print=True, xml_declaration=True,
@@ -440,7 +475,9 @@ class BEAST(Garli):
         beast_xml = sub('replace_taxon', self.sequence_name, beast_xml)
         with open(self.BEAST_XML, 'w') as beast_xml_file:
             beast_xml_file.write(beast_xml)
+    # }}}
 
+    # {{{ run_beast
     def run_beast(self):
         run = self.identifier + '_RUN_1'
         os.mkdir(run)
@@ -452,7 +489,9 @@ class BEAST(Garli):
         for line in iter(beast_run.stdout.readline, ''):
             print(line.strip())
         beast_run.stdout.close()
+    # }}}
 
+    # {{{ resume_beast
     def resume_beast(self):
         ess = 1
         run_count = 1
@@ -470,7 +509,9 @@ class BEAST(Garli):
             run_count += 1
             ess = self.calculate_statistics(run + '/' + self.BEAST_ID)
             ess = filter(lambda x: x < args.tolerance, ess)
+    # }}}
 
+    # {{{ log_combine
     def log_combine(self):
         cwd = os.getcwd()
         fid = os.listdir(cwd)
@@ -485,14 +526,18 @@ class BEAST(Garli):
             for line in iter(lcom.stdout.readline, ''):
                 print(line.strip())
             lcom.stdout.close()
+    # }}}
 # }}}
 
 
 # {{{ bGMYC
 class bGMYC(BEAST):
 
-    """A class used to run bGMYC in R with pypeR module."""
+    """ {{{ Docstrings
+    Run bGMYC with Rscript and store output.
+    }}} """
 
+    # {{{ add_args
     @staticmethod
     def add_args():
         args_bGMYC = arg_parser.add_argument_group(
@@ -532,6 +577,7 @@ class bGMYC(BEAST):
                         'start vector must be specified seperately.'
                         ),
                 )
+    # }}}
 
     # {{{ build_dict_bGMYC_params
     # Only run once.
@@ -547,6 +593,7 @@ class bGMYC(BEAST):
         return dictionary
     # }}}
 
+    # {{{ bGMYC
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
         if parameter_dict.get(self.sequence_name):
@@ -575,6 +622,7 @@ class bGMYC(BEAST):
                 print(line.strip())
             bGMYC_run.stdout.close()
             os.chdir('../')
+    # }}}
 # }}}
 
 
@@ -585,8 +633,10 @@ class CleanUp(bGMYC):
     A class used to consolidate all output.
     }}} """
 
+    # {{{ __init__
     def __init__(self):
         self.master_dir = self.identifier + '_MASTER'
+    # }}}
 
     # {{{ clean_up
     def clean_up(self):
@@ -703,6 +753,7 @@ class NexusFile(CleanUp):
     # }}}
 # }}}
 
+
 # {{{ ArgParser
 arg_parser = argparse.ArgumentParser(
         prog='Pipeline',
@@ -727,6 +778,7 @@ if __name__ == '__main__':
 args = arg_parser.parse_args()
 # }}}
 
+
 # {{{ XML Parser
 XML_parser = ET.XMLParser(remove_blank_text=True)
 beast = ET.parse('Standard.xml', XML_parser)
@@ -748,7 +800,8 @@ for element in run.iterfind('logger'):
         tree_log = element
 # }}}
 
-# {{{ Batch
+
+# {{{ Define nexus files; batch
 if args.batch:
     cwd = os.getcwd()
     files_in_dir = os.listdir(cwd)
@@ -761,16 +814,22 @@ else:
         nexus_files.append(raw_input('Path to sequence file: '))
 # }}}
 
+
 # {{{ Instantiate instances of NexusFile class
 for i in nexus_files:
     NexusFile(i)
 # }}}
 
+
+# {{{ Read bGMYC dictionary file
 if args.bGMYC_params:
     bGMYC_parameters = NexusFile.build_dict_bGMYC_params(args.bGMYC_params)
 else:
     bGMYC_parameters = {}
+# }}}
 
+
+# {{{ Run
 for sequence in NexusFile:
     print('-----------------------------------------------------------------')
     print('Sequence file: %s' % sequence.path)
@@ -808,3 +867,4 @@ for sequence in NexusFile:
         sequence.run_beast()
     sequence.clean_up()
     sequence.bGMYC(bGMYC_parameters)
+# }}}
