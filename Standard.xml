@@ -68,7 +68,7 @@
         </distribution>
     </distribution>
 
-    <?TODO:What are ucldMeanScaler/ucldStdevScaler/CategoriesRandomWalk/CategoriesSwapOperator/CategoriesUniform?>
+    <?TODO:What are ucldMeanScaler/ucldStdevScaler/CategoriesRandomWalk/CategoriesSwapOperator/CategoriesUniform;relaxed clock?>
     <operator id="treeScaler.t:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
     <operator id="treeRootScaler.t:replace_taxon" rootOnly="true" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
@@ -105,6 +105,11 @@
     <operator id="CalibratedYuleModelWilsonBalding.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="WilsonBalding" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
 
     <operator id="CalibratedYuleBirthRateScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" parameter="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND" scaleFactor="0.75" weight="3.0"/>
+
+    <operator id="relaxedUpDownOperator.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
+        <up idref="ucldMean.c:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <down idref="Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+    </operator>
 
     <logger id="tracelog" fileName="replace_taxon.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
         <?TODO:What is ucldStdev/ucldMean?>
