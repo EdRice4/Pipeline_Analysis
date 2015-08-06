@@ -97,15 +97,16 @@
         <log idref="prior"/>
         <log idref="treeLikelihood.replace_taxon"/>
         <log id="TreeHeight.t:replace_taxon" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:replace_taxon"/>
-        <log idref="YuleModel.t:replace_taxon"/>
-        <parameter idref="birthRate.t:replace_taxon" name="log"/>
+        <log id="rate.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
         <parameter idref="mutationRate.s:replace_taxon" name="log"/>
         <parameter idref="freqParameter.s:replace_taxon" name="log"/>
     </logger>
 
     <logger id="screenlog" logEvery="1000">
         <log idref="posterior"/>
-        <log arg="@posterior" id="ESS.0" spec="util.ESS"/>
+        <log id="ESS.0" spec="util.ESS" arg="@posterior"/>
         <log idref="likelihood"/>
         <log idref="prior"/>
     </logger>
