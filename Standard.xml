@@ -61,8 +61,10 @@
                         <frequencies frequencies="@freqParameter.s:replace_taxon" id="estimatedFreqs.s:replace_taxon" spec="Frequencies"/>
                     </substModel>
                 </siteModel>
-                <branchRateModel id="StrictClock.c:replace_taxon" spec="beast.evolution.branchratemodel.StrictClockModel">
-                    <parameter estimate="false" id="clockRate.c:replace_taxon" name="clock.rate">1.0</parameter>
+                <branchRateModel id="RelaxedClock.c:replace_taxon" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" clock.rate="@ucldMean.c:replace_taxon" rateCategories="@rateCategories.c:replace_taxon" tree="@Tree.t:replace_taxon">
+                    <LogNormal id="LogNormalDistributionModel.c:replace_taxon" S="@ucldStdev.c:replace_taxon" meanInRealSpace="true" name="distr">
+                        <parameter id="RealParameter.02" estimate="false" lower="0.0" name="M" upper="1.0">1.0</parameter>
+                    </LogNormal>
                 </branchRateModel>
             </distribution>
         </distribution>
@@ -80,6 +82,7 @@
     <operator id="narrow.t:replace_taxon" spec="Exchange" tree="@Tree.t:replace_taxon" weight="15.0"/>
 
     <operator id="wide.t:replace_taxon" isNarrow="false" spec="Exchange" tree="@Tree.t:replace_taxon" weight="3.0"/>
+    <?TODO:What are the 6 previous operators?>
 
     <?TODO:What is WilsonBalding?>
     <operator id="WilsonBalding.t:replace_taxon" spec="WilsonBalding" tree="@Tree.t:replace_taxon" weight="3.0"/>
