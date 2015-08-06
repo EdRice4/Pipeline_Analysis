@@ -44,10 +44,6 @@
             <prior id="CalibratedYuleBirthRatePrior.t:FullCytbFinal_trimmedMuscle_NIXEND" name="distribution" x="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND">
                 <Uniform id="Uniform.0" name="distr" upper="1000.0"/>
             </prior>
-            <distribution birthDiffRate="@birthRate.t:replace_taxon" id="YuleModel.t:replace_taxon" spec="beast.evolution.speciation.YuleModel" tree="@Tree.t:replace_taxon"/>
-            <prior id="YuleBirthRatePrior.t:replace_taxon" name="distribution" x="@birthRate.t:replace_taxon">
-                <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
-            </prior>
             <prior id="MutationRatePrior.s:replace_taxon" name="distribution" x="@mutationRate.s:replace_taxon">
                 <OneOnX id="OneOnX.0" name="distr"/>
             </prior>
