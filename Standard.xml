@@ -68,8 +68,6 @@
         </distribution>
     </distribution>
 
-    <operator id="YuleBirthRateScaler.t:replace_taxon" parameter="@birthRate.t:replace_taxon" scaleFactor="0.75" spec="ScaleOperator" weight="3.0"/>
-
     <operator id="treeScaler.t:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
     <operator id="treeRootScaler.t:replace_taxon" rootOnly="true" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
