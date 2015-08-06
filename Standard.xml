@@ -68,6 +68,7 @@
         </distribution>
     </distribution>
 
+    <?TODO:What are ucldMeanScaler/ucldStdevScaler/CategoriesRandomWalk/CategoriesSwapOperator/CategoriesUniform?>
     <operator id="treeScaler.t:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
     <operator id="treeRootScaler.t:replace_taxon" rootOnly="true" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
@@ -80,6 +81,7 @@
 
     <operator id="wide.t:replace_taxon" isNarrow="false" spec="Exchange" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
+    <?TODO:What is WilsonBalding?>
     <operator id="WilsonBalding.t:replace_taxon" spec="WilsonBalding" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
     <operator id="mutationRateScaler.s:replace_taxon" parameter="@mutationRate.s:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" weight="0.1"/>
@@ -105,6 +107,7 @@
     <operator id="CalibratedYuleBirthRateScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" parameter="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND" scaleFactor="0.75" weight="3.0"/>
 
     <logger id="tracelog" fileName="replace_taxon.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <?TODO:What is ucldStdev/ucldMean?>
         <log idref="posterior"/>
         <log idref="likelihood"/>
         <log idref="prior"/>
@@ -113,6 +116,7 @@
         <log id="rate.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
         <log idref="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
         <log idref="birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <?TODO:What are these two parameters?>
         <parameter idref="mutationRate.s:replace_taxon" name="log"/>
         <parameter idref="freqParameter.s:replace_taxon" name="log"/>
     </logger>
