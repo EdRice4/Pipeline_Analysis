@@ -17,11 +17,12 @@
 <map name="OneOnX">beast.math.distributions.OneOnX</map>
 
 
-<run chainLength="10000000" id="mcmc" spec="MCMC">
+
+<run id="mcmc" spec="MCMC" chainLength="50000000" preBurnin="10000000">
     <state id="state" storeEvery="5000">
         <tree id="Tree.t:replace_taxon" name="stateNode">
-            <taxonset id="TaxonSet.Taxon" spec="TaxonSet">
-                <data idref="replace_taxon" name="alignment"/>
+            <taxonset id="TaxonSet.replace_taxon" spec="TaxonSet">
+                <alignment idref="replace_taxon" name="alignment"/>
             </taxonset>
         </tree>
         <parameter id="birthRate.t:replace_taxon" name="stateNode">1.0</parameter>
