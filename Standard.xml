@@ -32,7 +32,7 @@
         <parameter id="mutationRate.s:replace_taxon" name="stateNode">1.0</parameter>
     </state>
 
-    <init estimate="false" id="RandomTree.t:replace_taxon" initial="@Tree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" taxa="@replace_taxon">
+    <init id="RandomTree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" taxa="@FullCytbFinal_trimmedMuscle_NIXEND">
         <populationModel id="ConstantPopulation0.t:replace_taxon" spec="ConstantPopulation">
             <parameter id="randomPopSize.t:replace_taxon" name="popSize">1.0</parameter>
         </populationModel>
@@ -40,6 +40,10 @@
 
     <distribution id="posterior" spec="util.CompoundDistribution">
         <distribution id="prior" spec="util.CompoundDistribution">
+            <distribution id="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.speciation.CalibratedYuleModel" birthRate="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+            <prior id="CalibratedYuleBirthRatePrior.t:FullCytbFinal_trimmedMuscle_NIXEND" name="distribution" x="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND">
+                <Uniform id="Uniform.0" name="distr" upper="1000.0"/>
+            </prior>
             <distribution birthDiffRate="@birthRate.t:replace_taxon" id="YuleModel.t:replace_taxon" spec="beast.evolution.speciation.YuleModel" tree="@Tree.t:replace_taxon"/>
             <prior id="YuleBirthRatePrior.t:replace_taxon" name="distribution" x="@birthRate.t:replace_taxon">
                 <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
