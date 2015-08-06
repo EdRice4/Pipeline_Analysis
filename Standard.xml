@@ -88,6 +88,21 @@
         <parameter idref="freqParameter.s:replace_taxon"/>
     </operator>
 
+    <operator id="CalibratedYuleModelTreeScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+
+    <operator id="CalibratedYuleModelTreeRootScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+
+    <operator id="CalibratedYuleModelUniformOperator.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="Uniform" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="30.0"/>
+
+    <operator id="CalibratedYuleModelSubtreeSlide.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="SubtreeSlide" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="15.0"/>
+
+    <operator id="CalibratedYuleModelNarrow.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="Exchange" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="15.0"/>
+
+    <operator id="CalibratedYuleModelWide.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="Exchange" isNarrow="false" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+
+    <operator id="CalibratedYuleModelWilsonBalding.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="WilsonBalding" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+
+    <operator id="CalibratedYuleBirthRateScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" parameter="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND" scaleFactor="0.75" weight="3.0"/>
 
     <logger id="tracelog" fileName="replace_taxon.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
         <log idref="posterior"/>
