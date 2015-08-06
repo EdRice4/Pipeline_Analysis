@@ -90,7 +90,8 @@
         <parameter idref="freqParameter.s:replace_taxon"/>
     </operator>
 
-    <logger fileName="replace_taxon.log" id="tracelog" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+
+    <logger id="tracelog" fileName="replace_taxon.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
         <log idref="posterior"/>
         <log idref="likelihood"/>
         <log idref="prior"/>
