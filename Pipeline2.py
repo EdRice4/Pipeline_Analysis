@@ -42,9 +42,13 @@ class CommonMethods(object):
     }}} """
 
     # {{{ file_edit
-    def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
+    def file_edit(self, garli_conf, lines_to_edit, values_to_insert):
 
         """ {{{ Docstrings
+
+        Returns a modified garli configuration file, given the original
+        file, a list corresponding to the string values of the lines to be
+        edited, and the values which are to be inserted.
 
         The values of 'lines_to_edit' and 'values_to_insert' arguments should
         be in corresponding order so that the first value of the former
@@ -53,10 +57,10 @@ class CommonMethods(object):
         }}} """
 
         for i, j in zip(lines_to_edit, values_to_insert):
-            file_to_edit[file_to_edit.index(i)] = '{0}'.format(
-                    file_to_edit[file_to_edit.index(i)].strip() + j + '\n'
+            garli_conf[garli_conf.index(i)] = '{0}'.format(
+                    garli_conf[garli_conf.index(i)].strip() + j + '\n'
                     )
-        return file_to_edit
+        return garli_conf
     # }}}
 # }}}
 
