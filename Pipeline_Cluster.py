@@ -71,8 +71,6 @@ class jModelTest(object):
     def r_jModelTest_output(self, jModelTest_file):
         delimiter = jModelTest_file.index('::Best Models::\n')
         jmtf = jModelTest_file[delimiter + 2:]
-        if jmtf[-1].startswith('There'):
-            jmtf.pop()
         names = jmtf[0]
         model = jmtf[2]
         return names, model
