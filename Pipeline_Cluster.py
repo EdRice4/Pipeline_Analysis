@@ -132,6 +132,14 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_variables
     def r_jModelTest_variables(self, variables):
+
+        """ {{{ Docstrings
+
+        Given a list of variable names (as parsed by r_jModelTest_output),
+        further parses them, stripping the values, and formatting them, in
+        order to generate a "pretty" dictionary.
+
+        }}} """
         variables = variables.split('\t')
         variables = filter(None, variables)
         variables = map(lambda x: x.strip(), variables)
