@@ -28,11 +28,13 @@
                 <alignment idref="replace_taxon"/>
             </taxonset>
         </tree>
-        <parameter id="birthRate.t:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="mutationRate.s:replace_taxon" name="stateNode">1.0</parameter>
+        <parameter id="ucldMean.c:replace_taxon" name="stateNode">1.0</parameter>
+        <parameter id="ucldStdev.c:replace_taxon" lower="0.0" name="stateNode">0.1</parameter>
+        <parameter id="birthRateY.t:replace_taxon" name="stateNode">1.0</parameter>
     </state>
 
-    <init id="RandomTree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" taxa="@FullCytbFinal_trimmedMuscle_NIXEND">
+    <init id="RandomTree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:replace_taxon" taxa="@replace_taxon">
         <populationModel id="ConstantPopulation0.t:replace_taxon" spec="ConstantPopulation">
             <parameter id="randomPopSize.t:replace_taxon" name="popSize">1.0</parameter>
         </populationModel>
@@ -40,8 +42,8 @@
 
     <distribution id="posterior" spec="util.CompoundDistribution">
         <distribution id="prior" spec="util.CompoundDistribution">
-            <distribution id="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.speciation.CalibratedYuleModel" birthRate="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
-            <prior id="CalibratedYuleBirthRatePrior.t:FullCytbFinal_trimmedMuscle_NIXEND" name="distribution" x="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND">
+            <distribution id="CalibratedYuleModel.t:replace_taxon" spec="beast.evolution.speciation.CalibratedYuleModel" birthRate="@birthRateY.t:replace_taxon" tree="@Tree.t:replace_taxon"/>
+            <prior id="CalibratedYuleBirthRatePrior.t:replace_taxon" name="distribution" x="@birthRateY.t:replace_taxon">
                 <Uniform id="Uniform.0" name="distr" upper="1000.0"/>
             </prior>
             <prior id="MutationRatePrior.s:replace_taxon" name="distribution" x="@mutationRate.s:replace_taxon">
@@ -60,7 +62,7 @@
                         <parameter estimate="false" id="rateCG.s:replace_taxon" lower="0.0" name="rateCG">1.0</parameter>
                         <parameter estimate="false" id="rateCT.s:replace_taxon" lower="0.0" name="rateCT">1.0</parameter>
                         <parameter estimate="false" id="rateGT.s:replace_taxon" lower="0.0" name="rateGT">1.0</parameter>
-                        <frequencies id="empiricalFreqs.s:FullCytbFinal_trimmedMuscle_NIXEND" spec="Frequencies" data="@FullCytbFinal_trimmedMuscle_NIXEND"/>
+                        <frequencies id="empiricalFreqs.s:replace_taxon" spec="Frequencies" data="@replace_taxon"/>
                     </substModel>
                 </siteModel>
                 <branchRateModel id="RelaxedClock.c:replace_taxon" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" clock.rate="@ucldMean.c:replace_taxon" rateCategories="@rateCategories.c:replace_taxon" tree="@Tree.t:replace_taxon">
@@ -95,25 +97,25 @@
         <parameter idref="freqParameter.s:replace_taxon"/>
     </operator>
 
-    <operator id="CalibratedYuleModelTreeScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+    <operator id="CalibratedYuleModelTreeScaler.t:replace_taxon" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CalibratedYuleModelTreeRootScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+    <operator id="CalibratedYuleModelTreeRootScaler.t:replace_taxon" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CalibratedYuleModelUniformOperator.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="Uniform" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="30.0"/>
+    <operator id="CalibratedYuleModelUniformOperator.t:replace_taxon" spec="Uniform" tree="@Tree.t:replace_taxon" weight="30.0"/>
 
-    <operator id="CalibratedYuleModelSubtreeSlide.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="SubtreeSlide" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="15.0"/>
+    <operator id="CalibratedYuleModelSubtreeSlide.t:replace_taxon" spec="SubtreeSlide" tree="@Tree.t:replace_taxon" weight="15.0"/>
 
-    <operator id="CalibratedYuleModelNarrow.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="Exchange" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="15.0"/>
+    <operator id="CalibratedYuleModelNarrow.t:replace_taxon" spec="Exchange" tree="@Tree.t:replace_taxon" weight="15.0"/>
 
-    <operator id="CalibratedYuleModelWide.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="Exchange" isNarrow="false" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+    <operator id="CalibratedYuleModelWide.t:replace_taxon" spec="Exchange" isNarrow="false" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CalibratedYuleModelWilsonBalding.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="WilsonBalding" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND" weight="3.0"/>
+    <operator id="CalibratedYuleModelWilsonBalding.t:replace_taxon" spec="WilsonBalding" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CalibratedYuleBirthRateScaler.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="ScaleOperator" parameter="@birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND" scaleFactor="0.75" weight="3.0"/>
+    <operator id="CalibratedYuleBirthRateScaler.t:replace_taxon" spec="ScaleOperator" parameter="@birthRateY.t:replace_taxon" scaleFactor="0.75" weight="3.0"/>
 
-    <operator id="relaxedUpDownOperator.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
-        <up idref="ucldMean.c:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <down idref="Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+    <operator id="relaxedUpDownOperator.c:replace_taxon" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
+        <up idref="ucldMean.c:replace_taxon"/>
+        <down idref="Tree.t:replace_taxon"/>
     </operator>
 
     <logger id="tracelog" fileName="replace_taxon.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
@@ -123,9 +125,9 @@
         <log idref="prior"/>
         <log idref="treeLikelihood.replace_taxon"/>
         <log id="TreeHeight.t:replace_taxon" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:replace_taxon"/>
-        <log id="rate.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log id="rate.c:replace_taxon" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:replace_taxon" tree="@Tree.t:replace_taxon"/>
+        <log idref="CalibratedYuleModel.t:replace_taxon"/>
+        <log idref="birthRateY.t:replace_taxon"/>
         <?TODO:What are these two parameters?>
         <parameter idref="mutationRate.s:replace_taxon" name="log"/>
         <parameter idref="freqParameter.s:replace_taxon" name="log"/>
@@ -139,7 +141,7 @@
     </logger>
 
     <logger id="treelog.t:replace_taxon" fileName="$(tree).trees" logEvery="1000" mode="tree">
-        <log id="TreeWithMetaDataLogger.t:replace_taxon" spec="beast.evolution.tree.TreeWithMetaDataLogger" branchratemodel="@RelaxedClock.c:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log id="TreeWithMetaDataLogger.t:replace_taxon" spec="beast.evolution.tree.TreeWithMetaDataLogger" branchratemodel="@RelaxedClock.c:replace_taxon" tree="@Tree.t:replace_taxon"/>
     </logger>
 
 </run>
