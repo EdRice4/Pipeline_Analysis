@@ -16,6 +16,7 @@ import os
 class CommonMethods(object):
 
     """ {{{ Docstrings
+
     Methods utilized by multiple functions.
 
     1.) get_range returns the index of a user-specified start and end sequence,
@@ -25,12 +26,14 @@ class CommonMethods(object):
     2.) file_edit returns a modified configuration file, given the original
         file, a list corresponding to the string values of the lines to be
         edited, and the values which are to be inserted.
+
     }}} """
 
     # {{{ get_range
     def get_range(self, range_file, start, end):
 
         """ {{{ Docstrings
+
         The 'start' and 'end' arguments must match corresponding lines in
         range_file exactly, including any whitespace characters.
 
@@ -39,6 +42,7 @@ class CommonMethods(object):
         respective IDs) should be 'matrix\n' and the line immediately below
         should be ';\n' to ensure that every sequence is parsed, nothing more,
         nothing less.
+
         }}} """
 
         range_start = range_file.index(start)
@@ -50,9 +54,11 @@ class CommonMethods(object):
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
 
         """ {{{ Docstrings
+
         The values of 'lines_to_edit' and 'values_to_insert' arguments should
         be in corresponding order so that the first value of the former
         corresponds the the value you wish that parameter to have in the later.
+
         }}} """
 
         for i, j in zip(lines_to_edit, values_to_insert):
@@ -68,7 +74,9 @@ class CommonMethods(object):
 class jModelTest(CommonMethods):
 
     """ {{{ Docstrings
+
     Run jModelTest and store parameters associated with output.
+
     }}} """
 
     # {{{ add_args
