@@ -46,30 +46,32 @@ class jModelTest(object):
 
     # {{{ __init__
     def __init__(self):
-        self._jMT_ID = 'jModelTest_{0}.out'.format(
-                self._identifier
-                )
+        self.jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
         self._jMT_parameters = {}
     # }}}
 
     # {{{ run_jModeltest
     def run_jModelTest(self):
-        jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
-                     args.jMT, self._path)
+        jModelTest = (
+                'java -jar {0} -d {1} -t fixed '
+                '-s 11 -i -g 4 -f -tr 1'
+                ).format(args.jMT, self._path)
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                 universal_newlines=True
                 )
         with open(self._JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
+                # NOTE: Following if statement only necessary for running in
+                # OBCP cluster; can be ommited otherwise.
                 if line != 'Cannot perform output.\n':
                     print(line.strip())
                     output.write(str(line))
             jMT_run.stdout.close()
     # }}}
 
-    # {{{ r_jModelTest_file
-    def r_jModelTest_file(self, jModelTest_file):
+    # {{{ r_jModelTest_output
+    def r_jModelTest_output(self, jModelTest_file):
         delimiter = jModelTest_file.index('::Best Models::\n')
         jmtf = jModelTest_file[delimiter + 2:]
         if jmtf[-1].startswith('There'):
@@ -99,7 +101,7 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
-        names, model = self._r_jModelTest_file(jModelTest_file)
+        names, model = self._r_jModelTest_output(jModelTest_file)
         names = self._r_jModelTest_names(names)
         model = self._r_jModelTest_model(model)
         self._jMT_parameters = dict((i, j) for i, j in zip(names, model))
@@ -111,7 +113,9 @@ class jModelTest(object):
 class Garli(jModelTest):
 
     """ {{{ Docstrings
+
     Run garli and store parameters associated with output.
+
     }}} """
 
     # {{{ models
