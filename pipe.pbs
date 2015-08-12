@@ -1,0 +1,8 @@
+#PBS -N Pipeline_Analysis
+#PBS -l walltime=120:00:00
+#PBS nodes=10:ppn=12
+#PBS -m abe
+#PBS -j oe
+
+set -x
+trap "cd $PBS_O_WORKDIR;mkdir $PBS_JOBID;cp -R $TMPDIR/* $PBS_JOBID" TERM
