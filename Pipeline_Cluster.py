@@ -152,10 +152,27 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_values
     def r_jModelTest_values(self, values):
+
+        """ {{{ Docstrings
+
+        Given a string of variable values (as parsed by r_jModelTest_output),
+        further parses them into a list, stripping the values, and formatting
+        them, in order to generate a "pretty" dictionary.
+
+        }}} """
+
+        # Replace tab "\t" character with blank space; not every tab character
+        # in values line corresponds to a tab character in variables line, so
+        # in order for length(values) == length(variables), must split by
+        # another method
         values = values.replace('\t', ' ')
+        # Split string by occurrences of space
         values = values.split(' ')
+        # Filter out empty values
         values = filter(None, values)
+        # Do not want selection criteria as value
         values = values[1:]
+        # Strip values of leading and trailing whitespace characters
         values = map(lambda x: x.strip(), values)
         return values
     # }}}
