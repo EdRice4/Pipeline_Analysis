@@ -49,7 +49,7 @@ class jModelTest(object):
         self._jMT_ID = 'jModelTest_{0}.out'.format(
                 self._identifier
                 )
-        self._parameters = {}
+        self._jMT_parameters = {}
     # }}}
 
     # {{{ run_jModeltest
@@ -102,7 +102,7 @@ class jModelTest(object):
         names, model = self._r_jModelTest_file(jModelTest_file)
         names = self._r_jModelTest_names(names)
         model = self._r_jModelTest_model(model)
-        self._parameters = dict((i, j) for i, j in zip(names, model))
+        self._jMT_parameters = dict((i, j) for i, j in zip(names, model))
     # }}}
 # }}}
 
@@ -185,7 +185,7 @@ class Garli(jModelTest):
 
     # {{{ w_garli_conf
     def w_garli_conf(self, garli_file):
-        model_selected = self._parameters['Model']
+        model_selected = self._jMT_parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
@@ -290,7 +290,7 @@ class BEAST(Garli):
     def K80_HKY(self, xml_nodes):
         for i in xml_nodes:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
-                i.text = self._parameters['titv']
+                i.text = self._jMT_parameters['titv']
             else:
                 i.text = '1.0'
 
@@ -311,7 +311,7 @@ class BEAST(Garli):
 
     # {{{ w_beast_submodel
     def w_beast_submodel(self):
-        model_selected = self._parameters['Model']
+        model_selected = self._jMT_parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
@@ -358,7 +358,7 @@ class BEAST(Garli):
                             'name': 'shape'
                             }
                     )
-            gamma_shape.text = self._parameters['gamma']
+            gamma_shape.text = self._jMT_parameters['gamma']
         else:
             gamma_shape = ET.SubElement(
                     sitemodel, 'parameter',
@@ -379,7 +379,7 @@ class BEAST(Garli):
                             'upper': '1.0'
                             }
                     )
-            p_inv.text = self._parameters['pInv']
+            p_inv.text = self._jMT_parameters['pInv']
         else:
             p_inv = ET.SubElement(
                     sitemodel, 'parameter',
@@ -396,7 +396,7 @@ class BEAST(Garli):
     # {{{ w_beast_rates
     def w_beast_rates(self):
         xml_nodes = []
-        model_selected = self._parameters['Model'].translate(None, '+IG')
+        model_selected = self._jMT_parameters['Model'].translate(None, '+IG')
         for element in substmodel.iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
@@ -419,12 +419,12 @@ class BEAST(Garli):
         if BEAST.sub_models.get(model_selected):
             BEAST.sub_models[model_selected](self, xml_nodes)
         else:
-            rateAC.text = '%s' % self._parameters['Ra']
-            rateAG.text = '%s' % self._parameters['Rb']
-            rateAT.text = '%s' % self._parameters['Rc']
-            rateCG.text = '%s' % self._parameters['Rd']
-            rateCT.text = '%s' % self._parameters['Re']
-            rateGT.text = '%s' % self._parameters['Rf']
+            rateAC.text = '%s' % self._jMT_parameters['Ra']
+            rateAG.text = '%s' % self._jMT_parameters['Rb']
+            rateAT.text = '%s' % self._jMT_parameters['Rc']
+            rateCG.text = '%s' % self._jMT_parameters['Rd']
+            rateCT.text = '%s' % self._jMT_parameters['Re']
+            rateGT.text = '%s' % self._jMT_parameters['Rf']
     # }}}
 
     # {{{ get_range
