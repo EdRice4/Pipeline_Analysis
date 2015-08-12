@@ -79,7 +79,6 @@
         </distribution>
     </distribution>
 
-    <?TODO:What are ucldMeanScaler/ucldStdevScaler/CategoriesRandomWalk/CategoriesSwapOperator/CategoriesUniform;relaxed clock?>
     <operator id="FixMeanMutationRatesOperator" spec="DeltaExchangeOperator" delta="0.75" weight="2.0">
         <parameter idref="mutationRate.s:replace_taxon"/>
         <weightvector id="weightparameter" spec="parameter.IntegerParameter" estimate="false" lower="0" upper="0">799</weightvector>
