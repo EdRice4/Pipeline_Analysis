@@ -27,6 +27,7 @@
                 <alignment idref="replace_taxon"/>
             </taxonset>
         </tree>
+        <?TODO:Must I modify these?>
         <parameter id="mutationRate.s:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="ucldMean.c:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="ucldStdev.c:replace_taxon" lower="0.0" name="stateNode">0.1</parameter>
@@ -51,6 +52,7 @@
             </prior>
             <prior id="ucldStdevPrior.c:replace_taxon" name="distribution" x="@ucldStdev.c:replace_taxon">
                 <Gamma id="Gamma.0" name="distr">
+                    <?TODO:Must I modify these?>
                     <parameter id="RealParameter.0" estimate="false" name="alpha">0.5396</parameter>
                     <parameter id="RealParameter.01" estimate="false" name="beta">0.3819</parameter>
                 </Gamma>
@@ -117,18 +119,17 @@
     </operator>
 
     <logger id="tracelog" fileName="replace_taxon.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
-        <?TODO:What is ucldStdev/ucldMean?>
         <log idref="posterior"/>
         <log idref="likelihood"/>
         <log idref="prior"/>
-        <log idref="treeLikelihood.replace_taxon"/>
-        <log id="TreeHeight.t:replace_taxon" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:replace_taxon"/>
-        <log id="rate.c:replace_taxon" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:replace_taxon" tree="@Tree.t:replace_taxon"/>
-        <log idref="CalibratedYuleModel.t:replace_taxon"/>
-        <log idref="birthRateY.t:replace_taxon"/>
-        <?TODO:What are these two parameters?>
-        <parameter idref="mutationRate.s:replace_taxon" name="log"/>
-        <parameter idref="freqParameter.s:replace_taxon" name="log"/>
+        <log idref="treeLikelihood.FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log id="TreeHeight.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="mutationRate.s:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="ucldMean.c:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="ucldStdev.c:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log id="rate.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
     </logger>
 
     <logger id="screenlog" logEvery="1000">
