@@ -41,27 +41,6 @@ class CommonMethods(object):
 
     }}} """
 
-    # {{{ file_edit
-    def file_edit(self, garli_conf, lines_to_edit, values_to_insert):
-
-        """ {{{ Docstrings
-
-        Returns a modified garli configuration file, given the original
-        file, a list corresponding to the string values of the lines to be
-        edited, and the values which are to be inserted.
-
-        The values of 'lines_to_edit' and 'values_to_insert' arguments should
-        be in corresponding order so that the first value of the former
-        corresponds the the value you wish that parameter to have in the later.
-
-        }}} """
-
-        for i, j in zip(lines_to_edit, values_to_insert):
-            garli_conf[garli_conf.index(i)] = '{0}'.format(
-                    garli_conf[garli_conf.index(i)].strip() + j + '\n'
-                    )
-        return garli_conf
-    # }}}
 # }}}
 
 
@@ -200,6 +179,28 @@ class Garli(jModelTest):
                         ),
                 default=0
                 )
+    # }}}
+
+    # {{{ file_edit
+    def edit_garli_conf(self, garli_conf, lines_to_edit, values_to_insert):
+
+        """ {{{ Docstrings
+
+        Returns a modified garli configuration file, given the original
+        file, a list corresponding to the string values of the lines to be
+        edited, and the values which are to be inserted.
+
+        The values of 'lines_to_edit' and 'values_to_insert' arguments should
+        be in corresponding order so that the first value of the former
+        corresponds the the value you wish that parameter to have in the later.
+
+        }}} """
+
+        for i, j in zip(lines_to_edit, values_to_insert):
+            garli_conf[garli_conf.index(i)] = '{0}'.format(
+                    garli_conf[garli_conf.index(i)].strip() + j + '\n'
+                    )
+        return garli_conf
     # }}}
 
     # {{{ w_garli_conf
