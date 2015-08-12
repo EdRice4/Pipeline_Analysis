@@ -163,8 +163,8 @@ class jModelTest(object):
 
         # Replace tab "\t" character with blank space; not every tab character
         # in values line corresponds to a tab character in variables line, so
-        # in order for length(values) == length(variables), must split by
-        # another method
+        # in order for len(values) == len(variables), must split by another
+        # method
         values = values.replace('\t', ' ')
         # Split string by occurrences of space
         values = values.split(' ')
@@ -179,9 +179,26 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
+
+        """ {{{ Docstrings
+
+        Concatenates r_jModelTest* functionality; performing all necessary
+        steps to generate "pretty" dictionary in format of:
+
+                dictionary = {
+                        'variable' : 'value'
+                        'variable' : 'value'
+                        }
+
+        }}} """
+
+        # Get variables and corresponding values as strings
         variables, values = self.r_jModelTest_output(jModelTest_file)
+        # Parse variables into list
         variables = self.r_jModelTest_variables(variables)
+        # Parse values into list
         values = self.r_jModelTest_values(values)
+        # Generate dictionary
         jMT_parameters = dict((i, j) for i, j in zip(variables, values))
         return jMT_parameters
     # }}}
