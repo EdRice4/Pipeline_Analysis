@@ -46,21 +46,21 @@ class jModelTest(object):
 
     # {{{ __init__
     def __init__(self):
-        self.jMT_ID = 'jModelTest_{0}.out'.format(
-                self.identifier
+        self._jMT_ID = 'jModelTest_{0}.out'.format(
+                self._identifier
                 )
-        self.parameters = {}
+        self._parameters = {}
     # }}}
 
     # {{{ run_jModeltest
     def run_jModelTest(self):
         jModelTest = 'java -jar %s -d %s -t fixed -s 11 -i -g 4 -f -tr 1' % (
-                     args.jMT, self.path)
+                     args.jMT, self._path)
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                 universal_newlines=True
                 )
-        with open(self.JMT_ID, 'w') as output:
+        with open(self._JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 if line != 'Cannot perform output.\n':
                     print(line.strip())
@@ -99,10 +99,10 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
-        names, model = self.r_jModelTest_file(jModelTest_file)
-        names = self.r_jModelTest_names(names)
-        model = self.r_jModelTest_model(model)
-        self.parameters = dict((i, j) for i, j in zip(names, model))
+        names, model = self._r_jModelTest_file(jModelTest_file)
+        names = self._r_jModelTest_names(names)
+        model = self._r_jModelTest_model(model)
+        self._parameters = dict((i, j) for i, j in zip(names, model))
     # }}}
 # }}}
 
@@ -185,7 +185,7 @@ class Garli(jModelTest):
 
     # {{{ w_garli_conf
     def w_garli_conf(self, garli_file):
-        model_selected = self.parameters['Model']
+        model_selected = self._parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
@@ -196,7 +196,7 @@ class Garli(jModelTest):
                 'numratecats =\n', 'invariantsites =\n'
                 ]
         garli_values = [
-                self.path, self.identifier, str(args.bstr),
+                self._path, self._identifier, str(args.bstr),
                 Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
@@ -208,15 +208,15 @@ class Garli(jModelTest):
             garli_values.append('estimate')
         else:
             garli_values.append('none')
-        garli_file = self.file_edit(garli_file, garli_params, garli_values)
-        with open('garli_%s.conf' % self.identifier, 'w+') as garli_output:
+        garli_file = self._file_edit(garli_file, garli_params, garli_values)
+        with open('garli_%s.conf' % self._identifier, 'w+') as garli_output:
             for i in garli_file:
                 garli_output.write(i)
     # }}}
 
     # {{{ run_garli
     def run_garli(self):
-        garli = './Garli -b garli_%s.conf' % self.identifier
+        garli = './Garli -b garli_%s.conf' % self._identifier
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
                 )
@@ -272,11 +272,11 @@ class BEAST(Garli):
 
     # {{{ __init__
     def __init__(self):
-        self.BEAST_XML = 'BEAST_{0}.xml'.format(
-                self.identifier
+        self._BEAST_XML = 'BEAST_{0}.xml'.format(
+                self._identifier
                 )
-        self.BEAST_ID = 'BEAST_{0}.out'.format(
-                self.identifier
+        self._BEAST_ID = 'BEAST_{0}.out'.format(
+                self._identifier
                 )
     # }}}
 
@@ -290,7 +290,7 @@ class BEAST(Garli):
     def K80_HKY(self, xml_nodes):
         for i in xml_nodes:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
-                i.text = self.parameters['titv']
+                i.text = self._parameters['titv']
             else:
                 i.text = '1.0'
 
@@ -311,7 +311,7 @@ class BEAST(Garli):
 
     # {{{ w_beast_submodel
     def w_beast_submodel(self):
-        model_selected = self.parameters['Model']
+        model_selected = self._parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
@@ -325,7 +325,7 @@ class BEAST(Garli):
                     state, 'parameter',
                     attrib={
                             'dimension': '4',
-                            'id': 'freqParameter.s:%s' % self.sequence_name,
+                            'id': 'freqParameter.s:%s' % self._sequence_name,
                             'lower': '0.0', 'name': 'stateNode',
                             'upper': '1.0'
                             }
@@ -334,7 +334,7 @@ class BEAST(Garli):
             freq_log = ET.SubElement(
                     log, 'parameter',
                     attrib={
-                            'idref': 'freqParameter.s:%s' % self.sequence_name,
+                            'idref': 'freqParameter.s:%s' % self._sequence_name,
                             'name': 'log'
                             }
                     )
@@ -342,9 +342,9 @@ class BEAST(Garli):
             freq = ET.SubElement(
                     substmodel, 'frequencies',
                     attrib={
-                            'data': '@%s' % self.sequence_name,
+                            'data': '@%s' % self._sequence_name,
                             'estimate': 'false',
-                            'id': 'equalFreqs.s:%s' % self.sequence_name,
+                            'id': 'equalFreqs.s:%s' % self._sequence_name,
                             'spec': 'Frequencies'
                             }
                     )
@@ -354,17 +354,17 @@ class BEAST(Garli):
                     sitemodel, 'parameter',
                     attrib={
                             'estimate': 'false',
-                            'id': 'gammaShape.s:%s' % self.sequence_name,
+                            'id': 'gammaShape.s:%s' % self._sequence_name,
                             'name': 'shape'
                             }
                     )
-            gamma_shape.text = self.parameters['gamma']
+            gamma_shape.text = self._parameters['gamma']
         else:
             gamma_shape = ET.SubElement(
                     sitemodel, 'parameter',
                     attrib={
                             'estimate': 'false',
-                            'id': 'gammaShape.s:%s' % self.sequence_name,
+                            'id': 'gammaShape.s:%s' % self._sequence_name,
                             'name': 'shape'
                             }
                     )
@@ -374,18 +374,18 @@ class BEAST(Garli):
                     sitemodel, 'parameter',
                     attrib={
                             'estimate': 'false',
-                            'id': 'proportionInvariant.s:%s' % self.sequence_name,
+                            'id': 'proportionInvariant.s:%s' % self._sequence_name,
                             'lower': '0.0', 'name': 'proportionInvariant',
                             'upper': '1.0'
                             }
                     )
-            p_inv.text = self.parameters['pInv']
+            p_inv.text = self._parameters['pInv']
         else:
             p_inv = ET.SubElement(
                     sitemodel, 'parameter',
                     attrib={
                             'estimate': 'false',
-                            'id': 'proportionInvariant.s:%s' % self.sequence_name,
+                            'id': 'proportionInvariant.s:%s' % self._sequence_name,
                             'lower': '0.0', 'name': 'proportionInvariant',
                             'upper': '1.0'
                             }
@@ -396,7 +396,7 @@ class BEAST(Garli):
     # {{{ w_beast_rates
     def w_beast_rates(self):
         xml_nodes = []
-        model_selected = self.parameters['Model'].translate(None, '+IG')
+        model_selected = self._parameters['Model'].translate(None, '+IG')
         for element in substmodel.iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
@@ -419,12 +419,12 @@ class BEAST(Garli):
         if BEAST.sub_models.get(model_selected):
             BEAST.sub_models[model_selected](self, xml_nodes)
         else:
-            rateAC.text = '%s' % self.parameters['Ra']
-            rateAG.text = '%s' % self.parameters['Rb']
-            rateAT.text = '%s' % self.parameters['Rc']
-            rateCG.text = '%s' % self.parameters['Rd']
-            rateCT.text = '%s' % self.parameters['Re']
-            rateGT.text = '%s' % self.parameters['Rf']
+            rateAC.text = '%s' % self._parameters['Ra']
+            rateAG.text = '%s' % self._parameters['Rb']
+            rateAT.text = '%s' % self._parameters['Rc']
+            rateCG.text = '%s' % self._parameters['Rd']
+            rateCT.text = '%s' % self._parameters['Re']
+            rateGT.text = '%s' % self._parameters['Rf']
     # }}}
 
     # {{{ get_range
@@ -454,7 +454,7 @@ class BEAST(Garli):
 
     # {{{ w_beast_taxon
     def w_beast_taxon(self, nexus_file):
-        sequence_start, sequence_end = self.get_range(
+        sequence_start, sequence_end = self._get_range(
                 nexus_file, 'matrix\n', ';\n'
                 )
         sequence_start += 1
@@ -476,23 +476,23 @@ class BEAST(Garli):
 
     # {{{ beast_finalize
     def beast_finalize(self):
-        log.set('fileName', self.BEAST_ID)
-        beast.write(self.BEAST_XML, pretty_print=True, xml_declaration=True,
+        log.set('fileName', self._BEAST_ID)
+        beast.write(self._BEAST_XML, pretty_print=True, xml_declaration=True,
                     encoding='UTF-8', standalone=False)
-        with open(self.BEAST_XML, 'r+') as beast_xml_file:
+        with open(self._BEAST_XML, 'r+') as beast_xml_file:
             beast_xml = beast_xml_file.read()
-        beast_xml = sub('replace_taxon', self.sequence_name, beast_xml)
-        with open(self.BEAST_XML, 'w') as beast_xml_file:
+        beast_xml = sub('replace_taxon', self._sequence_name, beast_xml)
+        with open(self._BEAST_XML, 'w') as beast_xml_file:
             beast_xml_file.write(beast_xml)
     # }}}
 
     # {{{ run_beast
     def run_beast(self):
-        run = self.identifier + '_RUN_1'
+        run = self._identifier + '_RUN_1'
         os.mkdir(run)
         BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
                                                str(randrange(0, 999999)),
-                                               self.BEAST_XML)
+                                               self._BEAST_XML)
         beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
                           stdin=PIPE)
         for line in iter(beast_run.stdout.readline, ''):
@@ -505,18 +505,18 @@ class BEAST(Garli):
         ess = 1
         run_count = 1
         while ess:
-            run = self.identifier + '_RUN_' + str(run_count)
+            run = self._identifier + '_RUN_' + str(run_count)
             os.mkdir(run)
             BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
                                                    randrange(0, 999999999),
-                                                   self.BEAST_XML)
+                                                   self._BEAST_XML)
             beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
                               stdin=PIPE)
             for line in iter(beast_run.stdout.readline, ''):
                 print(line.strip())
             beast_run.stdout.close()
             run_count += 1
-            ess = self.calculate_statistics(run + '/' + self.BEAST_ID)
+            ess = self._calculate_statistics(run + '/' + self._BEAST_ID)
             ess = filter(lambda x: x < args.tolerance, ess)
     # }}}
 
@@ -526,11 +526,11 @@ class BEAST(Garli):
         fid = os.listdir(cwd)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
         if len(bdirs) > 1:
-            bdirs = map(lambda x: '-log ' + x + '/' + self.BEAST_ID, bdirs)
+            bdirs = map(lambda x: '-log ' + x + '/' + self._BEAST_ID, bdirs)
             com = './%s %s -b %s -o MASTER_%s' % (args.lcom,
                                                   ' '.join(bdirs),
                                                   args.burnin_BEAST,
-                                                  self.BEAST_ID)
+                                                  self._BEAST_ID)
             lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
             for line in iter(lcom.stdout.readline, ''):
                 print(line.strip())
@@ -605,11 +605,11 @@ class bGMYC(BEAST):
     # {{{ bGMYC
     def bGMYC(self, parameter_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
-        if parameter_dict.get(self.sequence_name):
-            parameters = parameter_dict[self.sequence_name]
+        if parameter_dict.get(self._sequence_name):
+            parameters = parameter_dict[self._sequence_name]
         else:
             parameters = []
-        os.chdir(self.master_dir)
+        os.chdir(self._master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
         bdirs = filter(lambda x: '_RUN_' in x, fid)
@@ -621,7 +621,7 @@ class bGMYC(BEAST):
                     'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
                     '-mcmc={2} -burnin={3} -thinning={4} {5}'
                     ).format(
-                            self.sequence_name, self.identifier,
+                            self._sequence_name, self._identifier,
                             args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
                             ' '.join(parameters)
                             )
@@ -644,18 +644,18 @@ class CleanUp(bGMYC):
 
     # {{{ __init__
     def __init__(self):
-        self.master_dir = self.identifier + '_MASTER'
+        self._master_dir = self._identifier + '_MASTER'
     # }}}
 
     # {{{ clean_up
     def clean_up(self):
         cwd = os.getcwd()
         files_in_dir = os.listdir(cwd)
-        output_files = filter(lambda x: self.identifier in x, files_in_dir)
-        os.mkdir(self.master_dir)
+        output_files = filter(lambda x: self._identifier in x, files_in_dir)
+        os.mkdir(self._master_dir)
         for i in output_files:
-            move(i, self.master_dir)
-        copy(self.path, self.master_dir)
+            move(i, self._master_dir)
+        copy(self._path, self._master_dir)
     # }}}
 # }}}
 
@@ -711,15 +711,15 @@ class NexusFile(CleanUp):
 
     # {{{ __init__
     def __init__(self, path):
-        self.path = str(path)
-        self.sequence_name = self.path.replace('.nex', '')
-        self.identifier = '{0}_{1}'.format(
-                self.sequence_name, randrange(0, 999999999)
+        self._path = str(path)
+        self._sequence_name = self._path.replace('.nex', '')
+        self._identifier = '{0}_{1}'.format(
+                self._sequence_name, randrange(0, 999999999)
                 )
         jModelTest.__init__(self)
         BEAST.__init__(self)
         CleanUp.__init__(self)
-        self.registry.append(self)
+        self._registry.append(self)
     # }}}
 
     # {{{ write_call_file
@@ -733,14 +733,14 @@ class NexusFile(CleanUp):
         }}} """
 
         call_file = 'call_{0}.txt'.format(
-                self.identifier
+                self._identifier
                 )
         # Local date (MM/DD/YY) and local time (HH:MM:SS [24 fmt])
         call_time = 'Initiation date|time: {0}\n'.format(
                 strftime('%x|%X')
                 )
         call_id = 'Sequence file: {0}\n'.format(
-                self.identifier
+                self._identifier
                 )
         # Convert args to dictionary
         opts = vars(args)
@@ -754,9 +754,9 @@ class NexusFile(CleanUp):
                             i, opts[i]
                             )
                     call.write(f)
-            if bGMYC_parameters.get(self.sequence_name):
+            if bGMYC_parameters.get(self._sequence_name):
                 call.write('bGMYC parameters: ')
-                call.write(str(bGMYC_parameters[self.sequence_name]))
+                call.write(str(bGMYC_parameters[self._sequence_name]))
             else:
                 call.write('bGMYC parameters: Defaults')
     # }}}
