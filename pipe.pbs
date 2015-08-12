@@ -21,3 +21,6 @@ module load beast/2.3.0
 module load ncl/2.1.21
 module load garli/2.01
 module load jMT/2.1.7
+
+#Change directory to that which script was ran from
+cd $PBS_O_WORKDIR
