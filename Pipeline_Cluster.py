@@ -135,13 +135,17 @@ class jModelTest(object):
 
         """ {{{ Docstrings
 
-        Given a list of variable names (as parsed by r_jModelTest_output),
-        further parses them, stripping the values, and formatting them, in
-        order to generate a "pretty" dictionary.
+        Given a string of variable names (as parsed by r_jModelTest_output),
+        further parses them into a list, stripping the values, and formatting
+        them, in order to generate a "pretty" dictionary.
 
         }}} """
+
+        # Split string by occurences of tab "\t" character
         variables = variables.split('\t')
+        # Filter out empty values
         variables = filter(None, variables)
+        # Strip values of leading and trailing whitespace characters
         variables = map(lambda x: x.strip(), variables)
         return variables
     # }}}
