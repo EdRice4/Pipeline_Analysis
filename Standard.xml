@@ -58,10 +58,9 @@
             </prior>
         </distribution>
         <distribution id="likelihood" spec="util.CompoundDistribution">
-            <distribution id="treeLikelihood.FullCytbFinal_trimmedMuscle_NIXEND" spec="TreeLikelihood" data="@FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND">
-                <?TODO:Am I modifying sitemodel to reflect parameters?>
+            <distribution id="treeLikelihood.replace_taxon" spec="TreeLikelihood" data="@replace_taxon" tree="@Tree.t:replace_taxon">
                 <siteModel id="SiteModel.s:replace_taxon" mutationRate="@mutationRate.s:replace_taxon" spec="SiteModel">
-                    <?TODO:Am I added parameter id="gamaShape"/"proportionInvariant"?>
+                    <?TODO:Am I adding parameter id="gamaShape"/"proportionInvariant" to reflect selected model?>
                     <substModel id="gtr.s:replace_taxon" spec="GTR">
                         <parameter estimate="false" id="rateAC.s:replace_taxon" lower="0.0" name="rateAC">1.0</parameter>
                         <parameter estimate="false" id="rateAG.s:replace_taxon" lower="0.0" name="rateAG">1.0</parameter>
@@ -94,9 +93,6 @@
 
     <operator id="wide.t:replace_taxon" isNarrow="false" spec="Exchange" tree="@Tree.t:replace_taxon" weight="3.0"/>
     <?TODO:What are the 6 previous operators?>
-
-    <?TODO:What is WilsonBalding?>
-    <operator id="WilsonBalding.t:replace_taxon" spec="WilsonBalding" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
     <operator id="mutationRateScaler.s:replace_taxon" parameter="@mutationRate.s:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" weight="0.1"/>
 
