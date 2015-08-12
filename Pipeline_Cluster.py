@@ -46,9 +46,9 @@ class jModelTest(object):
 
     # {{{ __init__
     def __init__(self):
-        self.jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
+        self._jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
         self.run_jModelTest()
-        self._jMT_parameters = self.r_jModelTest_parameters()
+        self._jMT_parameters = self.r_jModelTest_parameters(self._jMT_out)
     # }}}
 
     # {{{ run_jModeltest
@@ -70,38 +70,45 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_output
     def r_jModelTest_output(self, jModelTest_file):
-        delimiter = jModelTest_file.index('::Best Models::\n')
-        jmtf = jModelTest_file[delimiter + 2:]
-        names = jmtf[0]
-        model = jmtf[2]
-        return names, model
+        # Open jModelTest output in read model
+        with open(jModelTest_file, 'r') as jmt_out:
+            # Read into list
+            jmt_out = jmt_out.readlines()
+        # Get beginning psoition of selected model block
+        delimiter = jmt_out.index('::Best Models::\n')
+        # Truncate the output
+        jmt_out = jmt_out[delimiter + 2:]
+        # Get the names of the variables
+        variables = jmt_out[0]
+        values = jmt_out[2]
+        return variables, values
     # }}}
 
-    # {{{ r_jModelTest_names
-    def r_jModelTest_names(self, names):
-        names = names.split('\t')
-        names = filter(None, names)
-        names = map(lambda x: x.strip(), names)
-        return names
+    # {{{ r_jModelTest_variables
+    def r_jModelTest_variables(self, variables):
+        variables = variables.split('\t')
+        variables = filter(None, variables)
+        variables = map(lambda x: x.strip(), variables)
+        return variables
     # }}}
 
-    # {{{ r_jModelTest_model
-    def r_jModelTest_model(self, model):
-        model = model.replace('\t', ' ')
-        model = model.split(' ')
-        model = filter(None, model)
-        model = model[1:]
-        model = map(lambda x: x.strip(), model)
-        return model
+    # {{{ r_jModelTest_values
+    def r_jModelTest_values(self, values):
+        values = values.replace('\t', ' ')
+        values = values.split(' ')
+        values = filter(None, values)
+        values = values[1:]
+        values = map(lambda x: x.strip(), values)
+        return values
     # }}}
 
     # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
-        names, model = self._r_jModelTest_output(jModelTest_file)
-        names = self.r_jModelTest_names(names)
-        model = self.r_jModelTest_model(model)
-        jMT_parameters = dict((i, j) for i, j in zip(names, model))
-        self._jMT_parameters = dict((i, j) for i, j in zip(names, model))
+        variables, values = self.r_jModelTest_output(jModelTest_file)
+        variables = self.r_jModelTest_variables(variables)
+        values = self.r_jModelTest_values(values)
+        jMT_parameters = dict((i, j) for i, j in zip(variables, values))
+        return jMT_parameters
     # }}}
 # }}}
 
