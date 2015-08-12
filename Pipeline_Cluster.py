@@ -47,14 +47,15 @@ class jModelTest(object):
     # {{{ __init__
     def __init__(self):
         self.jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
-        self._jMT_parameters = {}
+        self.run_jModelTest()
+        self._jMT_parameters = self.r_jModelTest_parameters()
     # }}}
 
     # {{{ run_jModeltest
     def run_jModelTest(self):
         jModelTest = (
-                'java -jar {0} -d {1} -t fixed '
-                '-s 11 -i -g 4 -f -tr 1'
+                'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
+                '-AIC -AICc -DT'
                 ).format(args.jMT, self._path)
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
@@ -97,8 +98,9 @@ class jModelTest(object):
     # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
         names, model = self._r_jModelTest_output(jModelTest_file)
-        names = self._r_jModelTest_names(names)
-        model = self._r_jModelTest_model(model)
+        names = self.r_jModelTest_names(names)
+        model = self.r_jModelTest_model(model)
+        jMT_parameters = dict((i, j) for i, j in zip(names, model))
         self._jMT_parameters = dict((i, j) for i, j in zip(names, model))
     # }}}
 # }}}
