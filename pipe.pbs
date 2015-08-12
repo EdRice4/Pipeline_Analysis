@@ -4,7 +4,7 @@
 #PBS -l walltime=120:00:00
 #10 nodes, each with 12 processors (120 total)
 #PBS nodes=10:ppn=12
-#Maile me upon job abortion/beginning/ending
+#Mail me upon job abortion/beginning/ending
 #PBS -m abe
 #Concatenate out and error files
 #PBS -j oe
