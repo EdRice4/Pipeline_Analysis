@@ -36,6 +36,14 @@ class jModelTest(object):
     # {{{ add_args
     @staticmethod
     def add_args():
+
+        """ {{{ Docstrings
+
+        Add argument group "jMT" to namespace and subsequent pertinent
+        arguments to aforementioned group.
+
+        }}} """
+
         args_jMT = arg_parser.add_argument_group(
                 'jMT', 'Arguments for running jModelTest module.'
                 )
@@ -46,6 +54,13 @@ class jModelTest(object):
 
     # {{{ __init__
     def __init__(self):
+
+        """ {{{ Docstrings
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
         self._jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
         self.run_jModelTest()
         self._jMT_parameters = self.r_jModelTest_parameters(self._jMT_out)
@@ -53,18 +68,33 @@ class jModelTest(object):
 
     # {{{ run_jModeltest
     def run_jModelTest(self):
+
+        """ {{{ Docstrings
+
+        Run jModelTest by spawning child process, utilizing "Popen" function
+        provided by "subprocess" python module. The output/errors of this
+        process is then subsequently printed, to stdout and written to a file,
+        in real-time.
+
+        }}} """
+
+        # Specify child process, including any pertinent arguments; see
+        # jModelTest documentation for explanantion of arguments.
         jModelTest = (
                 'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
                 '-AIC -AICc -DT'
                 ).format(args.jMT, self._path)
+        # Spawn child process and run
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                 universal_newlines=True
                 )
+        # Open stdout of child process and print/write in real-time
         with open(self._JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 print(line.strip())
                 output.write(str(line))
+            # Close stdout
             jMT_run.stdout.close()
     # }}}
 
@@ -80,6 +110,7 @@ class jModelTest(object):
         jmt_out = jmt_out[delimiter + 2:]
         # Get the names of the variables
         variables = jmt_out[0]
+        # Get the values of the variables
         values = jmt_out[2]
         return variables, values
     # }}}
