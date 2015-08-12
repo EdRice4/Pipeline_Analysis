@@ -81,24 +81,20 @@
     </distribution>
 
     <?TODO:What are ucldMeanScaler/ucldStdevScaler/CategoriesRandomWalk/CategoriesSwapOperator/CategoriesUniform;relaxed clock?>
-    <operator id="treeScaler.t:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
-
-    <operator id="treeRootScaler.t:replace_taxon" rootOnly="true" scaleFactor="0.5" spec="ScaleOperator" tree="@Tree.t:replace_taxon" weight="3.0"/>
-
-    <operator id="UniformOperator.t:replace_taxon" spec="Uniform" tree="@Tree.t:replace_taxon" weight="30.0"/>
-
-    <operator id="SubtreeSlide.t:replace_taxon" spec="SubtreeSlide" tree="@Tree.t:replace_taxon" weight="15.0"/>
-
-    <operator id="narrow.t:replace_taxon" spec="Exchange" tree="@Tree.t:replace_taxon" weight="15.0"/>
-
-    <operator id="wide.t:replace_taxon" isNarrow="false" spec="Exchange" tree="@Tree.t:replace_taxon" weight="3.0"/>
-    <?TODO:What are the 6 previous operators?>
-
-    <operator id="mutationRateScaler.s:replace_taxon" parameter="@mutationRate.s:replace_taxon" scaleFactor="0.5" spec="ScaleOperator" weight="0.1"/>
-
-    <operator delta="0.01" id="FrequenciesExchanger.s:replace_taxon" spec="DeltaExchangeOperator" weight="0.1">
-        <parameter idref="freqParameter.s:replace_taxon"/>
+    <operator id="FixMeanMutationRatesOperator" spec="DeltaExchangeOperator" delta="0.75" weight="2.0">
+        <parameter idref="mutationRate.s:replace_taxon"/>
+        <weightvector id="weightparameter" spec="parameter.IntegerParameter" estimate="false" lower="0" upper="0">799</weightvector>
     </operator>
+
+    <operator id="ucldMeanScaler.c:replace_taxon" spec="ScaleOperator" parameter="@ucldMean.c:replace_taxon" scaleFactor="0.5" weight="1.0"/>
+
+    <operator id="ucldStdevScaler.c:replace_taxon" spec="ScaleOperator" parameter="@ucldStdev.c:replace_taxon" scaleFactor="0.5" weight="3.0"/>
+
+    <operator id="CategoriesRandomWalk.c:replace_taxon" spec="IntRandomWalkOperator" parameter="@rateCategories.c:replace_taxon" weight="10.0" windowSize="1"/>
+
+    <operator id="CategoriesSwapOperator.c:replace_taxon" spec="SwapOperator" intparameter="@rateCategories.c:replace_taxon" weight="10.0"/>
+
+    <operator id="CategoriesUniform.c:replace_taxon" spec="UniformOperator" parameter="@rateCategories.c:replace_taxon" weight="10.0"/>
 
     <operator id="CalibratedYuleModelTreeScaler.t:replace_taxon" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
