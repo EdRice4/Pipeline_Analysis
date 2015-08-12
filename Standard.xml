@@ -27,7 +27,6 @@
                 <alignment idref="replace_taxon"/>
             </taxonset>
         </tree>
-        <?TODO:Must I modify these?>
         <parameter id="mutationRate.s:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="ucldMean.c:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="ucldStdev.c:replace_taxon" lower="0.0" name="stateNode">0.1</parameter>
