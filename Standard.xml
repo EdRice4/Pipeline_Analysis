@@ -122,14 +122,14 @@
         <log idref="posterior"/>
         <log idref="likelihood"/>
         <log idref="prior"/>
-        <log idref="treeLikelihood.FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log id="TreeHeight.t:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="mutationRate.s:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="ucldMean.c:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="ucldStdev.c:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log id="rate.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="CalibratedYuleModel.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
-        <log idref="birthRateY.t:FullCytbFinal_trimmedMuscle_NIXEND"/>
+        <log idref="treeLikelihood.replace_taxon"/>
+        <log id="TreeHeight.t:replace_taxon" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:replace_taxon"/>
+        <log idref="mutationRate.s:replace_taxon"/>
+        <log idref="ucldMean.c:replace_taxon"/>
+        <log idref="ucldStdev.c:replace_taxon"/>
+        <log id="rate.c:replace_taxon" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:replace_taxon" tree="@Tree.t:replace_taxon"/>
+        <log idref="CalibratedYuleModel.t:replace_taxon"/>
+        <log idref="birthRateY.t:replace_taxon"/>
     </logger>
 
     <logger id="screenlog" logEvery="1000">
