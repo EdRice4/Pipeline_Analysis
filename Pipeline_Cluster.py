@@ -62,11 +62,8 @@ class jModelTest(object):
                 )
         with open(self._JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
-                # NOTE: Following if statement only necessary for running in
-                # OBCP cluster; can be ommited otherwise.
-                if line != 'Cannot perform output.\n':
-                    print(line.strip())
-                    output.write(str(line))
+                print(line.strip())
+                output.write(str(line))
             jMT_run.stdout.close()
     # }}}
 
