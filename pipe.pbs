@@ -6,3 +6,10 @@
 
 set -x
 trap "cd $PBS_O_WORKDIR;mkdir $PBS_JOBID;cp -R $TMPDIR/* $PBS_JOBID" TERM
+
+module load java/1.8.51
+module load beagle/2.1
+module load beast/2.3.0
+module load ncl/2.1.21
+module load garli/2.01
+module load jMT/2.1.7
