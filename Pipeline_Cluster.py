@@ -100,6 +100,21 @@ class jModelTest(object):
 
     # {{{ r_jModelTest_output
     def r_jModelTest_output(self, jModelTest_file):
+
+        """ {{{ Docstrings
+
+        Given the name of the jModelTest output file (as a string), opens the
+        file in read mode and reads it into a list which is then parsed
+        (here and in subsequent functions; see below) for the pertinent
+        selected model paramters at the end of the file.
+
+        NOTE: This function does not support comparison of selected models
+        between different selection criterion; to do so would require
+        human interference which does not coincide with the purpose of this
+        script. Rather, it simply selects the model output "first."
+
+        }}} """
+
         # Open jModelTest output in read model
         with open(jModelTest_file, 'r') as jmt_out:
             # Read into list
