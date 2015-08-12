@@ -58,7 +58,7 @@
             </prior>
         </distribution>
         <distribution id="likelihood" spec="util.CompoundDistribution">
-            <distribution data="@replace_taxon" id="treeLikelihood.replace_taxon" spec="TreeLikelihood" tree="@Tree.t:replace_taxon">
+            <distribution id="treeLikelihood.FullCytbFinal_trimmedMuscle_NIXEND" spec="TreeLikelihood" data="@FullCytbFinal_trimmedMuscle_NIXEND" tree="@Tree.t:FullCytbFinal_trimmedMuscle_NIXEND">
                 <?TODO:Am I modifying sitemodel to reflect parameters?>
                 <siteModel id="SiteModel.s:replace_taxon" mutationRate="@mutationRate.s:replace_taxon" spec="SiteModel">
                     <?TODO:Am I added parameter id="gamaShape"/"proportionInvariant"?>
