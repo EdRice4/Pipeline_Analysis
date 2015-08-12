@@ -1,12 +1,20 @@
+#Name of job
 #PBS -N Pipeline_Analysis
+#Amount of time to allocate
 #PBS -l walltime=120:00:00
+#10 nodes, each with 12 processors (120 total)
 #PBS nodes=10:ppn=12
+#Maile me upon job abortion/beginning/ending
 #PBS -m abe
+#Concatenate out and error files
 #PBS -j oe
 
+# Each command in batch file echoed to log file
 set -x
+# Upon abortion, copy all files from $TMPDIR to $PBS_O_WORKDIR/$PBS_JOBID
 trap "cd $PBS_O_WORKDIR;mkdir $PBS_JOBID;cp -R $TMPDIR/* $PBS_JOBID" TERM
 
+# Load pertinent modules
 module load java/1.8.51
 module load beagle/2.1
 module load beast/2.3.0
