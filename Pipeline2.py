@@ -189,16 +189,30 @@ class Garli(jModelTest):
 
     # {{{ w_garli_conf
     def w_garli_conf(self, garli_file):
+
+        """ {{{ Docstrings
+
+        Given the parameters of the model selected by jModelTest, writes
+        the input garli.conf file to reflect these parameters.
+
+        }}} """
+
+        # Get the model selected
         model_selected = self._jMT_parameters['Model']
+        # Check if model includes gamma distribution
         het = '+G' in model_selected
+        # Check if model includes proportion of invariant sites
         inv = '+I' in model_selected
+        # Remove these values; confounds with model dictionary above
         model_selected = model_selected.translate(None, '+IG')
+        # Variables in garli.conf to edit
         garli_params = [
                 'datafname =\n', 'ofprefix =\n',
                 'bootstrapreps =\n', 'ratematrix =\n',
                 'statefrequencies =\n', 'ratehetmodel =\n',
                 'numratecats =\n', 'invariantsites =\n'
                 ]
+        # Values of variables to insert
         garli_values = [
                 self._path, self._identifier, str(args.bstr),
                 Garli.models[str(model_selected)][0],
@@ -297,9 +311,13 @@ class BEAST(Garli):
                 i.text = self._jMT_parameters['titv']
             else:
                 i.text = '1.0'
+    # }}}
 
-    sub_models = {'JC': JC_F81, 'F81': JC_F81,
-                  'K80': K80_HKY, 'HKY': K80_HKY}
+    # {{{ sub_models
+    sub_models = {
+            'JC': JC_F81, 'F81': JC_F81,
+            'K80': K80_HKY, 'HKY': K80_HKY
+            }
     # }}}
 
     # {{{ calculate_statistics
