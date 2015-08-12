@@ -51,7 +51,6 @@
             </prior>
             <prior id="ucldStdevPrior.c:replace_taxon" name="distribution" x="@ucldStdev.c:replace_taxon">
                 <Gamma id="Gamma.0" name="distr">
-                    <?TODO:Must I modify these?>
                     <parameter id="RealParameter.0" estimate="false" name="alpha">0.5396</parameter>
                     <parameter id="RealParameter.01" estimate="false" name="beta">0.3819</parameter>
                 </Gamma>
