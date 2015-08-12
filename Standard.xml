@@ -32,6 +32,7 @@
         <parameter id="ucldMean.c:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="ucldStdev.c:replace_taxon" lower="0.0" name="stateNode">0.1</parameter>
         <parameter id="birthRateY.t:replace_taxon" name="stateNode">1.0</parameter>
+        <stateNode id="rateCategories.c:FullCytbFinal_trimmedMuscle_NIXEND" spec="parameter.IntegerParameter" dimension="426">1</stateNode>
     </state>
 
     <init id="RandomTree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:replace_taxon" taxa="@replace_taxon">
