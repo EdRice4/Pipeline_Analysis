@@ -20,7 +20,6 @@
 <map name="OneOnX">beast.math.distributions.OneOnX</map>
 
 
-
 <run id="mcmc" spec="MCMC" chainLength="50000000" preBurnin="10000000">
     <state id="state" storeEvery="5000">
         <tree id="Tree.t:replace_taxon" name="stateNode">
