@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# {{{ Header
+# Code written by: Edwin Rice
+# email: edwinricethe4th@gmail.com
+# phone: +1 (513) 426-4187
+# github: https://github.com/EdRice4
+#
+# Initiation date|time: 08/12/2015|11:17:38
+# }}}
+
 # {{{ Imports
 from time import strftime
 from subprocess import Popen, STDOUT, PIPE
@@ -28,27 +40,6 @@ class CommonMethods(object):
         edited, and the values which are to be inserted.
 
     }}} """
-
-    # {{{ get_range
-    def get_range(self, range_file, start, end):
-
-        """ {{{ Docstrings
-
-        The 'start' and 'end' arguments must match corresponding lines in
-        range_file exactly, including any whitespace characters.
-
-        For instance, in parsing the nexus file, the line immediately before
-        the data block (the section containing the sequences and their
-        respective IDs) should be 'matrix\n' and the line immediately below
-        should be ';\n' to ensure that every sequence is parsed, nothing more,
-        nothing less.
-
-        }}} """
-
-        range_start = range_file.index(start)
-        range_end = range_file.index(end)
-        return range_start, range_end
-    # }}}
 
     # {{{ file_edit
     def file_edit(self, file_to_edit, lines_to_edit, values_to_insert):
@@ -449,6 +440,31 @@ class BEAST(Garli):
             rateCG.text = '%s' % self.parameters['Rd']
             rateCT.text = '%s' % self.parameters['Re']
             rateGT.text = '%s' % self.parameters['Rf']
+    # }}}
+
+    # {{{ get_range
+    def get_range(self, nexus_file, start, end):
+
+        """ {{{ Docstrings
+
+        Returns the index of a user-specified start and end sequence,
+        given these and a list (for instance, a file read in with the
+        "readlines()" function.
+
+        The "start" and "end" arguments must match corresponding lines in
+        range_file exactly, including any whitespace characters.
+
+        For instance, in parsing the nexus file, the line immediately before
+        the data block (the section containing the sequences and their
+        respective IDs) should be "matrix\n" and the line immediately below
+        should be ";\n" to ensure that every sequence is parsed, nothing more,
+        nothing less.
+
+        }}} """
+
+        range_start = nexus_file.index(start)
+        range_end = nexus_file.index(end)
+        return range_start, range_end
     # }}}
 
     # {{{ w_beast_taxon
