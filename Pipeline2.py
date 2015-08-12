@@ -24,28 +24,8 @@ import os
 # }}}
 
 
-# {{{ CommonMethods
-class CommonMethods(object):
-
-    """ {{{ Docstrings
-
-    Methods utilized by multiple functions.
-
-    1.) get_range returns the index of a user-specified start and end sequence,
-        given these and a list (for instance, a file read in with the
-        'readlines()' function.
-
-    2.) file_edit returns a modified configuration file, given the original
-        file, a list corresponding to the string values of the lines to be
-        edited, and the values which are to be inserted.
-
-    }}} """
-
-# }}}
-
-
 # {{{ jModelTest
-class jModelTest(CommonMethods):
+class jModelTest(object):
 
     """ {{{ Docstrings
 
