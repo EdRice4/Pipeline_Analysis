@@ -19,6 +19,7 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move, copy
+from StringIO import StringIO
 import argparse
 import os
 # }}}
@@ -826,15 +827,37 @@ class BEAST(Garli):
     # }}}
 
     # {{{ beast_finalize
-    def beast_finalize(self):
-        log.set('fileName', self._BEAST_ID)
-        beast.write(self._BEAST_XML, pretty_print=True, xml_declaration=True,
-                    encoding='UTF-8', standalone=False)
-        with open(self._BEAST_XML, 'r+') as beast_xml_file:
-            beast_xml = beast_xml_file.read()
-        beast_xml = sub('replace_taxon', self._sequence_name, beast_xml)
-        with open(self._BEAST_XML, 'w') as beast_xml_file:
-            beast_xml_file.write(beast_xml)
+    def beast_finalize(self, beast_xml):
+
+        """ {{{ Docstrings
+
+        Finalizes parsing of the BEAST XML input file and writes the modifed
+        ElementTree to a separate file given the BEAST XML input file as an
+        ElementTree.
+
+        }}} """
+
+        # Set name of log file for beast output
+        # TODO(Edwin):Following line not necessary?
+        # log.set('fileName', self._BEAST_ID)
+        # Convert ElementTree to string in order to perform substitution
+        beast_string = ET.tostring(beast_xml)
+        # Substitute every occurrence of "replace_taxon" with
+        # self._sequence_name
+        beast_string = sub('replace_taxon', self._sequence_name, beast_xml)
+        # Convert beast_string to file like object in order to re-parse it
+        beast_file_obj = StringIO(beast_string)
+        # Set parser to automatically remove any impertinent whitespace as
+        # well as any comments, respectively
+        XML_parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
+        # Re-parse beast_file_obj into an ElementTree
+        beast_xml = ET.parse(beast_file_obj, XML_parser)
+        # Write beast_xml ElementTree to file, ensuring that it prints in a
+        # human readable format and declaring pertinent XML parameters
+        beast_xml.write(
+                self._BEAST_XML, pretty_print=True, xml_declaration=True,
+                encoding='UTF-8', standalone=False
+                )
     # }}}
 
     # {{{ run_beast
