@@ -480,7 +480,7 @@ class BEAST(Garli):
                         ),
                 default=0.25)
         args_BEAST.add_argument(
-                '--store_every', type=int, help=(
+                '--log_every', type=int, help=(
                         'Sample interval for BEAST analysis.'
                         ),
                 default=1000)
@@ -630,9 +630,9 @@ class BEAST(Garli):
         model_selected = model_selected.translate(None, '+IG')
         run.set('chainLength', '%s' % args.MCMC_BEAST)
         run.set('preBurnin', '0')
-        trace_log.set('logEvery', '%s' % args.store_every)
-        screen_log.set('logEvery', '%s' % args.store_every)
-        tree_log.set('logEvery', '%s' % args.store_every)
+        trace_log.set('logEvery', '%s' % args.log_every)
+        screen_log.set('logEvery', '%s' % args.log_every)
+        tree_log.set('logEvery', '%s' % args.log_every)
         if Garli.models[str(model_selected)][1] == 'estimate':
             freq = ET.SubElement(
                     state, 'parameter',
@@ -1279,7 +1279,7 @@ for sequence in NexusFile:
     print('Burnin BEAST: %s' % args.burnin_BEAST)
     if args.threshold:
         print('Threshold: %s' % args.threshold)
-    print('Sample frequency BEAST: %s' % args.store_every)
+    print('Sample frequency BEAST: %s' % args.log_every)
     print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
     print('Burnin bGMYC: %s' % args.burnin_bGMYC)
     print('Sample frequency bGMYC: %s' % args.thinning)
