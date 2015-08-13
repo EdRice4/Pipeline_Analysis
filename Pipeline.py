@@ -475,8 +475,8 @@ class BEAST(Garli):
                         ),
                 default=50000000)
         args_BEAST.add_argument(
-                '--burnin_BEAST', type=float, help=(
-                        'Burnin (%%) for BEAST analysis.'
+                '--burnin_BEAST', type=int, help=(
+                        'Burnin for BEAST analysis.'
                         ),
                 default=0.25)
         args_BEAST.add_argument(
@@ -623,9 +623,6 @@ class BEAST(Garli):
         het = '+G' in model_selected
         inv = '+I' in model_selected
         model_selected = model_selected.translate(None, '+IG')
-        run.set('chainLength', '%s' % args.MCMC_BEAST)
-        run.set('preBurnin', '0')
-        tree_log.set('logEvery', '%s' % args.log_every)
         if Garli.models[str(model_selected)][1] == 'estimate':
             freq = ET.SubElement(
                     state, 'parameter',
@@ -837,6 +834,12 @@ class BEAST(Garli):
 
         }}} """
 
+        # Set BEAST run parameters
+        # MCMC chain length
+        run.set('chainLength', str(args.MCMC_BEAST))
+        # MCMC burnin
+        run.set('preBurnin', str(args.burnin_BEAST))
+        tree_log.set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(beast_xml)
         # Substitute every occurrence of "replace_taxon" with
