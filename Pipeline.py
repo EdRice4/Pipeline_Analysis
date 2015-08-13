@@ -515,7 +515,7 @@ class BEAST(Garli):
 
         """ {{{ Docstrings
 
-        Parses XML BEAST input file utilizing "lxml" python module. Method is
+        Parses BEAST XML input file utilizing "lxml" python module. Method is
         static because only necessary to run once; do not need to run upon
         every instantiation of BEAST class.
 
@@ -548,33 +548,39 @@ class BEAST(Garli):
                 screen_log = element
             if 'treelog.t:' in element.get('id'):
                 tree_log = element
+        return(
+                root, data, run, state, substmodel, sitemodel, trace_log,
+                screen_log, tree_log
+                )
     # }}}
 
-    # TODO(Edwin):Passing "self" to function necessary?
     # {{{ JC_F81
-    def JC_F81(xml_nodes):
+    def JC_F81(self, xml_nodes):
 
         """ {{{ Docstrings
 
-        Function to handle setting of transition rates in BEAST input XML
+        Function to handle setting of transition rates in BEAST XML input file
         for JC and F81 models given list of XML nodes to edit.
 
         }}} """
 
+        # Every transition rate is equal to "1.0"
         for i in xml_nodes:
             i.text = '1.0'
     # }}}
 
     # {{{ K80_HKY
-    def K80_HKY(xml_nodes):
+    def K80_HKY(self, xml_nodes):
 
         """ {{{ Docstrings
 
-        Function to handle setting of transition rates in BEAST input XML
+        Function to handle setting of transition rates in BEAST XML input file
         for k80 and HKY models, given list of XML nodes to edit.
 
         }}} """
 
+        # Two distinct transition rates, one for transitions, the other for
+        # transversions
         for i in xml_nodes:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
                 i.text = self._jMT_parameters['titv']
@@ -695,9 +701,22 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_rates
-    def w_beast_rates(self):
+    def w_beast_rates(self, substmodel_xml_node):
+
+        """ {{{ Docstrings
+
+        Writes transition rates to BEAST XML input file.
+
+        }}} """
+
+        # Initiate empty list to store pertinent XML nodes
         xml_nodes = []
+        # Define pertinent node
+        substmodel = substmodel_xml_node
+        # Get the model selected by jModelTest, removing conflicting strings
         model_selected = self._jMT_parameters['Model'].translate(None, '+IG')
+        # Iterate over subelements of the substmodel element, define each
+        # respectively, and append to list
         for element in substmodel.iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
@@ -717,10 +736,13 @@ class BEAST(Garli):
             if 'rateGT.s:' in element.get('id'):
                 rateGT = element
                 xml_nodes.append(element)
+        # If model selected is JC/F81 or K80/HKY,  pass xml_nodes list to
+        # respective function
         if model_selected == 'JC' or model_selected == 'F81':
-            BEAST.JC_F81(xml_nodes)
+            BEAST.JC_F81(self, xml_nodes)
         elif model_selected == 'K80' or model_selected == 'HKY':
-            BEAST.K80_HKY(xml_nodes)
+            BEAST.K80_HKY(self, xml_nodes)
+        # Else, set each rate individually
         else:
             rateAC.text = '%s' % self._jMT_parameters['Ra']
             rateAG.text = '%s' % self._jMT_parameters['Rb']
