@@ -556,33 +556,33 @@ class BEAST(Garli):
     # }}}
 
     # {{{ JC_F81
-    def JC_F81(self, xml_nodes):
+    def JC_F81(self, xml_elements):
 
         """ {{{ Docstrings
 
         Function to handle setting of transition rates in BEAST XML input file
-        for JC and F81 models given list of XML nodes to edit.
+        for JC and F81 models given list of XML elements to edit.
 
         }}} """
 
         # Every transition rate is equal to "1.0"
-        for i in xml_nodes:
+        for i in xml_elements:
             i.text = '1.0'
     # }}}
 
     # {{{ K80_HKY
-    def K80_HKY(self, xml_nodes):
+    def K80_HKY(self, xml_elements):
 
         """ {{{ Docstrings
 
         Function to handle setting of transition rates in BEAST XML input file
-        for k80 and HKY models, given list of XML nodes to edit.
+        for k80 and HKY models, given list of XML elements to edit.
 
         }}} """
 
         # Two distinct transition rates, one for transitions, the other for
         # transversions
-        for i in xml_nodes:
+        for i in xml_elements:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
                 i.text = self._jMT_parameters['titv']
             else:
@@ -697,7 +697,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_rates
-    def w_beast_rates(self, substmodel_xml_node):
+    def w_beast_rates(self, substmodel_xml_element):
 
         """ {{{ Docstrings
 
@@ -709,10 +709,10 @@ class BEAST(Garli):
 
         }}} """
 
-        # Initiate empty list to store pertinent XML nodes
-        xml_nodes = []
-        # Define pertinent node
-        substmodel = substmodel_xml_node
+        # Initiate empty list to store pertinent XML elements
+        xml_elements = []
+        # Define pertinent element
+        substmodel = substmodel_xml_element
         # Get the model selected by jModelTest, removing conflicting strings
         model_selected = self._jMT_parameters['Model'].translate(None, '+IG')
         # Iterate over subelements of the substmodel element, define each
@@ -720,28 +720,28 @@ class BEAST(Garli):
         for element in substmodel.iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
-                xml_nodes.append(element)
+                xml_elements.append(element)
             if 'rateAG.s:' in element.get('id'):
                 rateAG = element
-                xml_nodes.append(element)
+                xml_elements.append(element)
             if 'rateAT.s:' in element.get('id'):
                 rateAT = element
-                xml_nodes.append(element)
+                xml_elements.append(element)
             if 'rateCG.s:' in element.get('id'):
                 rateCG = element
-                xml_nodes.append(element)
+                xml_elements.append(element)
             if 'rateCT.s:' in element.get('id'):
                 rateCT = element
-                xml_nodes.append(element)
+                xml_elements.append(element)
             if 'rateGT.s:' in element.get('id'):
                 rateGT = element
-                xml_nodes.append(element)
-        # If model selected is JC/F81 or K80/HKY,  pass xml_nodes list to
+                xml_elements.append(element)
+        # If model selected is JC/F81 or K80/HKY,  pass xml_elements list to
         # respective function
         if model_selected == 'JC' or model_selected == 'F81':
-            BEAST.JC_F81(self, xml_nodes)
+            BEAST.JC_F81(self, xml_elements)
         elif model_selected == 'K80' or model_selected == 'HKY':
-            BEAST.K80_HKY(self, xml_nodes)
+            BEAST.K80_HKY(self, xml_elements)
         # Else, set each rate individually
         else:
             rateAC.text = '%s' % self._jMT_parameters['Ra']
@@ -778,18 +778,18 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_taxon
-    def w_beast_taxon(self, nexus_file, data_xml_node):
+    def w_beast_taxon(self, nexus_file, data_xml_element):
 
         """ {{{ Docstrings
 
         Creates a subelement in the BEAST XML input file for each respective
-        sequence, given a nexus file as a list and the 'data' XML node as an
+        sequence, given a nexus file as a list and the 'data' XML element as an
         XML element.
 
         }}} """
 
-        # Define pertinent node
-        data = data_xml_node
+        # Define pertinent element
+        data = data_xml_element
         # Get start and end position of sequence block in nexus file
         sequence_start, sequence_end = self._get_sequence_range(
                 nexus_file, 'matrix\n', ';\n'
@@ -798,7 +798,7 @@ class BEAST(Garli):
         # them
         sequence_start += 1
         sequence_end -= 1
-        # Iterate over lines in nexus file, defining each respective XML node
+        # Iterate over lines in nexus file, defining each respective XML element
         for line in nexus_file:
             while sequence_start <= sequence_end:
                 # Define variables for readability
@@ -824,7 +824,7 @@ class BEAST(Garli):
     # TODO(Edwin):
     # 1.) Add setting of additional parameters.
     # {{{ w_beast_parameters
-    def w_beast_parameters(self, beast_xml):
+    def w_beast_parameters(self, state_xml_element, run_xml_element, tree_log_xml_element, beast_xml):
 
         """ {{{ Docstrings
 
@@ -835,10 +835,13 @@ class BEAST(Garli):
         }}} """
 
         # Set BEAST run parameters
+        # Frequency with which to save to state file
+        state.set('storeEvery', str(args.log_every))
         # MCMC chain length
         run.set('chainLength', str(args.MCMC_BEAST))
         # MCMC burnin
         run.set('preBurnin', str(args.burnin_BEAST))
+        # Frequency with which to save to tree file
         tree_log.set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(beast_xml)
