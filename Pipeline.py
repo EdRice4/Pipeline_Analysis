@@ -497,6 +497,14 @@ class BEAST(Garli):
 
     # {{{ __init__
     def __init__(self):
+
+        """ {{{ Docstrings
+
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
         self._BEAST_XML = 'BEAST_{0}.xml'.format(
                 self._identifier
                 )
