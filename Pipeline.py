@@ -760,8 +760,8 @@ class BEAST(Garli):
             rateGT.text = '%s' % self._jMT_parameters['Rf']
     # }}}
 
-    # {{{ get_range
-    def get_range(self, nexus_file, start, end):
+    # {{{ get_sequence_range
+    def get_sequence_range(self, nexus_file, start, end):
 
         """ {{{ Docstrings
 
@@ -799,7 +799,7 @@ class BEAST(Garli):
         # Define pertinent node
         data = data_xml_node
         # Get start and end position of sequence block in nexus file
-        sequence_start, sequence_end = self._get_range(
+        sequence_start, sequence_end = self._get_sequence_range(
                 nexus_file, 'matrix\n', ';\n'
                 )
         # However, do not want to include these lines, just the lines between
@@ -968,7 +968,6 @@ class BEAST(Garli):
                     )
     # }}}
 
-    #
     # TODO(Edwin):
     # 1.) Do not specify burnin here; simply defined parameters
     #     incorrectly in w_beast_substmodel?
