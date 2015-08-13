@@ -550,10 +550,7 @@ class BEAST(Garli):
         for element in run.iterfind('logger'):
             if 'treelog.t:' in element.get('id'):
                 tree_log = element
-        return(
-                root, data, run, state, substmodel, sitemodel, trace_log,
-                screen_log, tree_log
-                )
+        return(root, data, run, state, substmodel, sitemodel, tree_log)
     # }}}
 
     # {{{ JC_F81
