@@ -2,9 +2,9 @@
 <beast beautitemplate='Standard' beautistatus='noAutoSetClockRate' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
 
 
-    <?TODO:Do I nead trailing slash (before greather than sign) in following line?>
+    <!--TODO:Do I nead trailing slash (before greather than sign) in following line-->
     <data id="replace_taxon" name="alignment">
-    <?TODO:Is the following line necessary; related to trailing slash on line ~5?>
+    <!--TODO:Is the following line necessary; related to trailing slash on line ~5-->
     </data>
 
 
@@ -59,7 +59,7 @@
         <distribution id="likelihood" spec="util.CompoundDistribution">
             <distribution id="treeLikelihood.replace_taxon" spec="TreeLikelihood" data="@replace_taxon" tree="@Tree.t:replace_taxon">
                 <siteModel id="SiteModel.s:replace_taxon" mutationRate="@mutationRate.s:replace_taxon" spec="SiteModel">
-                    <?TODO:Am I adding parameter id="gamaShape"/"proportionInvariant" to reflect selected model?>
+                    <!--TODO:Am I adding parameter id="gamaShape"/"proportionInvariant" to reflect selected model-->
                     <substModel id="gtr.s:replace_taxon" spec="GTR">
                         <parameter estimate="false" id="rateAC.s:replace_taxon" lower="0.0" name="rateAC">1.0</parameter>
                         <parameter estimate="false" id="rateAG.s:replace_taxon" lower="0.0" name="rateAG">1.0</parameter>
