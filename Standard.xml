@@ -67,7 +67,6 @@
                         <parameter estimate="false" id="rateCG.s:replace_taxon" lower="0.0" name="rateCG">1.0</parameter>
                         <parameter estimate="false" id="rateCT.s:replace_taxon" lower="0.0" name="rateCT">1.0</parameter>
                         <parameter estimate="false" id="rateGT.s:replace_taxon" lower="0.0" name="rateGT">1.0</parameter>
-                        <frequencies id="empiricalFreqs.s:replace_taxon" spec="Frequencies" data="@replace_taxon"/>
                     </substModel>
                 </siteModel>
                 <branchRateModel id="RelaxedClock.c:replace_taxon" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" clock.rate="@ucldMean.c:replace_taxon" rateCategories="@rateCategories.c:replace_taxon" tree="@Tree.t:replace_taxon">
