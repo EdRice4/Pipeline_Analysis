@@ -452,8 +452,6 @@ class BEAST(Garli):
 
     }}} """
 
-    # TODO(Edwin):
-    # 1.) Improve argument help dialogs.
     # {{{ add_args
     @staticmethod
     def add_args():
@@ -473,8 +471,8 @@ class BEAST(Garli):
                   )
         args_BEAST.add_argument(
                 '--MCMC_BEAST', type=int, help=(
-                        'Length of MCMC chain for BEAST '
-                        'analysis.'),
+                        'Length of MCMC chain for BEAST analysis.'
+                        ),
                 default=50000000)
         args_BEAST.add_argument(
                 '--burnin_BEAST', type=float, help=(
@@ -488,8 +486,11 @@ class BEAST(Garli):
                 default=1000)
         args_BEAST.add_argument(
                 '-t', '--threshold', type=int, help=(
-                        'Run script in threshold mode '
-                        'for BEAST analysis.'),
+                        'Run script in threshold mode (i.e. BEAST will '
+                        'continue to run, creating separate output directory '
+                        'for each respective run, if after previous run, the '
+                        'effective sample size did not meet this threshold).'
+                        ),
                 default=0)
         args_BEAST.add_argument(
                 '--lcom', type=str, help=(
