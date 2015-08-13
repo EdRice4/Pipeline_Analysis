@@ -505,22 +505,66 @@ class BEAST(Garli):
 
         }}} """
 
-        self._BEAST_XML = 'BEAST_{0}.xml'.format(
-                self._identifier
-                )
-        self._BEAST_ID = 'BEAST_{0}.out'.format(
-                self._identifier
-                )
+        self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
+        self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
+    # }}}
+
+    # {{{ parse_beast_xml
+    @staticmethod
+    def parse_beast_xml():
+
+        """ {{{ Docstrings
+
+        Parses XML BEAST input file utilizing "lxml" python module. Method is
+        static because only necessary to run once; do not need to run upon
+        every instantiation of BEAST class.
+
+        }}} """
+
+        XML_parser = ET.XMLParser(remove_blank_text=True)
+        BEAST_XML = ET.parse('Standard.xml', XML_parser)
+        data = BEAST_XML.find('data')
+        run = BEAST_XML.find('run')
+        for element in run.iter():
+            if element.tag == 'state':
+                state = element
+            if element.tag == 'substModel':
+                substmodel = element
+            if element.tag == 'siteModel':
+                sitemodel = element
+        for element in run.iterfind('logger'):
+            if element.get('id') == 'tracelog':
+                log = element
+            if element.get('id') == 'screenlog':
+                screen_log = element
+            if 'treelog.t:' in element.get('id'):
+                tree_log = element
     # }}}
 
     # {{{ JC_F81
     def JC_F81(self, xml_nodes):
+
+        """ {{{ Docstrings
+
+        Function to handle setting of transition rates in BEAST input XML
+        for JC and F81 models given list of XML nodes to edit.
+
+        }}} """
+
         for i in xml_nodes:
             i.text = '1.0'
     # }}}
 
     # {{{ K80_HKY
     def K80_HKY(self, xml_nodes):
+
+        """ {{{ Docstrings
+
+        Function to handle setting of transition rates in BEAST input XML
+        for k80 and HKY models, given list of XML nodes to edit.
+
+        }}} """
+
         for i in xml_nodes:
             if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
                 i.text = self._jMT_parameters['titv']
@@ -1030,28 +1074,6 @@ if __name__ == '__main__':
     bGMYC.add_args()
     NexusFile.add_args()
 args = arg_parser.parse_args()
-# }}}
-
-
-# {{{ XML Parser
-XML_parser = ET.XMLParser(remove_blank_text=True)
-beast = ET.parse('Standard.xml', XML_parser)
-data = beast.find('data')
-run = beast.find('run')
-for element in run.iter():
-    if element.tag == 'state':
-        state = element
-    if element.tag == 'substModel':
-        substmodel = element
-    if element.tag == 'siteModel':
-        sitemodel = element
-for element in run.iterfind('logger'):
-    if element.get('id') == 'tracelog':
-        log = element
-    if element.get('id') == 'screenlog':
-        screen_log = element
-    if 'treelog.t:' in element.get('id'):
-        tree_log = element
 # }}}
 
 
