@@ -360,7 +360,7 @@ class Garli(jModelTest):
         het = '+G' in model_selected
         # Check if model includes proportion of invariant sites
         inv = '+I' in model_selected
-        # Remove these values; conflicts with model dictionary above
+        # Remove these values; conflicts with Garli models dictionary
         model_selected = model_selected.translate(None, '+IG')
         # Variables in garli.conf to edit; see
         # https://molevol.mbl.edu/index.php/GARLI_Configuration_Settings#streefname_.28source_of_starting_tree_and.2For_model.29
@@ -629,8 +629,11 @@ class BEAST(Garli):
 
         # Get the model selected
         model_selected = self._jMT_parameters['Model']
+        # Check if model includes gamma distribution
         het = '+G' in model_selected
+        # Check if model includes proportion invariant sites
         inv = '+I' in model_selected
+        # Remove these values; conflicts with Garli models dictionary
         model_selected = model_selected.translate(None, '+IG')
         if Garli.models[str(model_selected)][1] == 'estimate':
             freq = ET.SubElement(
@@ -650,7 +653,7 @@ class BEAST(Garli):
                             'name': 'log'
                             }
                     )
-        if Garli.models[str(model_selected)][1] == 'equal':
+        elif Garli.models[str(model_selected)][1] == 'equal':
             freq = ET.SubElement(
                     substmodel, 'frequencies',
                     attrib={
