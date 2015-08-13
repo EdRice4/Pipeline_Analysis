@@ -618,7 +618,8 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_submodel
-    def w_beast_submodel(self):
+    def w_beast_submodel(self, state_xml_element, substmodel_xml_element,
+                         run_xml_element, trace_log_xml_element):
 
         """ {{{ Docstrings
 
@@ -627,6 +628,11 @@ class BEAST(Garli):
 
         }}} """
 
+        # Define pertinent elements
+        state = state_xml_element
+        substmodel = substmodel_xml_element
+        run = run_xml_element
+        trace_log = trace_log_xml_element
         # Get the model selected
         model_selected = self._jMT_parameters['Model']
         # Check if model includes gamma distribution
@@ -635,17 +641,19 @@ class BEAST(Garli):
         inv = '+I' in model_selected
         # Remove these values; conflicts with Garli models dictionary
         model_selected = model_selected.translate(None, '+IG')
+        # If frequencies are estimated, do:
         if Garli.models[str(model_selected)][1] == 'estimate':
-            freq = ET.SubElement(
+            ET.SubElement(
                     state, 'parameter',
                     attrib={
                             'dimension': '4',
-                            'id': 'freqParameter.s:%s' % self._sequence_name,
+                            'id': 'freqParameter.s:{0}'.format(
+                                    self._sequence_name
+                                    ),
                             'lower': '0.0', 'name': 'stateNode',
                             'upper': '1.0'
                             }
-                    )
-            freq.text = '0.25'
+                    ).text = '0.25'
             freq_log = ET.SubElement(
                     log, 'parameter',
                     attrib={
@@ -653,6 +661,7 @@ class BEAST(Garli):
                             'name': 'log'
                             }
                     )
+        # Else, if frequencies are equal, do:
         elif Garli.models[str(model_selected)][1] == 'equal':
             freq = ET.SubElement(
                     substmodel, 'frequencies',
