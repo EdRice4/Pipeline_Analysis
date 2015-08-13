@@ -454,7 +454,6 @@ class BEAST(Garli):
 
     # TODO(Edwin):
     # 1.) Improve argument help dialogs.
-    #
     # {{{ add_args
     @staticmethod
     def add_args():
@@ -499,6 +498,8 @@ class BEAST(Garli):
                 )
     # }}}
 
+    # TODO(Edwin):
+    # 1.) Add functions to __init__.
     # {{{ __init__
     def __init__(self):
 
@@ -832,7 +833,6 @@ class BEAST(Garli):
     # TODO(Edwin):
     # 1.) "log.set"  not necessary?
     # 2.) Add setting of additional parameters.
-    #
     # {{{ w_beast_parameters
     def w_beast_parameters(self, beast_xml):
 
@@ -909,7 +909,6 @@ class BEAST(Garli):
 
     # TODO:(Edwin)
     # 1.) Run BEAST in resume mode?
-    #
     # {{{ resume_beast
     def resume_beast(self):
 
@@ -971,7 +970,6 @@ class BEAST(Garli):
     # TODO(Edwin):
     # 1.) Do not specify burnin here; simply defined parameters
     #     incorrectly in w_beast_substmodel?
-    #
     # {{{ log_combine
     def log_combine(self):
         cwd = os.getcwd()
