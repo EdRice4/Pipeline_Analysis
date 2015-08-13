@@ -307,7 +307,7 @@ class Garli(jModelTest):
         self.run_garli()
     # }}}
 
-    # {{{ file_edit
+    # {{{ edit_garli_conf
     def edit_garli_conf(self, garli_conf, lines_to_edit, values_to_insert):
 
         """ {{{ Docstrings
