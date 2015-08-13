@@ -246,7 +246,7 @@ class Garli(jModelTest):
                 )
     # }}}
 
-    # {{{ Read garli.conf template
+    # {{{ r_garli_conf
     @staticmethod
     def r_garli_conf():
 
@@ -521,10 +521,19 @@ class BEAST(Garli):
 
         }}} """
 
-        XML_parser = ET.XMLParser(remove_blank_text=True)
+        # Set parser to automatically remove any impertinent whitespace as
+        # well as any comments, respectively
+        XML_parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
+        # Parse BEAST XML input file template
         BEAST_XML = ET.parse('Standard.xml', XML_parser)
-        data = BEAST_XML.find('data')
-        run = BEAST_XML.find('run')
+        # Get root of tree ('beast') element
+        root = BEAST_XML.getroot()
+        # Get 'data' element where sequence information is stored
+        data = BEAST_XML.xpath('data')[0]
+        # Get 'run' element where information pertaining to BEAST parameters
+        # is stored
+        run = BEAST_XML.xpath('run')[0]
+        # Get all pertinent subelements of run element
         for element in run.iter():
             if element.tag == 'state':
                 state = element
@@ -534,7 +543,7 @@ class BEAST(Garli):
                 sitemodel = element
         for element in run.iterfind('logger'):
             if element.get('id') == 'tracelog':
-                log = element
+                trace_log = element
             if element.get('id') == 'screenlog':
                 screen_log = element
             if 'treelog.t:' in element.get('id'):
@@ -572,6 +581,7 @@ class BEAST(Garli):
                 i.text = '1.0'
     # }}}
 
+    # TODO(Edwin):Delete sub_models and functionality
     # {{{ sub_models
     sub_models = {
             'JC': JC_F81, 'F81': JC_F81,
@@ -579,8 +589,18 @@ class BEAST(Garli):
             }
     # }}}
 
-    # {{{ calculate_statistics
-    def calculate_statistics(self, data_file):
+    # {{{ calculate_ess
+    def calculate_ess(self, beast_out):
+
+        """ {{{ Docstrings
+
+        Calculates the effective sample size of data, given the name of the
+        BEAST output file as a string, utilizing "genfromtxt" provided by the
+        "numpy" python module and "acor" provided by the "acor" python module.
+
+        }}} """
+
+        # Read in data, ignoring comments, sample column, and header
         data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
         data = zip(*data)[1:]
         stats = map(lambda x: acor(x), data)
@@ -598,7 +618,7 @@ class BEAST(Garli):
         model_selected = model_selected.translate(None, '+IG')
         run.set('chainLength', '%s' % args.MCMC_BEAST)
         run.set('preBurnin', '0')
-        log.set('logEvery', '%s' % args.store_every)
+        trace_log.set('logEvery', '%s' % args.store_every)
         screen_log.set('logEvery', '%s' % args.store_every)
         tree_log.set('logEvery', '%s' % args.store_every)
         if Garli.models[str(model_selected)][1] == 'estimate':
@@ -797,7 +817,7 @@ class BEAST(Garli):
                 print(line.strip())
             beast_run.stdout.close()
             run_count += 1
-            ess = self._calculate_statistics(run + '/' + self._BEAST_ID)
+            ess = self.calculate_ess(run + '/' + self._BEAST_ID)
             ess = filter(lambda x: x < args.tolerance, ess)
     # }}}
 
