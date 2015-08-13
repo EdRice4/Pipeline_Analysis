@@ -304,6 +304,7 @@ class Garli(jModelTest):
     # {{{ __init__
     def __init__(self):
         self.w_garli_conf(garli_conf)
+        self.run_garli()
     # }}}
 
     # {{{ file_edit
@@ -436,12 +437,22 @@ class Garli(jModelTest):
 class BEAST(Garli):
 
     """ {{{ Docstrings
+
     Run BEAST and store parameters associated with output.
+
     }}} """
 
     # {{{ add_args
     @staticmethod
     def add_args():
+
+        """ {{{ Docstrings
+
+        Add argument group "BEAST" to namespace and subsequent pertinent
+        arguments to aforementioned group.
+
+        }}} """
+
         args_BEAST = arg_parser.add_argument_group(
                 'BEAST', 'Arguments for running BEAST module.'
                 )
