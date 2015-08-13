@@ -625,8 +625,6 @@ class BEAST(Garli):
         model_selected = model_selected.translate(None, '+IG')
         run.set('chainLength', '%s' % args.MCMC_BEAST)
         run.set('preBurnin', '0')
-        trace_log.set('logEvery', '%s' % args.log_every)
-        screen_log.set('logEvery', '%s' % args.log_every)
         tree_log.set('logEvery', '%s' % args.log_every)
         if Garli.models[str(model_selected)][1] == 'estimate':
             freq = ET.SubElement(
