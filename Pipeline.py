@@ -483,8 +483,8 @@ class BEAST(Garli):
                 default=0.25)
         args_BEAST.add_argument(
                 '--store_every', type=int, help=(
-                            'Sample interval for BEAST analysis.'
-                            ),
+                        'Sample interval for BEAST analysis.'
+                        ),
                 default=1000)
         args_BEAST.add_argument(
                 '-t', '--threshold', type=int, help=(
