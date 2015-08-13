@@ -75,7 +75,7 @@ class jModelTest(object):
 
         Run jModelTest by spawning child process, utilizing "Popen" function
         provided by "subprocess" python module. The output/errors of this
-        process is then subsequently printed, to stdout and written to a file,
+        process are then subsequently printed, to stdout and written to a file,
         in real-time.
 
         }}} """
@@ -84,9 +84,9 @@ class jModelTest(object):
         # jModelTest documentation for explanantion of arguments
         # ::MODIFIABLE::
         # NOTE: If you would like to modify arguments passed to jModelTest,
-        # simply format the following string in a matter of your choosing
+        # simply format the following string in a matter of your choosing.
         # You may also have to change the manner in which jModelTest is
-        # called, depending on your system
+        # called, depending on your system.
         jModelTest = (
                 'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
                 '-AIC -AICc -DT'
@@ -419,7 +419,7 @@ class Garli(jModelTest):
 
         Run garli by spawning child process, utilizing "Popen" function
         provided by "subprocess" python module. The output/errors of this
-        process is then subsequently printed, to stdout and written to a file,
+        process are then subsequently printed, to stdout and written to a file,
         in real-time.
 
         }}} """
@@ -452,6 +452,9 @@ class BEAST(Garli):
 
     }}} """
 
+    # TODO(Edwin):
+    # 1.) Improve argument help dialogs.
+    #
     # {{{ add_args
     @staticmethod
     def add_args():
@@ -485,14 +488,14 @@ class BEAST(Garli):
                             ),
                 default=1000)
         args_BEAST.add_argument(
-                '-t', '--tolerance', type=int, help=(
-                        'Run script in tolerance mode '
+                '-t', '--threshold', type=int, help=(
+                        'Run script in threshold mode '
                         'for BEAST analysis.'),
                 default=0)
         args_BEAST.add_argument(
                 '--lcom', type=str, help=(
                         'Path to logcombiner. Only necessary if '
-                        'running in tolerance mode.')
+                        'running in threshold mode.')
                 )
     # }}}
 
@@ -826,6 +829,10 @@ class BEAST(Garli):
                 sequence_start += 1
     # }}}
 
+    # TODO(Edwin):
+    # 1.) "log.set"  not necessary?
+    # 2.) Add setting of additional parameters.
+    #
     # {{{ w_beast_parameters
     def w_beast_parameters(self, beast_xml):
 
@@ -838,7 +845,6 @@ class BEAST(Garli):
         }}} """
 
         # Set name of log file for beast output
-        # TODO(Edwin):Following line not necessary?
         # log.set('fileName', self._BEAST_ID)
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(beast_xml)
@@ -862,40 +868,111 @@ class BEAST(Garli):
 
     # {{{ run_beast
     def run_beast(self):
-        run = self._identifier + '_RUN_1'
-        os.mkdir(run)
-        BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
-                                               str(randrange(0, 999999)),
-                                               self._BEAST_XML)
-        beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
-                          stdin=PIPE)
+
+        """ {{{ Docstrings
+
+        Run BEAST by spawning child process, utilizing "Popen" function
+        provided by "subprocess" python module. The output/errors of this
+        process are then subsequently printed, to stdout and written to a file,
+        in real-time.
+
+        }}} """
+
+        # Specify run directory
+        run_directory = '{0}_RUN_1'.format(self._identifier)
+        # Create directory; BEAST expects as such and will place output
+        # in it
+        os.mkdir(run_directory)
+        # Specify child process, including any pertinent arguments; see BEAST
+        # documentation for explanation of additional arguments
+        # ::MODIFIABLE::
+        # NOTE: If you would like to modify arguments passed to BEAST,
+        # simply format the following string in a matter of your choosing.
+        # You may also have to change the manner in which BEAST is called,
+        # depending on your system.
+        beast = '{0} -prefix {1} -seed {2} {3}'.format(
+                args.BEAST, run_directory, randrange(0, 999999999),
+                self._BEAST_XML
+                )
+        # Spawn child process
+        beast_run = Popen(
+                beast.split(), stderr=STDOUT, stdout=PIPE,
+                stdin=PIPE
+                )
+        # Open stdout of child process and print in real-time
+        # BEAST handles writing to file, unlike jModelTest
         for line in iter(beast_run.stdout.readline, ''):
             print(line.strip())
+        # Close stdout
         beast_run.stdout.close()
     # }}}
 
+    # TODO:(Edwin)
+    # 1.) Run BEAST in resume mode?
+    #
     # {{{ resume_beast
     def resume_beast(self):
-        ess = 1
+
+        """ {{{ Docstrings
+
+        Continue to run BEAST as long as any parameter in the BEAST output
+        file does not meet the effective sample size threshold, creating a
+        separate output directory for each run utilizing "Popen" function
+        provided by "subprocess" python module. The output/errors of this
+        process are then subsequently printed, to stdout and written to a file,
+        in real-time.
+
+        }}} """
+
+        # Set intitial values of variables
+        # Set ess to "True" so that BEAST runs
+        effective_sample_size = True
+        # This is the initial run of BEAST
         run_count = 1
-        while ess:
-            run = self._identifier + '_RUN_' + str(run_count)
-            os.mkdir(run)
-            BEAST = '%s -prefix %s -seed %s %s' % (args.BEAST, run,
-                                                   randrange(0, 999999999),
-                                                   self._BEAST_XML)
-            beast_run = Popen(BEAST.split(), stderr=STDOUT, stdout=PIPE,
-                              stdin=PIPE)
+        # While effective_sample_size does not equal an object of NoneType
+        # (i.e. an empty list [see below]), BEAST will continue to run
+        while effective_sample_size:
+            # Specify run directory
+            run_directory = '{0}_RUN_{1}'.format(self._identifier, run_count)
+            # Create directory; BEAST expects as such and will place output
+            # in it
+            os.mkdir(run_directory)
+            # Specify child process, including any pertinent arguments
+            # ::MODIFIABLE::
+            # NOTE: See run_beast above.
+            beast = '{0} -prefix {1} -seed {2} {3}'.format(
+                    args.BEAST, run_directory, randrange(0, 999999999),
+                    self._BEAST_XML
+                    )
+            # Spawn child process
+            beast_run = Popen(
+                    beast.split(), stderr=STDOUT, stdout=PIPE,
+                    stdin=PIPE
+                    )
+            # Open stdout of child process and print in real-time
+            # BEAST handles writing to file, unlike jModelTest
             for line in iter(beast_run.stdout.readline, ''):
                 print(line.strip())
+            # Close stdout
             beast_run.stdout.close()
+            # Increment run_count by one
             run_count += 1
-            ess = self.calculate_ess(run + '/' + self._BEAST_ID)
-            ess = filter(lambda x: x < args.tolerance, ess)
+            # Get effective sample size of run
+            effective_sample_size = self.calculate_ess(
+                    run_directory + '/' + self._BEAST_ID
+                    )
+            # Filter effective_sample_size to only include values greater than
+            # the threshold; if none are, empty list of NoneType is returned
+            effective_sample_size = filter(
+                    lambda x: x < args.threshold, effective_sample_size
+                    )
     # }}}
 
-    # TODO(Edwin):Do not specify burnin here; simply defined parameters
-    # incorrectly in w_beast_substmodel?
+    #
+    # TODO(Edwin):
+    # 1.) Do not specify burnin here; simply defined parameters
+    #     incorrectly in w_beast_substmodel?
+    #
     # {{{ log_combine
     def log_combine(self):
         cwd = os.getcwd()
@@ -1205,8 +1282,8 @@ for sequence in NexusFile:
     print('Garli bootstrap replications: %s' % args.bstr)
     print('MCMC BEAST: %s' % args.MCMC_BEAST)
     print('Burnin BEAST: %s' % args.burnin_BEAST)
-    if args.tolerance:
-        print('Tolerance: %s' % args.tolerance)
+    if args.threshold:
+        print('Threshold: %s' % args.threshold)
     print('Sample frequency BEAST: %s' % args.store_every)
     print('MCMC bGMYC: %s' % args.MCMC_bGMYC)
     print('Burnin bGMYC: %s' % args.burnin_bGMYC)
@@ -1228,7 +1305,7 @@ for sequence in NexusFile:
     sequence.w_beast_rates()
     sequence.w_beast_taxon()
     sequence.beast_finalize()
-    if args.tolerance:
+    if args.threshold:
         sequence.resume_beast()
         sequence.log_combine()
     else:
