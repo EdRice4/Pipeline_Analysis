@@ -832,8 +832,7 @@ class BEAST(Garli):
     # }}}
 
     # TODO(Edwin):
-    # 1.) "log.set"  not necessary?
-    # 2.) Add setting of additional parameters.
+    # 1.) Add setting of additional parameters.
     # {{{ w_beast_parameters
     def w_beast_parameters(self, beast_xml):
 
@@ -845,8 +844,6 @@ class BEAST(Garli):
 
         }}} """
 
-        # Set name of log file for beast output
-        # log.set('fileName', self._BEAST_ID)
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(beast_xml)
         # Substitute every occurrence of "replace_taxon" with
