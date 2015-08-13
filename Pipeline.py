@@ -783,6 +783,15 @@ class BEAST(Garli):
 
     # {{{ w_beast_taxon
     def w_beast_taxon(self, nexus_file, data_xml_node):
+
+        """ {{{ Docstrings
+
+        Creates a subelement in the BEAST XML input file for each respective
+        sequence, given a nexus file as a list and the 'data' XML node as an
+        XML element.
+
+        }}} """
+
         # Define pertinent node
         data = data_xml_node
         # Get start and end position of sequence block in nexus file
@@ -803,7 +812,7 @@ class BEAST(Garli):
                 sequence_id = line[0].strip()
                 # Get sequence
                 sequence = line[1].strip()
-                # TODO(Edwin): Necessary to set value of "sequence_xml"?
+                # Create subelement
                 ET.SubElement(
                         data, 'sequence',
                         attrib={
