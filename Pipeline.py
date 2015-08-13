@@ -782,24 +782,37 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_taxon
-    def w_beast_taxon(self, nexus_file):
+    def w_beast_taxon(self, nexus_file, data_xml_node):
+        # Define pertinent node
+        data = data_xml_node
+        # Get start and end position of sequence block in nexus file
         sequence_start, sequence_end = self._get_range(
                 nexus_file, 'matrix\n', ';\n'
                 )
+        # However, do not want to include these lines, just the lines between
+        # them
         sequence_start += 1
         sequence_end -= 1
+        # Iterate over lines in nexus file, defining each respective XML node
         for line in nexus_file:
             while sequence_start <= sequence_end:
-                species_id = (nexus_file[int(sequence_start)].rpartition(
-                              "\t")[0]).strip()
-                species_sequence = (
-                        nexus_file[int(sequence_start)].rpartition("\t")[-1]
-                        ).strip()
-                sequence = ET.SubElement(data, 'sequence', attrib={
-                                         'id': 'seq_%s' % species_id,
-                                         'taxon': '%s' % species_id,
-                                         'totalcount': '4',
-                                         'value': '%s' % species_sequence})
+                # Define variables for readability
+                # Split line by occurrence of tab "\t" character
+                line = nexus_file[int(sequence_start)].split('\t')
+                # Get sequence ID
+                sequence_id = line[0].strip()
+                # Get sequence
+                sequence = line[1].strip()
+                # TODO(Edwin): Necessary to set value of "sequence_xml"?
+                ET.SubElement(
+                        data, 'sequence',
+                        attrib={
+                                'id': 'seq_{0}'.format(sequence_id),
+                                'taxon': '{0}'.format(sequence_id),
+                                'totalcount': '4',
+                                'value': '{0}'.format(sequence)
+                        }
+                )
                 sequence_start += 1
     # }}}
 
