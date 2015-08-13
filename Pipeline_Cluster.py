@@ -338,7 +338,7 @@ class Garli(jModelTest):
         Given the garli configuration file, read in a a list (utilizing the
         "readlines" function), modifies the garli.conf template file to
         reflect the paramters of the selected model as determined by
-        jModelTest, utilizing edit_garli_conf, and writes it to a distinct
+        jModelTest, utilizing edit_garli_conf, and writes it to a separate
         file.
 
         }}} """

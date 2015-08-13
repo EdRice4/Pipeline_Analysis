@@ -206,6 +206,12 @@ class Garli(jModelTest):
         # Remove these values; confounds with model dictionary above
         model_selected = model_selected.translate(None, '+IG')
         # Variables in garli.conf to edit
+        # ::MODIFIABLE::
+        # NOTE: If you would like to search modify variables not currently
+        # specified in garli_params, simply delete the value in the
+        # template file so that the line appears as the others and add
+        # the corresponding value, in the corresponding position, to
+        # garli_values
         garli_params = [
                 'datafname =\n', 'ofprefix =\n',
                 'bootstrapreps =\n', 'ratematrix =\n',
