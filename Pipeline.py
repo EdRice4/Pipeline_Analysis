@@ -642,6 +642,7 @@ class BEAST(Garli):
         # Remove these values; conflicts with Garli models dictionary
         model_selected = model_selected.translate(None, '+IG')
         # If frequencies are estimated, do:
+        # {{{ if estimate
         if Garli.models[str(model_selected)][1] == 'estimate':
             ET.SubElement(
                     state, 'parameter',
@@ -693,7 +694,9 @@ class BEAST(Garli):
                                     )
                             }
                     )
+        # }}}
         # Else, if frequencies are equal, do:
+        # {{{ elif equal
         elif Garli.models[str(model_selected)][1] == 'equal':
             ET.SubElement(
                     substmodel, 'frequencies',
@@ -708,8 +711,11 @@ class BEAST(Garli):
                             'estimate': 'false'
                             }
                     )
+        # }}}
         # TODO(Edwin):
         # 1.) Utilize vimdiff to determine how to modify het.
+        # If model includes gamma distribution, do:
+        # {{{ if het
         if het:
             sitemodel.set('gammaCategoryCount', '4')
             gamma_shape = ET.SubElement(
@@ -721,6 +727,9 @@ class BEAST(Garli):
                             }
                     )
             gamma_shape.text = self._jMT_parameters['gamma']
+        # }}}
+        # Else, do:
+        # {{{ else het
         else:
             gamma_shape = ET.SubElement(
                     sitemodel, 'parameter',
@@ -731,8 +740,11 @@ class BEAST(Garli):
                             }
                     )
             gamma_shape.text = '0.0'
+        # }}}
         # TODO(Edwin):
         # 1.) Utilize vimdiff to determine how to modify inv.
+        # If model includes proportion of invariant sites, do:
+        # {{{ if inv
         if inv:
             p_inv = ET.SubElement(
                     sitemodel, 'parameter',
@@ -744,6 +756,9 @@ class BEAST(Garli):
                             }
                     )
             p_inv.text = self._jMT_parameters['pInv']
+        # }}}
+        # Else, do:
+        # {{{ else inv
         else:
             p_inv = ET.SubElement(
                     sitemodel, 'parameter',
@@ -755,6 +770,7 @@ class BEAST(Garli):
                             }
                     )
             p_inv.text = '0.0'
+        # }}}
     # }}}
 
     # {{{ w_beast_rates
