@@ -36,6 +36,14 @@ class jModelTest(object):
     # {{{ add_args
     @staticmethod
     def add_args():
+
+        """ {{{ Docstrings
+
+        Add argument group "jMT" to namespace and subsequent pertinent
+        arguments to aforementioned group.
+
+        }}} """
+
         args_jMT = arg_parser.add_argument_group(
                 'jMT', 'Arguments for running jModelTest module.'
                 )
@@ -46,65 +54,158 @@ class jModelTest(object):
 
     # {{{ __init__
     def __init__(self):
-        self.jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
-        self._jMT_parameters = {}
+
+        """ {{{ Docstrings
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
+        self._jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
+        self.run_jModelTest()
+        self._jMT_parameters = self.r_jModelTest_parameters(self._jMT_out)
     # }}}
 
     # {{{ run_jModeltest
     def run_jModelTest(self):
+
+        """ {{{ Docstrings
+
+        Run jModelTest by spawning child process, utilizing "Popen" function
+        provided by "subprocess" python module. The output/errors of this
+        process is then subsequently printed, to stdout and written to a file,
+        in real-time.
+
+        }}} """
+
+        # Specify child process, including any pertinent arguments; see
+        # jModelTest documentation for explanantion of arguments
+        # ::MODIFIABLE::
+        # NOTE: If you would like to modify arguments passed to jModelTest,
+        # simply format the following string in a matter of your choosing
+        # You may also have to change the manner in which jModelTest is
+        # called, depending on your system
         jModelTest = (
-                'java -jar {0} -d {1} -t fixed '
-                '-s 11 -i -g 4 -f -tr 1'
+                'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
+                '-AIC -AICc -DT'
                 ).format(args.jMT, self._path)
+        # Spawn child process and run
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                 universal_newlines=True
                 )
+        # Open stdout of child process and print/write in real-time
         with open(self._JMT_ID, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
-                # NOTE: Following if statement only necessary for running in
-                # OBCP cluster; can be ommited otherwise.
-                if line != 'Cannot perform output.\n':
-                    print(line.strip())
-                    output.write(str(line))
+                print(line.strip())
+                output.write(str(line))
+            # Close stdout
             jMT_run.stdout.close()
     # }}}
 
     # {{{ r_jModelTest_output
     def r_jModelTest_output(self, jModelTest_file):
-        delimiter = jModelTest_file.index('::Best Models::\n')
-        jmtf = jModelTest_file[delimiter + 2:]
-        if jmtf[-1].startswith('There'):
-            jmtf.pop()
-        names = jmtf[0]
-        model = jmtf[2]
-        return names, model
+
+        """ {{{ Docstrings
+
+        Given the name of the jModelTest output file (as a string), opens the
+        file in read mode and reads it into a list which is then parsed
+        (here and in subsequent functions; see below) for the pertinent
+        selected model paramters at the end of the file.
+
+        NOTE: This function does not support comparison of selected models
+        between different selection criterion; to do so would require
+        human interference which does not coincide with the purpose of this
+        script. Rather, it simply selects the model output "first."
+
+        }}} """
+
+        # Open jModelTest output in read model
+        with open(jModelTest_file, 'r') as jmt_out:
+            # Read into list
+            jmt_out = jmt_out.readlines()
+        # Get beginning psoition of selected model block
+        delimiter = jmt_out.index('::Best Models::\n')
+        # Truncate the output
+        jmt_out = jmt_out[delimiter + 2:]
+        # Get the names of the variables
+        variables = jmt_out[0]
+        # Get the values of the variables
+        values = jmt_out[2]
+        return variables, values
     # }}}
 
-    # {{{ r_jModelTest_names
-    def r_jModelTest_names(self, names):
-        names = names.split('\t')
-        names = filter(None, names)
-        names = map(lambda x: x.strip(), names)
-        return names
+    # {{{ r_jModelTest_variables
+    def r_jModelTest_variables(self, variables):
+
+        """ {{{ Docstrings
+
+        Given a string of variable names (as parsed by r_jModelTest_output),
+        further parses them into a list, stripping the values, and formatting
+        them, in order to generate a "pretty" dictionary.
+
+        }}} """
+
+        # Split string by occurences of tab "\t" character
+        variables = variables.split('\t')
+        # Filter out empty values
+        variables = filter(None, variables)
+        # Strip values of leading and trailing whitespace characters
+        variables = map(lambda x: x.strip(), variables)
+        return variables
     # }}}
 
-    # {{{ r_jModelTest_model
-    def r_jModelTest_model(self, model):
-        model = model.replace('\t', ' ')
-        model = model.split(' ')
-        model = filter(None, model)
-        model = model[1:]
-        model = map(lambda x: x.strip(), model)
-        return model
+    # {{{ r_jModelTest_values
+    def r_jModelTest_values(self, values):
+
+        """ {{{ Docstrings
+
+        Given a string of variable values (as parsed by r_jModelTest_output),
+        further parses them into a list, stripping the values, and formatting
+        them, in order to generate a "pretty" dictionary.
+
+        }}} """
+
+        # Replace tab "\t" character with blank space; not every tab character
+        # in values line corresponds to a tab character in variables line, so
+        # in order for len(values) == len(variables), must split by another
+        # method
+        values = values.replace('\t', ' ')
+        # Split string by occurrences of space
+        values = values.split(' ')
+        # Filter out empty values
+        values = filter(None, values)
+        # Do not want selection criteria as value
+        values = values[1:]
+        # Strip values of leading and trailing whitespace characters
+        values = map(lambda x: x.strip(), values)
+        return values
     # }}}
 
     # {{{ r_jModelTest_parameters
     def r_jModelTest_parameters(self, jModelTest_file):
-        names, model = self._r_jModelTest_output(jModelTest_file)
-        names = self._r_jModelTest_names(names)
-        model = self._r_jModelTest_model(model)
-        self._jMT_parameters = dict((i, j) for i, j in zip(names, model))
+
+        """ {{{ Docstrings
+
+        Concatenates r_jModelTest* functionality; performing all necessary
+        steps to generate "pretty" dictionary in format of:
+
+                dictionary = {
+                        'variable' : 'value'
+                        'variable' : 'value'
+                        }
+
+        }}} """
+
+        # Get variables and corresponding values as strings
+        variables, values = self.r_jModelTest_output(jModelTest_file)
+        # Parse variables into list
+        variables = self.r_jModelTest_variables(variables)
+        # Parse values into list
+        values = self.r_jModelTest_values(values)
+        # Generate dictionary
+        jMT_parameters = dict((i, j) for i, j in zip(variables, values))
+        return jMT_parameters
     # }}}
 # }}}
 
@@ -119,6 +220,12 @@ class Garli(jModelTest):
     }}} """
 
     # {{{ models
+    # Dictionary utilized to store and reference pertienent parameters
+    # (ratematrix and statefrequenceis) for each respective substitution model
+    # NOTE: TM1ef and TM1 are missing 'I' string because all occurences of
+    # 'I' and 'G' are later removed from selected model to make number of
+    # models more tractable, otherwise would have had to sepcify 4 distinct
+    # models, one without invarant and gamma, one with just invariant, etc.
     models = {
             'JC': ['1rate', 'equal'],
             'F81': ['1rate', 'estimate'],
@@ -134,8 +241,8 @@ class Garli(jModelTest):
             'TPM3uf': ['(0 1 2 0 1 2)', 'estimate'],
             'K3P': ['(0 1 2 2 1 0)', 'equal'],
             'K3Puf': ['(0 1 2 2 1 0)', 'estimate'],
-            'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate.
-            'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate.
+            'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate
+            'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate
             'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
             'TM2': ['((0 1 0 2 3 2))', 'estimate'],
             'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
@@ -150,6 +257,14 @@ class Garli(jModelTest):
     # {{{ add_args
     @staticmethod
     def add_args():
+
+        """ {{{ Docstrings
+
+        Add argument group "garli" to namespace and subsequent pertinent
+        arguments to aforementioned group.
+
+        }}} """
+
         args_garli = arg_parser.add_argument_group(
                 'garli', 'Arguments for running garli module.'
                 )
@@ -163,6 +278,32 @@ class Garli(jModelTest):
                         ),
                 default=0
                 )
+    # }}}
+
+    # {{{ Read garli.conf template
+    @staticmethod
+    def r_garli_conf():
+
+        """ {{{ Docstrings
+
+        Reads in garli.conf template file as a list. Method is static because
+        only necessary to run once; do not need to run upon every
+        instantiation of Garli class.
+
+        }}} """
+
+        # Open in read mode
+        with open('garli.conf', 'r') as garli_conf:
+            # Read in as list
+            garli_conf = garli_conf.readlines()
+        # Strip leading and trailing white characters on every line
+        garli_conf = map(lambda x: x.strip(), garli_conf)
+        return garli_conf
+    # }}}
+
+    # {{{ __init__
+    def __init__(self):
+        self.w_garli_conf(garli_conf)
     # }}}
 
     # {{{ file_edit
@@ -180,20 +321,25 @@ class Garli(jModelTest):
 
         }}} """
 
+        # Iterate through lines_to_edit and values_to_insert in tandem
         for i, j in zip(lines_to_edit, values_to_insert):
-            garli_conf[garli_conf.index(i)] = '{0}'.format(
-                    garli_conf[garli_conf.index(i)].strip() + j + '\n'
+            # Append value
+            garli_conf[garli_conf.index(i)] = '{0} {1}'.format(
+                    garli_conf[garli_conf.index(i)], j
                     )
         return garli_conf
     # }}}
 
     # {{{ w_garli_conf
-    def w_garli_conf(self, garli_file):
+    def w_garli_conf(self, garli_conf):
 
         """ {{{ Docstrings
 
-        Given the parameters of the model selected by jModelTest, writes
-        the input garli.conf file to reflect these parameters.
+        Given the garli configuration file, read in a a list (utilizing the
+        "readlines" function), modifies the garli.conf template file to
+        reflect the paramters of the selected model as determined by
+        jModelTest, utilizing edit_garli_conf, and writes it to a separate
+        file.
 
         }}} """
 
@@ -203,49 +349,84 @@ class Garli(jModelTest):
         het = '+G' in model_selected
         # Check if model includes proportion of invariant sites
         inv = '+I' in model_selected
-        # Remove these values; confounds with model dictionary above
+        # Remove these values; conflicts with model dictionary above
         model_selected = model_selected.translate(None, '+IG')
-        # Variables in garli.conf to edit
+        # Variables in garli.conf to edit; see
+        # https://molevol.mbl.edu/index.php/GARLI_Configuration_Settings#streefname_.28source_of_starting_tree_and.2For_model.29
+        # for explanation on pertinent variables
         # ::MODIFIABLE::
-        # NOTE: If you would like to search modify variables not currently
+        # NOTE: If you would like to modify variables not currently
         # specified in garli_params, simply delete the value in the
         # template file so that the line appears as the others and add
         # the corresponding value, in the corresponding position, to
         # garli_values
-        garli_params = [
-                'datafname =\n', 'ofprefix =\n',
-                'bootstrapreps =\n', 'ratematrix =\n',
-                'statefrequencies =\n', 'ratehetmodel =\n',
-                'numratecats =\n', 'invariantsites =\n'
+        garli_variables = [
+                'datafname =', 'ofprefix =', 'searchreps ='
+                'bootstrapreps =', 'ratematrix =', 'statefrequencies =',
+                'ratehetmodel =', 'numratecats =', 'invariantsites ='
                 ]
         # Values of variables to insert
         garli_values = [
-                self._path, self._identifier, str(args.bstr),
-                Garli.models[str(model_selected)][0],
+                self._path, self._identifier, str(args.np),
+                str(args.bstr), Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
+        # If model selected by jModelTest included gamma distribution, do so
+        # in garli.conf
         if het:
             garli_values.extend(['gamma', '4'])
+        # Else, don't
         else:
             garli_values.extend(['none', '1'])
+        # If model selected by jModelTest included proportion invariant, do so
+        # in garli.conf
         if inv:
             garli_values.append('estimate')
+        # Else, don't
         else:
             garli_values.append('none')
-        garli_file = self._file_edit(garli_file, garli_params, garli_values)
-        with open('garli_%s.conf' % self._identifier, 'w+') as garli_output:
-            for i in garli_file:
-                garli_output.write(i)
+        # Append values to respective variables
+        garli_params = self.edit_garli_conf(
+                garli_conf, garli_variables, garli_values
+                )
+        # Add newline "\n" character to end of every line
+        garli_params = map(lambda x: x + '\n', garli_params)
+        # Write modified garli.conf
+        # Open in write mode
+        with open(
+                'garli_{0}.conf'.format(self._identifier), 'w'
+                ) as garli_input:
+            # Write lines
+            for line in garli_params:
+                garli_input.write(line)
     # }}}
 
     # {{{ run_garli
     def run_garli(self):
-        garli = './Garli -b garli_%s.conf' % self._identifier
+
+        """ {{{ Docstrings
+
+        Run garli by spawning child process, utilizing "Popen" function
+        provided by "subprocess" python module. The output/errors of this
+        process is then subsequently printed, to stdout and written to a file,
+        in real-time.
+
+        }}} """
+
+        # Specify child process, including any pertinent arguments
+        # ::MODIFIABLE::
+        # NOTE: You may have to change the manner in which garli is called,
+        # depending on your system
+        garli = './Garli -b garli_{0}.conf'.format(self._identifier)
+        # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
                 )
+        # Open stdout of child process and print in real-time
+        # Garli handles writing to file, unlike jModelTest
         for line in iter(garli_run.stdout.readline, ''):
             print(line.strip())
+        # Close stdout
         garli_run.stdout.close()
     # }}}
 # }}}
@@ -735,6 +916,15 @@ class NexusFile(CleanUp):
                         '\'nex\' in their name, including the extension.'
                         ),
                 action='store_true')
+        args_nex.add_argument(
+                '-np', '--no_proc', help=(
+                        'When running script in HPC environment, specify '
+                        'total number of processors requested so that the '
+                        'script has knowledge of the environment and can '
+                        'take full advantage of it.'
+                        ),
+                default=0
+                )
     # }}}
 
     # {{{ __init__
@@ -803,7 +993,6 @@ arg_parser = argparse.ArgumentParser(
                 'relatively large datasets and supports HPC environments.'
                 )
         )
-
 # Run add_args for each class when passing '-h' flag and prior to instantiating
 # instances of any class.
 if __name__ == '__main__':
@@ -843,18 +1032,16 @@ if args.batch:
     cwd = os.getcwd()
     files_in_dir = os.listdir(cwd)
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
+    for i in nexus_files:
+        NexusFile(i)
 else:
     nexus_files = []
     print('The program will prompt you for the path to each sequence file.')
     no_runs = raw_input('How many runs would you like to perform? ')
     for i in range(int(no_runs)):
         nexus_files.append(raw_input('Path to sequence file: '))
-# }}}
-
-
-# {{{ Instantiate instances of NexusFile class
-for i in nexus_files:
-    NexusFile(i)
+    for i in nexus_files:
+        NexusFile(i)
 # }}}
 
 
@@ -864,7 +1051,6 @@ if args.bGMYC_params:
 else:
     bGMYC_parameters = {}
 # }}}
-
 
 # {{{ Run
 for sequence in NexusFile:
