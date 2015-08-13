@@ -550,8 +550,6 @@ class BEAST(Garli):
         for element in run.iterfind('logger'):
             if element.get('id') == 'tracelog':
                 trace_log = element
-            if element.get('id') == 'screenlog':
-                screen_log = element
             if 'treelog.t:' in element.get('id'):
                 tree_log = element
         return(
