@@ -550,8 +550,9 @@ class BEAST(Garli):
                 tree_log = element
     # }}}
 
+    # TODO(Edwin):Passing "self" to function necessary?
     # {{{ JC_F81
-    def JC_F81(self, xml_nodes):
+    def JC_F81(xml_nodes):
 
         """ {{{ Docstrings
 
@@ -565,7 +566,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ K80_HKY
-    def K80_HKY(self, xml_nodes):
+    def K80_HKY(xml_nodes):
 
         """ {{{ Docstrings
 
@@ -579,14 +580,6 @@ class BEAST(Garli):
                 i.text = self._jMT_parameters['titv']
             else:
                 i.text = '1.0'
-    # }}}
-
-    # TODO(Edwin):Delete sub_models and functionality
-    # {{{ sub_models
-    sub_models = {
-            'JC': JC_F81, 'F81': JC_F81,
-            'K80': K80_HKY, 'HKY': K80_HKY
-            }
     # }}}
 
     # {{{ calculate_ess
@@ -724,8 +717,10 @@ class BEAST(Garli):
             if 'rateGT.s:' in element.get('id'):
                 rateGT = element
                 xml_nodes.append(element)
-        if BEAST.sub_models.get(model_selected):
-            BEAST.sub_models[model_selected](self, xml_nodes)
+        if model_selected == 'JC' or model_selected == 'F81':
+            BEAST.JC_F81(xml_nodes)
+        elif model_selected == 'K80' or model_selected == 'HKY':
+            BEAST.K80_HKY(xml_nodes)
         else:
             rateAC.text = '%s' % self._jMT_parameters['Ra']
             rateAG.text = '%s' % self._jMT_parameters['Rb']
