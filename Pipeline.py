@@ -56,6 +56,7 @@ class jModelTest(object):
     def __init__(self):
 
         """ {{{ Docstrings
+
         Upon instantiating instance of class, run functions and store
         parameters.
 
@@ -303,6 +304,14 @@ class Garli(jModelTest):
 
     # {{{ __init__
     def __init__(self):
+
+        """ {{{ Docstrings
+
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
         self.w_garli_conf(garli_conf)
         self.run_garli()
     # }}}
