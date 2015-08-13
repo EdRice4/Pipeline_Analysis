@@ -548,8 +548,6 @@ class BEAST(Garli):
             if element.tag == 'siteModel':
                 sitemodel = element
         for element in run.iterfind('logger'):
-            if element.get('id') == 'tracelog':
-                trace_log = element
             if 'treelog.t:' in element.get('id'):
                 tree_log = element
         return(
