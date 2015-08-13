@@ -600,12 +600,19 @@ class BEAST(Garli):
 
         }}} """
 
-        # Read in data, ignoring comments, sample column, and header
-        data = genfromtxt(data_file, comments='#', usecols=range(1, 17))[1:]
-        data = zip(*data)[1:]
+        # Read in data, ignoring comments, sample column, and header,
+        # respectively
+        data = genfromtxt(beast_out, comments='#', usecols=range(1, 17))[1:]
+        # Concatenate data by columns
+        data = zip(*data)
+        # Calculate autocorrelation times (and other statistics) for each
+        # column
         stats = map(lambda x: acor(x), data)
+        # Extract autocorrelation times from statistics
         auto_cor_times = zip(*stats)[0]
+        # Calculate MCMC chain length
         chain_length = int(args.MCMC_BEAST * (1 - args.burnin_BEAST))
+        # Calculate effective sample size
         eff_sample_size = map(lambda x: chain_length / x, auto_cor_times)
         return eff_sample_size
     # }}}
