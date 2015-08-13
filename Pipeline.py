@@ -619,6 +619,15 @@ class BEAST(Garli):
 
     # {{{ w_beast_submodel
     def w_beast_submodel(self):
+
+        """ {{{ Docstrings
+
+        Writes parameters (i.e. gamma and proportion invariant) of model
+        selected by jModelTest to BEAST XML.
+
+        }}} """
+
+        # Get the model selected
         model_selected = self._jMT_parameters['Model']
         het = '+G' in model_selected
         inv = '+I' in model_selected
@@ -701,7 +710,7 @@ class BEAST(Garli):
 
         """ {{{ Docstrings
 
-        Writes transition rates to BEAST XML input file.
+        Writes transition rates to BEAST XML.
 
         NOTE: The BEAST XML input file template, "Standard.xml" is configured
         to begin with a GTR model of DNA sequence evolution. This model is
@@ -968,7 +977,8 @@ class BEAST(Garli):
     # }}}
 
     # TODO(Edwin):
-    # 1.) Do not specify burnin here; simply defined parameters
+    # 1.) log_combine not necessary?
+    # 2.) Do not specify burnin here; simply defined parameters
     #     incorrectly in w_beast_substmodel?
     # {{{ log_combine
     def log_combine(self):
