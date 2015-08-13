@@ -821,10 +821,9 @@ class BEAST(Garli):
                 sequence_start += 1
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Add setting of additional parameters.
     # {{{ w_beast_parameters
-    def w_beast_parameters(self, state_xml_element, run_xml_element, tree_log_xml_element, beast_xml):
+    def w_beast_parameters(self, state_xml_element, run_xml_element,
+                           tree_log_xml_element, beast_xml):
 
         """ {{{ Docstrings
 
@@ -834,6 +833,10 @@ class BEAST(Garli):
 
         }}} """
 
+        # Define pertinent elements
+        state = state_xml_element
+        run = run_xml_element
+        tree_log = tree_log_xml_element
         # Set BEAST run parameters
         # Frequency with which to save to state file
         state.set('storeEvery', str(args.log_every))
