@@ -481,7 +481,9 @@ class BEAST(Garli):
                 default=0.25)
         args_BEAST.add_argument(
                 '--log_every', type=int, help=(
-                        'Sample interval for BEAST analysis.'
+                        'Sample interval for BEAST analysis. This value will '
+                        'be utilized to determine the frequency with which '
+                        'the ".state" and ".trees" files are written to.'
                         ),
                 default=1000)
         args_BEAST.add_argument(
