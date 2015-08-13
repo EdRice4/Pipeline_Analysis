@@ -275,9 +275,28 @@ class Garli(jModelTest):
                 )
     # }}}
 
+    # {{{ Read garli.conf template
+    @staticmethod
+    def r_garli_conf():
+
+        """ {{{ Docstrings
+
+        Reads in garli.conf template file as a list. Method is static because
+        only necessary to run once; do not need to run upon every
+        instantiation of Garli class.
+
+        }}} """
+
+        # Open in read mode
+        with open('garli.conf', 'r') as garli_conf:
+            # Read in as list
+            garli_conf = garli_conf.readlines()
+        return garli_conf
+    # }}}
+
     # {{{ __init__
     def __init__(self):
-        pass
+        self.w_garli_conf(garli_conf)
     # }}}
 
     # {{{ file_edit
@@ -303,12 +322,15 @@ class Garli(jModelTest):
     # }}}
 
     # {{{ w_garli_conf
-    def w_garli_conf(self, garli_file):
+    def w_garli_conf(self, garli_conf):
 
         """ {{{ Docstrings
 
-        Given the parameters of the model selected by jModelTest, writes
-        the input garli.conf file to reflect these parameters.
+        Given the garli configuration file, read in a a list (utilizing the
+        "readlines" function), modifies the garli.conf template file to
+        reflect the paramters of the selected model as determined by
+        jModelTest, utilizing edit_garli_conf, and writes it to a distinct
+        file.
 
         }}} """
 
@@ -321,11 +343,11 @@ class Garli(jModelTest):
         # Remove these values; confounds with model dictionary above
         model_selected = model_selected.translate(None, '+IG')
         # Variables in garli.conf to edit
+        # TODO: Add searchreps
         garli_params = [
-                'datafname =\n', 'ofprefix =\n',
-                'bootstrapreps =\n', 'ratematrix =\n',
-                'statefrequencies =\n', 'ratehetmodel =\n',
-                'numratecats =\n', 'invariantsites =\n'
+                'datafname =\n', 'ofprefix =\n', 'searchreps =\n'
+                'bootstrapreps =\n', 'ratematrix =\n', 'statefrequencies =\n',
+                'ratehetmodel =\n', 'numratecats =\n', 'invariantsites =\n'
                 ]
         # Values of variables to insert
         garli_values = [
@@ -844,6 +866,15 @@ class NexusFile(CleanUp):
                         '\'nex\' in their name, including the extension.'
                         ),
                 action='store_true')
+        args_nex.add_argument(
+                '-np', '--no_proc', help=(
+                        'When running script in HPC environment, specify '
+                        'total number of processors requested so that the '
+                        'script has knowledge of the environment and can '
+                        'take full advantage of it.'
+                        ),
+                default=0
+                )
     # }}}
 
     # {{{ __init__
@@ -912,7 +943,6 @@ arg_parser = argparse.ArgumentParser(
                 'relatively large datasets and supports HPC environments.'
                 )
         )
-
 # Run add_args for each class when passing '-h' flag and prior to instantiating
 # instances of any class.
 if __name__ == '__main__':
@@ -971,14 +1001,6 @@ if args.bGMYC_params:
 else:
     bGMYC_parameters = {}
 # }}}
-
-# {{{ Read garli.conf template
-# Open in read mode
-with open('garli.conf', 'r') as garli_conf:
-    # Read in as list
-    garli_conf = garli_conf.readlines()
-# }}}
-
 
 # {{{ Run
 for sequence in NexusFile:
