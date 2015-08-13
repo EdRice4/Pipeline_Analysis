@@ -654,24 +654,62 @@ class BEAST(Garli):
                             'upper': '1.0'
                             }
                     ).text = '0.25'
-            freq_log = ET.SubElement(
-                    log, 'parameter',
+            ET.SubElement(
+                    substmodel, 'frequencies',
                     attrib={
-                            'idref': 'freqParameter.s:%s' % self._sequence_name,
-                            'name': 'log'
+                            'id': 'freqParameter.s:{0}'.format(
+                                    self._sequence_name
+                                    ),
+                            'spec': 'Frequencies',
+                            'frequencies': '@freqParameter.s:{0}'.format(
+                                    self._sequence_name
+                                    )
+                            }
+                    )
+            freq_operator = ET.SubElement(
+                    run, 'operator',
+                    attrib={
+                            'id': 'FrequenciesExchanger.s:{0}'.format(
+                                    self._sequence_name
+                                    ),
+                            'spec': 'DeltaExchangeOperator',
+                            'delta': '0.01',
+                            'weight': '0.01'
+                            }
+                    )
+            ET.SubElement(
+                    freq_operator, 'parameter',
+                    attrib={
+                            'idref': 'freqParameter.s:{0}'.format(
+                                    self._sequence_name
+                                    )
+                            }
+                    )
+            ET.SubElement(
+                    trace_log, 'log',
+                    attrib={
+                            'idref': 'freqParameter.s:{0}'.format(
+                                    self._sequence_name
+                                    )
                             }
                     )
         # Else, if frequencies are equal, do:
         elif Garli.models[str(model_selected)][1] == 'equal':
-            freq = ET.SubElement(
+            ET.SubElement(
                     substmodel, 'frequencies',
                     attrib={
-                            'data': '@%s' % self._sequence_name,
-                            'estimate': 'false',
-                            'id': 'equalFreqs.s:%s' % self._sequence_name,
-                            'spec': 'Frequencies'
+                            'id': 'equalFreqs.s:{0}'.format(
+                                    self._sequence_name
+                                    ),
+                            'spec': 'Frequencies',
+                            'data': '@{0}'.format(
+                                    self._sequence_name
+                                    ),
+                            'estimate': 'false'
                             }
                     )
+        # TODO(Edwin):
+        # 1.) Utilize vimdiff to determine how to modify het.
         if het:
             sitemodel.set('gammaCategoryCount', '4')
             gamma_shape = ET.SubElement(
@@ -693,6 +731,8 @@ class BEAST(Garli):
                             }
                     )
             gamma_shape.text = '0.0'
+        # TODO(Edwin):
+        # 1.) Utilize vimdiff to determine how to modify inv.
         if inv:
             p_inv = ET.SubElement(
                     sitemodel, 'parameter',
