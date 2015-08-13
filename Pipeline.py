@@ -826,8 +826,8 @@ class BEAST(Garli):
                 sequence_start += 1
     # }}}
 
-    # {{{ beast_finalize
-    def beast_finalize(self, beast_xml):
+    # {{{ w_beast_parameters
+    def w_beast_parameters(self, beast_xml):
 
         """ {{{ Docstrings
 
@@ -894,6 +894,8 @@ class BEAST(Garli):
             ess = filter(lambda x: x < args.tolerance, ess)
     # }}}
 
+    # TODO(Edwin):Do not specify burnin here; simply defined parameters
+    # incorrectly in w_beast_substmodel?
     # {{{ log_combine
     def log_combine(self):
         cwd = os.getcwd()
