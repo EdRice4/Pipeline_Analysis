@@ -219,41 +219,6 @@ class Garli(jModelTest):
 
     }}} """
 
-    # {{{ models
-    # Dictionary utilized to store and reference pertienent parameters
-    # (ratematrix and statefrequenceis) for each respective substitution model
-    # NOTE: TM1ef and TM1 are missing 'I' string because all occurences of
-    # 'I' and 'G' are later removed from selected model to make number of
-    # models more tractable, otherwise would have had to sepcify 4 distinct
-    # models, one without invarant and gamma, one with just invariant, etc.
-    models = {
-            'JC': ['1rate', 'equal'],
-            'F81': ['1rate', 'estimate'],
-            'K80': ['2rate', 'equal'],
-            'HKY': ['2rate', 'estimate'],
-            'TrNef': ['(0 1 0 0 2 0)', 'equal'],
-            'TrN': ['(0 1 0 0 2 0)', 'estimate'],
-            'TPM1': ['(0 1 2 2 1 0)', 'equal'],
-            'TPM1uf': ['(0 1 2 2 1 0)', 'estimate'],
-            'TPM2': ['(0 1 0 2 1 2)', 'equal'],
-            'TPM2uf': ['(0 1 0 2 1 2)', 'estimate'],
-            'TPM3': ['(0 1 2 0 1 2)', 'equal'],
-            'TPM3uf': ['(0 1 2 0 1 2)', 'estimate'],
-            'K3P': ['(0 1 2 2 1 0)', 'equal'],
-            'K3Puf': ['(0 1 2 2 1 0)', 'estimate'],
-            'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate
-            'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate
-            'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
-            'TM2': ['((0 1 0 2 3 2))', 'estimate'],
-            'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
-            'TM3': ['(0 1 2 0 3 2)', 'estimate'],
-            'TVMef': ['(0 1 2 3 1 4)', 'equal'],
-            'TVM': ['(0 1 2 3 1 4)', 'estimate'],
-            'SYM': ['6rate', 'equal'],
-            'GTR': ['6rate', 'estimate']
-            }
-    # }}}
-
     # {{{ add_args
     @staticmethod
     def add_args():
@@ -299,6 +264,41 @@ class Garli(jModelTest):
         # Strip leading and trailing white characters on every line
         garli_conf = map(lambda x: x.strip(), garli_conf)
         return garli_conf
+    # }}}
+
+    # {{{ models
+    # Dictionary utilized to store and reference pertienent parameters
+    # (ratematrix and statefrequenceis) for each respective substitution model
+    # NOTE: TM1ef and TM1 are missing 'I' string because all occurences of
+    # 'I' and 'G' are later removed from selected model to make number of
+    # models more tractable, otherwise would have had to sepcify 4 distinct
+    # models, one without invarant and gamma, one with just invariant, etc.
+    models = {
+            'JC': ['1rate', 'equal'],
+            'F81': ['1rate', 'estimate'],
+            'K80': ['2rate', 'equal'],
+            'HKY': ['2rate', 'estimate'],
+            'TrNef': ['(0 1 0 0 2 0)', 'equal'],
+            'TrN': ['(0 1 0 0 2 0)', 'estimate'],
+            'TPM1': ['(0 1 2 2 1 0)', 'equal'],
+            'TPM1uf': ['(0 1 2 2 1 0)', 'estimate'],
+            'TPM2': ['(0 1 0 2 1 2)', 'equal'],
+            'TPM2uf': ['(0 1 0 2 1 2)', 'estimate'],
+            'TPM3': ['(0 1 2 0 1 2)', 'equal'],
+            'TPM3uf': ['(0 1 2 0 1 2)', 'estimate'],
+            'K3P': ['(0 1 2 2 1 0)', 'equal'],
+            'K3Puf': ['(0 1 2 2 1 0)', 'estimate'],
+            'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate
+            'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate
+            'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
+            'TM2': ['((0 1 0 2 3 2))', 'estimate'],
+            'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
+            'TM3': ['(0 1 2 0 3 2)', 'estimate'],
+            'TVMef': ['(0 1 2 3 1 4)', 'equal'],
+            'TVM': ['(0 1 2 3 1 4)', 'estimate'],
+            'SYM': ['6rate', 'equal'],
+            'GTR': ['6rate', 'estimate']
+            }
     # }}}
 
     # {{{ __init__
