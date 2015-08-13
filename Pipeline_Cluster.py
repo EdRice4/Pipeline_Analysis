@@ -79,7 +79,12 @@ class jModelTest(object):
         }}} """
 
         # Specify child process, including any pertinent arguments; see
-        # jModelTest documentation for explanantion of arguments.
+        # jModelTest documentation for explanantion of arguments
+        # ::MODIFIABLE::
+        # NOTE: If you would like to modify arguments passed to jModelTest,
+        # simply format the following string in a matter of your choosing
+        # You may also have to change the manner in which jModelTest is
+        # called, depending on your system
         jModelTest = (
                 'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
                 '-AIC -AICc -DT'
@@ -215,8 +220,8 @@ class Garli(jModelTest):
     }}} """
 
     # {{{ models
-    # Dictionary utilized to store and reference pertienent parameters for
-    # each respective substitution model
+    # Dictionary utilized to store and reference pertienent parameters
+    # (ratematrix and statefrequenceis) for each respective substitution model
     # NOTE: TM1ef and TM1 are missing 'I' string because all occurences of
     # 'I' and 'G' are later removed from selected model to make number of
     # models more tractable, otherwise would have had to sepcify 4 distinct
@@ -291,6 +296,8 @@ class Garli(jModelTest):
         with open('garli.conf', 'r') as garli_conf:
             # Read in as list
             garli_conf = garli_conf.readlines()
+        # Strip leading and trailing white characters on every line
+        garli_conf = map(lambda x: x.strip(), garli_conf)
         return garli_conf
     # }}}
 
@@ -314,9 +321,11 @@ class Garli(jModelTest):
 
         }}} """
 
+        # Iterate through lines_to_edit and values_to_insert in tandem
         for i, j in zip(lines_to_edit, values_to_insert):
-            garli_conf[garli_conf.index(i)] = '{0}'.format(
-                    garli_conf[garli_conf.index(i)].strip() + j + '\n'
+            # Append value
+            garli_conf[garli_conf.index(i)] = '{0} {1}'.format(
+                    garli_conf[garli_conf.index(i)], j
                     )
         return garli_conf
     # }}}
@@ -340,43 +349,84 @@ class Garli(jModelTest):
         het = '+G' in model_selected
         # Check if model includes proportion of invariant sites
         inv = '+I' in model_selected
-        # Remove these values; confounds with model dictionary above
+        # Remove these values; conflicts with model dictionary above
         model_selected = model_selected.translate(None, '+IG')
-        # Variables in garli.conf to edit
-        # TODO: Add searchreps
-        garli_params = [
-                'datafname =\n', 'ofprefix =\n', 'searchreps =\n'
-                'bootstrapreps =\n', 'ratematrix =\n', 'statefrequencies =\n',
-                'ratehetmodel =\n', 'numratecats =\n', 'invariantsites =\n'
+        # Variables in garli.conf to edit; see
+        # https://molevol.mbl.edu/index.php/GARLI_Configuration_Settings#streefname_.28source_of_starting_tree_and.2For_model.29
+        # for explanation on pertinent variables
+        # ::MODIFIABLE::
+        # NOTE: If you would like to modify variables not currently
+        # specified in garli_params, simply delete the value in the
+        # template file so that the line appears as the others and add
+        # the corresponding value, in the corresponding position, to
+        # garli_values
+        garli_variables = [
+                'datafname =', 'ofprefix =', 'searchreps ='
+                'bootstrapreps =', 'ratematrix =', 'statefrequencies =',
+                'ratehetmodel =', 'numratecats =', 'invariantsites ='
                 ]
         # Values of variables to insert
         garli_values = [
-                self._path, self._identifier, str(args.bstr),
-                Garli.models[str(model_selected)][0],
+                self._path, self._identifier, str(args.np),
+                str(args.bstr), Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
+        # If model selected by jModelTest included gamma distribution, do so
+        # in garli.conf
         if het:
             garli_values.extend(['gamma', '4'])
+        # Else, don't
         else:
             garli_values.extend(['none', '1'])
+        # If model selected by jModelTest included proportion invariant, do so
+        # in garli.conf
         if inv:
             garli_values.append('estimate')
+        # Else, don't
         else:
             garli_values.append('none')
-        garli_file = self._file_edit(garli_file, garli_params, garli_values)
-        with open('garli_%s.conf' % self._identifier, 'w+') as garli_output:
-            for i in garli_file:
-                garli_output.write(i)
+        # Append values to respective variables
+        garli_params = self.edit_garli_conf(
+                garli_conf, garli_variables, garli_values
+                )
+        # Add newline "\n" character to end of every line
+        garli_params = map(lambda x: x + '\n', garli_params)
+        # Write modified garli.conf
+        # Open in write mode
+        with open(
+                'garli_{0}.conf'.format(self._identifier), 'w'
+                ) as garli_input:
+            # Write lines
+            for line in garli_params:
+                garli_input.write(line)
     # }}}
 
     # {{{ run_garli
     def run_garli(self):
-        garli = './Garli -b garli_%s.conf' % self._identifier
+
+        """ {{{ Docstrings
+
+        Run garli by spawning child process, utilizing "Popen" function
+        provided by "subprocess" python module. The output/errors of this
+        process is then subsequently printed, to stdout and written to a file,
+        in real-time.
+
+        }}} """
+
+        # Specify child process, including any pertinent arguments
+        # ::MODIFIABLE::
+        # NOTE: You may have to change the manner in which garli is called,
+        # depending on your system
+        garli = './Garli -b garli_{0}.conf'.format(self._identifier)
+        # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
                 )
+        # Open stdout of child process and print in real-time
+        # Garli handles writing to file, unlike jModelTest
         for line in iter(garli_run.stdout.readline, ''):
             print(line.strip())
+        # Close stdout
         garli_run.stdout.close()
     # }}}
 # }}}
