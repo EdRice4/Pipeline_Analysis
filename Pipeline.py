@@ -478,7 +478,7 @@ class BEAST(Garli):
                 '--burnin_BEAST', type=int, help=(
                         'Burnin for BEAST analysis.'
                         ),
-                default=0.25)
+                default=10000000)
         args_BEAST.add_argument(
                 '--log_every', type=int, help=(
                         'Sample interval for BEAST analysis. This value will '
