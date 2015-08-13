@@ -707,6 +707,10 @@ class BEAST(Garli):
 
         Writes transition rates to BEAST XML input file.
 
+        NOTE: The BEAST XML input file template, "Standard.xml" is configured
+        to begin with a GTR model of DNA sequence evolution. This model is
+        then "paired down" to reflect the model selected by jModelTest.
+
         }}} """
 
         # Initiate empty list to store pertinent XML nodes
