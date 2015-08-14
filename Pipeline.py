@@ -364,7 +364,7 @@ class Garli(jModelTest):
         # Remove these values; conflicts with Garli models dictionary
         model_selected = model_selected.translate(None, '+IG')
         # Variables in garli.conf to edit; see
-        # https://molevol.mbl.edu/index.php/GARLI_Configuration_Settings#streefname_.28source_of_starting_tree_and.2For_model.29
+        # https://molevol.mbl.edu/index.php/GARLI_Configuration_Settings
         # for explanation on pertinent variables
         # ::MODIFIABLE::
         # NOTE: If you would like to modify variables not currently
@@ -413,8 +413,6 @@ class Garli(jModelTest):
                 garli_input.write(line)
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Optimize garli for OSC.
     # {{{ run_garli
     def run_garli(self):
 
@@ -431,7 +429,9 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = './Garli -b garli_{0}.conf'.format(self._identifier)
+        garli = 'mpirun garli -b -{0} garli_{1}.conf'.format(
+                args.no_proc, self._identifier
+                )
         # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
