@@ -910,8 +910,6 @@ class BEAST(Garli):
                 )
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Optimize beast for OSC.
     # {{{ run_beast
     def run_beast(self):
 
@@ -924,11 +922,9 @@ class BEAST(Garli):
 
         }}} """
 
-        # Specify run directory
-        run_directory = self._identifier
         # Create directory; BEAST expects as such and will place output
         # in it
-        os.mkdir(run_directory)
+        os.mkdir(self._identifier)
         # Specify child process, including any pertinent arguments; see BEAST
         # documentation for explanation of additional arguments
         # ::MODIFIABLE::
@@ -936,9 +932,12 @@ class BEAST(Garli):
         # simply format the following string in a matter of your choosing.
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
-        beast = '{0} -prefix {1} -seed {2} {3}'.format(
-                args.BEAST, run_directory, randrange(0, 999999999),
-                self._BEAST_XML
+        beast = (
+                '{0} -working -prefix {1} -seed {2} -threads {3} -beagle '
+                '{4}'
+                ).format(
+                args.BEAST, self._identifier, randrange(0, 999999999),
+                args.no_proc, self._BEAST_XML
                 )
         # Spawn child process
         beast_run = Popen(
@@ -969,24 +968,24 @@ class BEAST(Garli):
 
         }}} """
 
-        # Set intitial values of variables
-        # Set ess to "True" so that BEAST runs
-        effective_sample_size = self.calculate_ess(self)
-        # This is the initial run of BEAST
-        run_count = 1
+        # Get current effective sample size
+        effective_sample_size = self.calculate_ess()
+        # Filter effective_sample_size to only include values less than the
+        # threshold
+        effective_sample_size = filter(
+                lambda x: x < args.threshold, effective_sample_size
+                )
         # While effective_sample_size does not equal an object of NoneType
-        # (i.e. an empty list [see below]), BEAST will continue to run
+        # (i.e. an empty list) BEAST will continue to run
         while effective_sample_size:
-            # Specify run directory
-            run_directory = '{0}_RUN_{1}'.format(self._identifier, run_count)
-            # Create directory; BEAST expects as such and will place output
-            # in it
-            os.mkdir(run_directory)
             # Specify child process, including any pertinent arguments
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
-            beast = '{0} -prefix {1} -seed {2} {3}'.format(
-                    args.BEAST, run_directory, randrange(0, 999999999),
+            beast = (
+                    '{0} -working -threads {2} -beagle -resume '
+                    '-statefile {3}.xml.state {4}'
+                    ).format(
+                    args.BEAST, args.no_proc, self._sequence_name,
                     self._BEAST_XML
                     )
             # Spawn child process
@@ -1000,12 +999,8 @@ class BEAST(Garli):
                 print(line.strip())
             # Close stdout
             beast_run.stdout.close()
-            # Increment run_count by one
-            run_count += 1
-            # Get effective sample size of run
-            effective_sample_size = self.calculate_ess(
-                    run_directory + '/' + self._BEAST_ID
-                    )
+            # Get effective sample size after run
+            effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
             # the threshold; if none are, empty list of NoneType is returned
             effective_sample_size = filter(
