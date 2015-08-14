@@ -1004,27 +1004,6 @@ class BEAST(Garli):
                     lambda x: x < args.threshold, effective_sample_size
                     )
     # }}}
-
-    # TODO(Edwin):
-    # 1.) log_combine not necessary?
-    # 2.) Do not specify burnin here; simply defined parameters
-    #     incorrectly in w_beast_substmodel?
-    # {{{ log_combine
-    def log_combine(self):
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
-        bdirs = filter(lambda x: '_RUN_' in x, fid)
-        if len(bdirs) > 1:
-            bdirs = map(lambda x: '-log ' + x + '/' + self._BEAST_ID, bdirs)
-            com = './%s %s -b %s -o MASTER_%s' % (args.lcom,
-                                                  ' '.join(bdirs),
-                                                  args.burnin_BEAST,
-                                                  self._BEAST_ID)
-            lcom = Popen(com.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
-            for line in iter(lcom.stdout.readline, ''):
-                print(line.strip())
-            lcom.stdout.close()
-    # }}}
 # }}}
 
 
