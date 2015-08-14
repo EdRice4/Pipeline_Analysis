@@ -725,14 +725,10 @@ class BEAST(Garli):
                             }
                     )
         # }}}
-        # TODO(Edwin):
-        # 1.) Utilize vimdiff to determine how to modify het.
         # If model includes gamma distribution, do:
         if het:
             sitemodel.set('gammaCategoryCount', '4')
             gamma.text = self._jMT_parameters['gamma']
-        # TODO(Edwin):
-        # 1.) Utilize vimdiff to determine how to modify inv.
         # If model includes proportion of invariant sites, do:
         if inv:
             inv.text = self._jMT_parameters['pInv']
