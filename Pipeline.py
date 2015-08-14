@@ -933,8 +933,8 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         beast = (
-                '{0} -working -prefix {1} -seed {2} -threads {3} -beagle '
-                '{4}'
+                'java -jar {0} -working -prefix {1} -seed {2} -threads {3} '
+                '-beagle {4}'
                 ).format(
                 args.BEAST, self._identifier, randrange(0, 999999999),
                 args.no_proc, self._BEAST_XML
@@ -982,7 +982,7 @@ class BEAST(Garli):
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
             beast = (
-                    '{0} -working -threads {2} -beagle -resume '
+                    'java -jar {0} -working -threads {2} -beagle -resume '
                     '-statefile {3}.xml.state {4}'
                     ).format(
                     args.BEAST, args.no_proc, self._sequence_name,
