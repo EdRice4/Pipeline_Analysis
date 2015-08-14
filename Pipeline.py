@@ -518,8 +518,7 @@ class BEAST(Garli):
 
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
         self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
-        (root, data, run, state, substmodel,
-         sitemodel, gamma, inv, tree_log) = self.parse_beast_xml()
+        self._xml_ele_dict = self.parse_beast_xml()
     # }}}
 
     # {{{ parse_beast_xml
@@ -632,10 +631,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_submodel
-    def w_beast_submodel(self, state_xml_element, sitemodel_xml_element,
-                         gamma_xml_element, inv_xml_element,
-                         substmodel_xml_element, run_xml_element,
-                         trace_log_xml_element):
+    def w_beast_submodel(self):
 
         """ {{{ Docstrings
 
@@ -644,14 +640,6 @@ class BEAST(Garli):
 
         }}} """
 
-        # Define pertinent elements
-        state = state_xml_element
-        sitemodel = sitemodel_xml_element
-        gamma = gamma_xml_element
-        inv = inv_xml_element
-        substmodel = substmodel_xml_element
-        run = run_xml_element
-        trace_log = trace_log_xml_element
         # Get the model selected
         model_selected = self._jMT_parameters['Model']
         # Check if model includes gamma distribution
@@ -664,7 +652,7 @@ class BEAST(Garli):
         # {{{ if estimate
         if Garli.models[str(model_selected)][1] == 'estimate':
             ET.SubElement(
-                    state, 'parameter',
+                    self._xml_ele_dict['state'], 'parameter',
                     attrib={
                             'dimension': '4',
                             'id': 'freqParameter.s:{0}'.format(
@@ -675,7 +663,7 @@ class BEAST(Garli):
                             }
                     ).text = '0.25'
             ET.SubElement(
-                    substmodel, 'frequencies',
+                    self._xml_ele_dict['substmodel'], 'frequencies',
                     attrib={
                             'id': 'freqParameter.s:{0}'.format(
                                     self._sequence_name
@@ -687,7 +675,7 @@ class BEAST(Garli):
                             }
                     )
             freq_operator = ET.SubElement(
-                    run, 'operator',
+                    self._xml_ele_dict['run'], 'operator',
                     attrib={
                             'id': 'FrequenciesExchanger.s:{0}'.format(
                                     self._sequence_name
@@ -706,7 +694,7 @@ class BEAST(Garli):
                             }
                     )
             ET.SubElement(
-                    trace_log, 'log',
+                    self._xml_ele_dict['trace_log'], 'log',
                     attrib={
                             'idref': 'freqParameter.s:{0}'.format(
                                     self._sequence_name
@@ -718,7 +706,7 @@ class BEAST(Garli):
         # {{{ elif equal
         elif Garli.models[str(model_selected)][1] == 'equal':
             ET.SubElement(
-                    substmodel, 'frequencies',
+                    self._xml_ele_dict['substmodel'], 'frequencies',
                     attrib={
                             'id': 'equalFreqs.s:{0}'.format(
                                     self._sequence_name
@@ -733,11 +721,11 @@ class BEAST(Garli):
         # }}}
         # If model includes gamma distribution, do:
         if het:
-            sitemodel.set('gammaCategoryCount', '4')
-            gamma.text = self._jMT_parameters['gamma']
+            self._xml_ele_dict['sitemodel'].set('gammaCategoryCount', '4')
+            self._xml_ele_dict['gamma'].text = self._jMT_parameters['gamma']
         # If model includes proportion of invariant sites, do:
         if inv:
-            inv.text = self._jMT_parameters['pInv']
+            self._xml_ele_dict['inv'].text = self._jMT_parameters['pInv']
     # }}}
 
     # {{{ w_beast_rates
