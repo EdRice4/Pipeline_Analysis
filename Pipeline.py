@@ -1053,18 +1053,17 @@ class bGMYC(BEAST):
                 )
     # }}}
 
-    # {{{ build_dict_bGMYC_params
-    # Only run once.
+    # {{{ r_bgmyc_parameters
     @staticmethod
-    def build_dict_bGMYC_params(dict_file):
-        dictionary = {}
-        with open(dict_file, 'r') as d:
-            d = d.readlines()
-        d = map(lambda x: x.strip(), d)
-        d = map(lambda x: x.split('\t'), d)
-        for i in d:
-            dictionary[i[0]] = i[1:]
-        return dictionary
+    def r_bgmyc_parameters(bgmyc_parameters_file):
+        bgmyc_param_dict = {}
+        with open(bgmyc_parameters_file, 'r') as param_file:
+            param_file = param_file.readlines()
+        param_file = map(lambda x: x.strip(), param_file)
+        param_file = map(lambda x: x.split('\t'), param_file)
+        for i in param_file:
+            bgmyc_param_dict[i[0]] = i[1:]
+        return bgmyc_param_dict
     # }}}
 
     # {{{ bGMYC
