@@ -10,6 +10,7 @@
 # Initiation date|time: 08/12/2015|11:17:38
 # }}}
 
+
 # {{{ Imports
 from time import strftime
 from subprocess import Popen, STDOUT, PIPE
@@ -68,8 +69,6 @@ class jModelTest(object):
         self._jMT_parameters = self.r_jModelTest_parameters(self._jMT_out)
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Optimize jMT for OSC.
     # {{{ run_jModeltest
     def run_jModelTest(self):
 
