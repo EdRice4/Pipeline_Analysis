@@ -59,7 +59,8 @@
         <distribution id="likelihood" spec="util.CompoundDistribution">
             <distribution id="treeLikelihood.replace_taxon" spec="TreeLikelihood" data="@replace_taxon" tree="@Tree.t:replace_taxon">
                 <siteModel id="SiteModel.s:replace_taxon" mutationRate="@mutationRate.s:replace_taxon" spec="SiteModel">
-                    <!--TODO:Am I adding parameter id="gamaShape"/"proportionInvariant" to reflect selected model-->
+                    <parameter id="gammaShape.s:replace_taxon" estimate="false" name="shape">0.0</parameter>
+                    <parameter id="proportionInvariant.s:replace_taxon" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
                     <substModel id="gtr.s:replace_taxon" spec="GTR">
                         <parameter estimate="false" id="rateAC.s:replace_taxon" lower="0.0" name="rateAC">1.0</parameter>
                         <parameter estimate="false" id="rateAG.s:replace_taxon" lower="0.0" name="rateAG">1.0</parameter>
