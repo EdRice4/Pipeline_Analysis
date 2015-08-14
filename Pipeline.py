@@ -549,10 +549,18 @@ class BEAST(Garli):
                 substmodel = element
             if element.tag == 'siteModel':
                 sitemodel = element
+        for element in sitemodel.iter():
+            if 'gammaShape.s:' in element.get('id'):
+                gamma = element
+            if 'proportionInvariant.s:' in element.get('id'):
+                inv = element
         for element in run.iterfind('logger'):
             if 'treelog.t:' in element.get('id'):
                 tree_log = element
-        return(root, data, run, state, substmodel, sitemodel, tree_log)
+        return(
+                root, data, run, state, substmodel, sitemodel, gamma, inv,
+                tree_log
+        )
     # }}}
 
     # {{{ JC_F81
@@ -618,8 +626,10 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_submodel
-    def w_beast_submodel(self, state_xml_element, substmodel_xml_element,
-                         run_xml_element, trace_log_xml_element):
+    def w_beast_submodel(self, state_xml_element, sitemodel_xml_element,
+                         gamma_xml_element, inv_xml_element,
+                         substmodel_xml_element, run_xml_element,
+                         trace_log_xml_element):
 
         """ {{{ Docstrings
 
@@ -630,6 +640,9 @@ class BEAST(Garli):
 
         # Define pertinent elements
         state = state_xml_element
+        sitemodel = sitemodel_xml_element
+        gamma = gamma_xml_element
+        inv = inv_xml_element
         substmodel = substmodel_xml_element
         run = run_xml_element
         trace_log = trace_log_xml_element
@@ -715,62 +728,14 @@ class BEAST(Garli):
         # TODO(Edwin):
         # 1.) Utilize vimdiff to determine how to modify het.
         # If model includes gamma distribution, do:
-        # {{{ if het
         if het:
             sitemodel.set('gammaCategoryCount', '4')
-            gamma_shape = ET.SubElement(
-                    sitemodel, 'parameter',
-                    attrib={
-                            'estimate': 'false',
-                            'id': 'gammaShape.s:%s' % self._sequence_name,
-                            'name': 'shape'
-                            }
-                    )
-            gamma_shape.text = self._jMT_parameters['gamma']
-        # }}}
-        # Else, do:
-        # {{{ else het
-        else:
-            gamma_shape = ET.SubElement(
-                    sitemodel, 'parameter',
-                    attrib={
-                            'estimate': 'false',
-                            'id': 'gammaShape.s:%s' % self._sequence_name,
-                            'name': 'shape'
-                            }
-                    )
-            gamma_shape.text = '0.0'
-        # }}}
+            gamma.text = self._jMT_parameters['gamma']
         # TODO(Edwin):
         # 1.) Utilize vimdiff to determine how to modify inv.
         # If model includes proportion of invariant sites, do:
-        # {{{ if inv
         if inv:
-            p_inv = ET.SubElement(
-                    sitemodel, 'parameter',
-                    attrib={
-                            'estimate': 'false',
-                            'id': 'proportionInvariant.s:%s' % self._sequence_name,
-                            'lower': '0.0', 'name': 'proportionInvariant',
-                            'upper': '1.0'
-                            }
-                    )
-            p_inv.text = self._jMT_parameters['pInv']
-        # }}}
-        # Else, do:
-        # {{{ else inv
-        else:
-            p_inv = ET.SubElement(
-                    sitemodel, 'parameter',
-                    attrib={
-                            'estimate': 'false',
-                            'id': 'proportionInvariant.s:%s' % self._sequence_name,
-                            'lower': '0.0', 'name': 'proportionInvariant',
-                            'upper': '1.0'
-                            }
-                    )
-            p_inv.text = '0.0'
-        # }}}
+            inv.text = self._jMT_parameters['pInv']
     # }}}
 
     # {{{ w_beast_rates
