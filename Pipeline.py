@@ -518,7 +518,7 @@ class BEAST(Garli):
 
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
         self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
-        self._xml_ele_dict = self.parse_beast_xml()
+        self._beast_xml_tree, self._xml_ele_dict = self.parse_beast_xml()
     # }}}
 
     # {{{ parse_beast_xml
@@ -563,7 +563,7 @@ class BEAST(Garli):
         for element in xml_ele_dict['run'].iterfind('logger'):
             if 'treelog.t:' in element.get('id'):
                 xml_ele_dict['tree_log'] = element
-        return(xml_ele_dict)
+        return(BEAST_XML, xml_ele_dict)
     # }}}
 
     # {{{ JC_F81
@@ -729,7 +729,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_rates
-    def w_beast_rates(self, substmodel_xml_element):
+    def w_beast_rates(self):
 
         """ {{{ Docstrings
 
@@ -743,13 +743,11 @@ class BEAST(Garli):
 
         # Initiate empty list to store pertinent XML elements
         xml_elements = []
-        # Define pertinent element
-        substmodel = substmodel_xml_element
         # Get the model selected by jModelTest, removing conflicting strings
         model_selected = self._jMT_parameters['Model'].translate(None, '+IG')
         # Iterate over subelements of the substmodel element, define each
         # respectively, and append to list
-        for element in substmodel.iter():
+        for element in self._xml_ele_dict['substmodel'].iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
                 xml_elements.append(element)
@@ -810,7 +808,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_taxon
-    def w_beast_taxon(self, nexus_file, data_xml_element):
+    def w_beast_taxon(self, nexus_file):
 
         """ {{{ Docstrings
 
@@ -820,8 +818,6 @@ class BEAST(Garli):
 
         }}} """
 
-        # Define pertinent element
-        data = data_xml_element
         # Get start and end position of sequence block in nexus file
         sequence_start, sequence_end = self.get_sequence_range(
                 nexus_file, 'matrix\n', ';\n'
@@ -842,7 +838,7 @@ class BEAST(Garli):
                 sequence = line[1].strip()
                 # Create subelement
                 ET.SubElement(
-                        data, 'sequence',
+                        self._xml_ele_dict['data'], 'sequence',
                         attrib={
                                 'id': 'seq_{0}'.format(sequence_id),
                                 'taxon': '{0}'.format(sequence_id),
@@ -854,8 +850,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_parameters
-    def w_beast_parameters(self, state_xml_element, run_xml_element,
-                           tree_log_xml_element, beast_xml):
+    def w_beast_parameters(self):
 
         """ {{{ Docstrings
 
@@ -865,19 +860,15 @@ class BEAST(Garli):
 
         }}} """
 
-        # Define pertinent elements
-        state = state_xml_element
-        run = run_xml_element
-        tree_log = tree_log_xml_element
         # Set BEAST run parameters
         # Frequency with which to save to state file
-        state.set('storeEvery', str(args.log_every))
+        self._xml_ele_dict['state'].set('storeEvery', str(args.log_every))
         # MCMC chain length
-        run.set('chainLength', str(args.MCMC_BEAST))
+        self._xml_ele_dict['run'].set('chainLength', str(args.MCMC_BEAST))
         # MCMC burnin
-        run.set('preBurnin', str(args.burnin_BEAST))
+        self._xml_ele_dict['run'].set('preBurnin', str(args.burnin_BEAST))
         # Frequency with which to save to tree file
-        tree_log.set('logEvery', '%s' % args.log_every)
+        self._xml_ele_dit['tree_log'].set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(beast_xml)
         # Substitute every occurrence of "replace_taxon" with
