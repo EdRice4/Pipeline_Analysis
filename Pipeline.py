@@ -936,8 +936,9 @@ class BEAST(Garli):
                 'java -jar {0} -working -prefix {1} -seed {2} -threads {3} '
                 '-beagle {4}'
                 ).format(
-                args.BEAST, self._identifier, randrange(0, 999999999),
-                args.no_proc, self._BEAST_XML
+                        args.BEAST, self._identifier,
+                        randrange(0, 999999999999), args.no_proc,
+                        self._BEAST_XML
                 )
         # Spawn child process
         beast_run = Popen(
@@ -952,19 +953,17 @@ class BEAST(Garli):
         beast_run.stdout.close()
     # }}}
 
-    # TODO:(Edwin)
-    # 1.) Run BEAST in resume mode?
     # {{{ resume_beast
     def resume_beast(self):
 
         """ {{{ Docstrings
 
-        Continue to run BEAST as long as any parameter in the BEAST output
-        file does not meet the effective sample size threshold, creating a
-        separate output directory for each run utilizing "Popen" function
-        provided by "subprocess" python module. The output/errors of this
-        process are then subsequently printed, to stdout and written to a file,
-        in real-time.
+        Continue to run BEAST in resume mode as long as any parameter in the
+        BEAST output file does not meet the effective sample size threshold,
+        creating a separate output directory for each run utilizing "Popen"
+        function provided by "subprocess" python module. The output/errors of
+        this process are then subsequently printed, to stdout and written to a
+        file, in real-time.
 
         }}} """
 
@@ -982,11 +981,11 @@ class BEAST(Garli):
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
             beast = (
-                    'java -jar {0} -working -threads {2} -beagle -resume '
-                    '-statefile {3}.xml.state {4}'
+                    'java -jar {0} -working -seed {1} -threads {2} -beagle '
+                    '-resume -statefile {3}.xml.state {4}'
                     ).format(
-                    args.BEAST, args.no_proc, self._sequence_name,
-                    self._BEAST_XML
+                            args.BEAST, str(randrange(0, 999999999999)),
+                            args.no_proc, self._sequence_name, self._BEAST_XML
                     )
             # Spawn child process
             beast_run = Popen(
