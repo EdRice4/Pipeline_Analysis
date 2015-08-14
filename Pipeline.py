@@ -1007,6 +1007,14 @@ class bGMYC(BEAST):
     # {{{ add_args
     @staticmethod
     def add_args():
+
+        """ {{{ Docstrings
+
+        Add argument group "bGMYC" to namespace and subsequent pertinent
+        arguments to aforementioned group.
+
+        }}} """
+
         args_bGMYC = arg_parser.add_argument_group(
                 'bGMYC', 'Arguments for running bGMYC module.'
                 )
