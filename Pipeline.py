@@ -68,6 +68,8 @@ class jModelTest(object):
         self._jMT_parameters = self.r_jModelTest_parameters(self._jMT_out)
     # }}}
 
+    # TODO(Edwin):
+    # 1.) Optimize jMT for OSC.
     # {{{ run_jModeltest
     def run_jModelTest(self):
 
@@ -412,6 +414,8 @@ class Garli(jModelTest):
                 garli_input.write(line)
     # }}}
 
+    # TODO(Edwin):
+    # 1.) Optimize garli for OSC.
     # {{{ run_garli
     def run_garli(self):
 
@@ -598,7 +602,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ calculate_ess
-    def calculate_ess(self, beast_out):
+    def calculate_ess(self):
 
         """ {{{ Docstrings
 
@@ -610,7 +614,9 @@ class BEAST(Garli):
 
         # Read in data, ignoring comments, sample column, and header,
         # respectively
-        data = genfromtxt(beast_out, comments='#', usecols=range(1, 17))[1:]
+        data = genfromtxt(
+                self._BEAST_ID, comments='#', usecols=range(1, 17)
+                )[1:]
         # Concatenate data by columns
         data = zip(*data)
         # Calculate autocorrelation times (and other statistics) for each
@@ -904,6 +910,8 @@ class BEAST(Garli):
                 )
     # }}}
 
+    # TODO(Edwin):
+    # 1.) Optimize beast for OSC.
     # {{{ run_beast
     def run_beast(self):
 
@@ -917,7 +925,7 @@ class BEAST(Garli):
         }}} """
 
         # Specify run directory
-        run_directory = '{0}_RUN_1'.format(self._identifier)
+        run_directory = self._identifier
         # Create directory; BEAST expects as such and will place output
         # in it
         os.mkdir(run_directory)
@@ -963,7 +971,7 @@ class BEAST(Garli):
 
         # Set intitial values of variables
         # Set ess to "True" so that BEAST runs
-        effective_sample_size = True
+        effective_sample_size = self.calculate_ess(self)
         # This is the initial run of BEAST
         run_count = 1
         # While effective_sample_size does not equal an object of NoneType
