@@ -519,6 +519,9 @@ class BEAST(Garli):
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
         self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
         self._beast_xml_tree, self._xml_ele_dict = self.parse_beast_xml()
+        self.w_beast_submodel()
+        self.w_beast_rates()
+        self.w_beast_sequences()
     # }}}
 
     # {{{ parse_beast_xml
@@ -807,8 +810,8 @@ class BEAST(Garli):
         return range_start, range_end
     # }}}
 
-    # {{{ w_beast_taxon
-    def w_beast_taxon(self, nexus_file):
+    # {{{ w_beast_sequences
+    def w_beast_sequences(self, nexus_file):
 
         """ {{{ Docstrings
 
