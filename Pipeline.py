@@ -633,7 +633,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_submodel
-    def w_beast_submodel(self):
+    def w_beast_submodel(self, xml_ele_dict):
 
         """ {{{ Docstrings
 
@@ -731,7 +731,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_rates
-    def w_beast_rates(self):
+    def w_beast_rates(self, xml_ele_dict):
 
         """ {{{ Docstrings
 
@@ -810,7 +810,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_sequences
-    def w_beast_sequences(self, nexus_file):
+    def w_beast_sequences(self, nexus_file, xml_ele_dict):
 
         """ {{{ Docstrings
 
@@ -852,7 +852,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_parameters
-    def w_beast_parameters(self):
+    def w_beast_parameters(self, xml_ele_dict):
 
         """ {{{ Docstrings
 
@@ -1009,7 +1009,7 @@ class bGMYC(BEAST):
 
         """ {{{ Docstrings
 
-        Add argument group "BEAST" to namespace and subsequent pertinent
+        Add argument group "bGMYC" to namespace and subsequent pertinent
         arguments to aforementioned group.
 
         }}} """
