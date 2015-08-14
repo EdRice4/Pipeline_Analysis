@@ -1067,10 +1067,10 @@ class bGMYC(BEAST):
     # }}}
 
     # {{{ bGMYC
-    def bGMYC(self, parameter_dict):
+    def bGMYC(self, bgmyc_param_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
-        if parameter_dict.get(self._sequence_name):
-            parameters = parameter_dict[self._sequence_name]
+        if bgmyc_param_dict.get(self._sequence_name):
+            parameters = bgmyc_param_dict[self._sequence_name]
         else:
             parameters = []
         os.chdir(self._master_dir)
