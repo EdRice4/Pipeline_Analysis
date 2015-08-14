@@ -504,8 +504,6 @@ class BEAST(Garli):
                 )
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Add functions to __init__.
     # {{{ __init__
     def __init__(self):
 
@@ -522,6 +520,8 @@ class BEAST(Garli):
         self.w_beast_submodel()
         self.w_beast_rates()
         self.w_beast_sequences()
+        self.w_beast_parameters()
+        self.run_beast()
     # }}}
 
     # {{{ parse_beast_xml
@@ -873,10 +873,10 @@ class BEAST(Garli):
         # Frequency with which to save to tree file
         self._xml_ele_dit['tree_log'].set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
-        beast_string = ET.tostring(beast_xml)
+        beast_string = ET.tostring(self._beast_xml_tree)
         # Substitute every occurrence of "replace_taxon" with
         # self._sequence_name
-        beast_string = sub('replace_taxon', self._sequence_name, beast_xml)
+        beast_string = sub('replace_taxon', self._sequence_name, beast_string)
         # Convert beast_string to file like object in order to re-parse it
         beast_file_obj = StringIO(beast_string)
         # Set parser to automatically remove any impertinent whitespace as
@@ -999,7 +999,9 @@ class BEAST(Garli):
 class bGMYC(BEAST):
 
     """ {{{ Docstrings
+
     Run bGMYC with Rscript and store output.
+
     }}} """
 
     # {{{ add_args
