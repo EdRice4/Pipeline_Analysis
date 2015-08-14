@@ -504,25 +504,6 @@ class BEAST(Garli):
                 )
     # }}}
 
-    # {{{ __init__
-    def __init__(self):
-
-        """ {{{ Docstrings
-
-        Upon instantiating instance of class, run functions and store
-        parameters.
-
-        }}} """
-
-        self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
-        self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
-        self.w_beast_submodel()
-        self.w_beast_rates()
-        self.w_beast_sequences()
-        self.w_beast_parameters()
-        self.run_beast()
-    # }}}
-
     # {{{ parse_beast_xml
     @staticmethod
     def parse_beast_xml():
@@ -566,6 +547,25 @@ class BEAST(Garli):
             if 'treelog.t:' in element.get('id'):
                 xml_ele_dict['tree_log'] = element
         return(BEAST_XML, xml_ele_dict)
+    # }}}
+
+    # {{{ __init__
+    def __init__(self):
+
+        """ {{{ Docstrings
+
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
+        self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
+        self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
+        self.w_beast_submodel()
+        self.w_beast_rates()
+        self.w_beast_sequences()
+        self.w_beast_parameters()
+        self.run_beast()
     # }}}
 
     # {{{ JC_F81
