@@ -518,6 +518,8 @@ class BEAST(Garli):
 
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
         self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
+        (root, data, run, state, substmodel,
+         sitemodel, gamma, inv, tree_log) = self.parse_beast_xml()
     # }}}
 
     # {{{ parse_beast_xml
@@ -532,38 +534,37 @@ class BEAST(Garli):
 
         }}} """
 
+        # Initialize empty dictionary to store XML elements
+        xml_ele_dict = {}
         # Set parser to automatically remove any impertinent whitespace as
         # well as any comments, respectively
         XML_parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
         # Parse BEAST XML input file template
         BEAST_XML = ET.parse('Standard.xml', XML_parser)
         # Get root of tree ('beast') element
-        root = BEAST_XML.getroot()
+        xml_ele_dict['root'] = BEAST_XML.getroot()
         # Get 'data' element where sequence information is stored
-        data = BEAST_XML.xpath('data')[0]
+        xml_ele_dict['data'] = BEAST_XML.xpath('data')[0]
         # Get 'run' element where information pertaining to BEAST parameters
         # is stored
-        run = BEAST_XML.xpath('run')[0]
+        xml_ele_dict['run'] = BEAST_XML.xpath('run')[0]
         # Get all pertinent subelements of run element
-        for element in run.iter():
+        for element in xml_ele_dict['run'].iter():
             if element.tag == 'state':
-                state = element
+                xml_ele_dict['state'] = element
             if element.tag == 'substModel':
-                substmodel = element
+                xml_ele_dict['substmodel'] = element
             if element.tag == 'siteModel':
-                sitemodel = element
-        for element in sitemodel.iter():
+                xml_ele_dict['sitemodel'] = element
+        for element in xml_ele_dict['sitemodel'].iter():
             if 'gammaShape.s:' in element.get('id'):
-                gamma = element
+                xml_ele_dict['gamma'] = element
             if 'proportionInvariant.s:' in element.get('id'):
-                inv = element
-        for element in run.iterfind('logger'):
+                xml_ele_dict['inv'] = element
+        for element in xml_ele_dict['run'].iterfind('logger'):
             if 'treelog.t:' in element.get('id'):
-                tree_log = element
-        return(
-                root, data, run, state, substmodel, sitemodel, gamma, inv,
-                tree_log
-        )
+                xml_ele_dict['tree_log'] = element
+        return(xml_ele_dict)
     # }}}
 
     # {{{ JC_F81
@@ -834,7 +835,7 @@ class BEAST(Garli):
         # Define pertinent element
         data = data_xml_element
         # Get start and end position of sequence block in nexus file
-        sequence_start, sequence_end = self._get_sequence_range(
+        sequence_start, sequence_end = self.get_sequence_range(
                 nexus_file, 'matrix\n', ';\n'
                 )
         # However, do not want to include these lines, just the lines between
@@ -950,6 +951,10 @@ class BEAST(Garli):
             print(line.strip())
         # Close stdout
         beast_run.stdout.close()
+        # If user specified threshold in command line arguments, run
+        # resume_beast
+        if args.threshold:
+            self.resume_beast()
     # }}}
 
     # {{{ resume_beast
