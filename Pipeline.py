@@ -1106,28 +1106,23 @@ class bGMYC(BEAST):
         # Get parameters for taxon, if applicable
         # If not, return emtpy dict
         parameters = bgmyc_param_dict.get(self._sequence_name, [])
-        os.chdir(self._master_dir)
+        os.chdir(i)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
-        bdirs = filter(lambda x: '_RUN_' in x, fid)
-        for i in bdirs:
-            os.chdir(i)
-            cwd = os.getcwd()
-            fid = os.listdir(cwd)
-            Rscript = (
-                    'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
-                    '-mcmc={2} -burnin={3} -thinning={4} {5}'
-                    ).format(
-                            self._sequence_name, self._identifier,
-                            args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
-                            ' '.join(parameters)
-                            )
-            bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
-                              stdin=PIPE)
-            for line in iter(bGMYC_run.stdout.readline, ''):
-                print(line.strip())
-            bGMYC_run.stdout.close()
-            os.chdir('../')
+        Rscript = (
+                'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
+                '-mcmc={2} -burnin={3} -thinning={4} {5}'
+                ).format(
+                        self._sequence_name, self._identifier,
+                        args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
+                        ' '.join(parameters)
+                        )
+        bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
+                            stdin=PIPE)
+        for line in iter(bGMYC_run.stdout.readline, ''):
+            print(line.strip())
+        bGMYC_run.stdout.close()
+        os.chdir('../')
     # }}}
 # }}}
 
