@@ -1209,10 +1209,11 @@ class NexusFile(bGMYC):
         Garli.__init__(self, garli_conf)
         BEAST.__init__(self, BEAST_XML_ele_dict, BEAST_XML)
         bGMYC.__init__(self, bGMYC_parameters)
+        self.clean_up_dir()
     # }}}
 
-    # {{{ clean_up
-    def clean_up(self):
+    # {{{ clean_up_dir
+    def clean_up_dir(self):
         # Rename garli.conf
         move('garli.conf', self._garli_out)
         # Get current working directory
