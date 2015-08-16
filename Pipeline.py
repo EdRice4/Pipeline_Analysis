@@ -550,7 +550,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ __init__
-    def __init__(self, BEAST_XML_ele_dict, nexus_file, BEAST_XML):
+    def __init__(self, BEAST_XML_ele_dict, BEAST_XML):
 
         """ {{{ Docstrings
 
@@ -563,7 +563,7 @@ class BEAST(Garli):
         self._BEAST_out = 'BEAST_{0}.out'.format(self._identifier)
         self.w_beast_submodel(BEAST_XML_ele_dict)
         self.w_beast_rates(BEAST_XML_ele_dict)
-        self.w_beast_sequences(nexus_file, BEAST_XML_ele_dict)
+        self.w_beast_sequences(BEAST_XML_ele_dict)
         self.w_beast_parameters(BEAST_XML_ele_dict, BEAST_XML)
         self.run_beast()
     # }}}
@@ -785,7 +785,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ get_sequence_range
-    def get_sequence_range(self, nexus_file, start, end):
+    def get_sequence_range(self, start, end):
 
         """ {{{ Docstrings
 
@@ -804,7 +804,7 @@ class BEAST(Garli):
         }}} """
 
         # Open nexus file in read mode
-        with open(nexus_file, 'r') as nexus:
+        with open(self._nexus_file, 'r') as nexus:
                 # Read into list
                 nexus = nexus.readlines()
         # Get index of start
@@ -815,7 +815,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_sequences
-    def w_beast_sequences(self, nexus_file, BEAST_XML_ele_dict):
+    def w_beast_sequences(self, BEAST_XML_ele_dict):
 
         """ {{{ Docstrings
 
@@ -827,7 +827,7 @@ class BEAST(Garli):
 
         # Get start and end position of sequence block in nexus file
         sequence_start, sequence_end = self.get_sequence_range(
-                nexus_file, 'matrix\n', ';\n'
+                'matrix\n', ';\n'
                 )
         # However, do not want to include these lines, just the lines between
         # them
@@ -1207,7 +1207,7 @@ class NexusFile(bGMYC):
                 )
         jModelTest.__init__(self)
         Garli.__init__(self, garli_conf)
-        BEAST.__init__(self, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
+        BEAST.__init__(self, BEAST_XML_ele_dict, BEAST_XML)
         bGMYC.__init__(self, bGMYC_parameters)
     # }}}
 
