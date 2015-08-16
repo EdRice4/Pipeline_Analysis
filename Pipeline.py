@@ -1134,35 +1134,6 @@ class bGMYC(BEAST):
 # }}}
 
 
-# {{{ CleanUp
-class CleanUp(bGMYC):
-
-    """ {{{ Docstrings
-    A class used to consolidate all output.
-    }}} """
-
-    # {{{ __init__
-    def __init__(self):
-        self._master_dir = self._identifier + '_MASTER'
-    # }}}
-
-# }}}
-
-
-# {{{ IterRegistry
-class IterRegistry(type):
-
-    """ {{{ Docstrings
-    A metaclass to allow for iteration over instances of NexusFile class.
-    }}} """
-
-    # {{{ __iter__
-    def __iter__(cls):
-        return iter(cls.registry)
-    # }}}
-# }}}
-
-
 # {{{ NexusFile
 class NexusFile(CleanUp):
 
