@@ -1227,24 +1227,6 @@ args = arg_parser.parse_args()
 # }}}
 
 
-# {{{ Define nexus files; batch
-if args.batch:
-    cwd = os.getcwd()
-    files_in_dir = os.listdir(cwd)
-    nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
-    for i in nexus_files:
-        NexusFile(i)
-else:
-    nexus_files = []
-    print('The program will prompt you for the path to each sequence file.')
-    no_runs = raw_input('How many runs would you like to perform? ')
-    for i in range(int(no_runs)):
-        nexus_files.append(raw_input('Path to sequence file: '))
-    for i in nexus_files:
-        NexusFile(i)
-# }}}
-
-
 # TODO(Edwin):
 # 1.) Add all non "add_args" static methods here.
 # {{{ Read bGMYC dictionary file
@@ -1252,4 +1234,31 @@ if args.bGMYC_params:
     bGMYC_parameters = NexusFile.build_dict_bGMYC_params(args.bGMYC_params)
 else:
     bGMYC_parameters = {}
+# }}}
+
+# {{{ Instantiate instances of NexusFile class
+# If batch "-b or --batch" specified, do:
+if args.batch:
+    # Get current working directory
+    cwd = os.getcwd()
+    # Get all files in current working directory
+    files_in_dir = os.listdir(cwd)
+    # Filter files_in_dir to only include nexus files
+    nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
+    # Instantiate instances of NexusFile class
+    for i in nexus_files:
+        NexusFile(i)
+# Else, do:
+else:
+    # Initiate empty list to store names of nexus files
+    nexus_files = []
+    print('The program will prompt you for the path to each sequence file.')
+    # Prompt user for number of runs
+    no_runs = raw_input('How many runs would you like to perform? ')
+    # Prompt user for path of nexus file for each run
+    for i in range(int(no_runs)):
+        nexus_files.append(raw_input('Path to sequence file: '))
+    # Instantiate instances of NexusFile class
+    for i in nexus_files:
+        NexusFile(i)
 # }}}
