@@ -12,14 +12,13 @@
 
 
 # {{{ Imports
-from time import strftime
 from subprocess import Popen, STDOUT, PIPE
 from lxml import etree as ET
 from random import randrange
 from numpy import genfromtxt
 from acor import acor
 from re import sub
-from shutil import move, copy
+from shutil import move
 from StringIO import StringIO
 import argparse
 import os
@@ -314,6 +313,7 @@ class Garli(jModelTest):
 
         }}} """
 
+        self._garli_out = 'garli_{0}'.format(self._identifier)
         self.w_garli_conf(garli_conf)
         self.run_garli()
     # }}}
@@ -1213,13 +1213,21 @@ class NexusFile(bGMYC):
 
     # {{{ clean_up
     def clean_up(self):
+        # Rename garli.conf
+        move('garli.conf', self._garli_out)
+        # Get current working directory
         cwd = os.getcwd()
+        # Get all files in current working directory
         files_in_dir = os.listdir(cwd)
+        # Filter files_in_dir to only include output files
         output_files = filter(lambda x: self._identifier in x, files_in_dir)
-        os.mkdir(self._master_dir)
-        for i in output_files:
-            move(i, self._master_dir)
-        copy(self._nexus_file, self._master_dir)
+        # Make unique directory to store output
+        os.mkdir(self._identifier)
+        # Move all output files in cwd to unqiue directory
+        for dir_file in output_files:
+            move(dir_file, self._identifier)
+        # Move nexus file to unique directory
+        move(self._nexus_file, self._identifier)
     # }}}
 # }}}
 
