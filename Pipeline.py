@@ -904,9 +904,6 @@ class BEAST(Garli):
 
         }}} """
 
-        # Create directory; BEAST expects as such and will place output
-        # in it
-        os.mkdir(self._identifier)
         # Specify child process, including any pertinent arguments; see BEAST
         # documentation for explanation of additional arguments
         # ::MODIFIABLE::
