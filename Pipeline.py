@@ -1200,7 +1200,7 @@ class NexusFile(bGMYC):
 
         }}} """
 
-        self._nexus_file = str(nexus_file)
+        self._nexus_file = nexus_file
         self._sequence_name = self._nexus_file.replace('.nex', '')
         self._identifier = '{0}_{1}'.format(
                 self._sequence_name, randrange(0, 999999999)
@@ -1208,6 +1208,7 @@ class NexusFile(bGMYC):
         jModelTest.__init__(self)
         Garli.__init__(self, garli_conf)
         BEAST.__init__(self, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
+        bGMYC.__init__(self, bGMYC_parameters)
     # }}}
 
     # {{{ clean_up
@@ -1276,7 +1277,7 @@ if args.batch:
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
     # Instantiate instances of NexusFile class
     for nexus_file in nexus_files:
-        NexusFile(nexus_file)
+        NexusFile(garli_conf, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
 # Else, do:
 else:
     # Initiate empty list to store names of nexus files
@@ -1289,5 +1290,5 @@ else:
         nexus_files.append(raw_input('Path to sequence file: '))
     # Instantiate instances of NexusFile class
     for nexus_file in nexus_files:
-        NexusFile(nexus_file)
+        NexusFile(garli_conf, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
 # }}}
