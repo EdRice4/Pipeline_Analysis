@@ -91,7 +91,7 @@ class jModelTest(object):
         jModelTest = (
                 'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
                 '-AIC -AICc -DT'
-                ).format(args.jMT, self._path)
+                ).format(args.jMT, self._nexus_file)
         # Spawn child process and run
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
@@ -379,7 +379,7 @@ class Garli(jModelTest):
                 ]
         # Values of variables to insert
         garli_values = [
-                self._path, self._identifier, str(args.np),
+                self._nexus_file, self._identifier, str(args.np),
                 str(args.bstr), Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
@@ -550,7 +550,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ __init__
-    def __init__(self, nexus_file, BEAST_XML_ele_dict):
+    def __init__(self, BEAST_XML_ele_dict, nexus_file, BEAST_XML):
 
         """ {{{ Docstrings
 
@@ -564,7 +564,7 @@ class BEAST(Garli):
         self.w_beast_submodel(BEAST_XML_ele_dict)
         self.w_beast_rates(BEAST_XML_ele_dict)
         self.w_beast_sequences(nexus_file, BEAST_XML_ele_dict)
-        self.w_beast_parameters(BEAST_XML_ele_dict)
+        self.w_beast_parameters(BEAST_XML_ele_dict, BEAST_XML)
         self.run_beast()
     # }}}
 
@@ -790,8 +790,7 @@ class BEAST(Garli):
         """ {{{ Docstrings
 
         Returns the index of a user-specified start and end sequence,
-        given these and a list (for instance, a file read in with the
-        "readlines()" function.
+        given these and the name of the nexus file as a string.
 
         The "start" and "end" arguments must match corresponding lines in
         range_file exactly, including any whitespace characters.
@@ -804,7 +803,13 @@ class BEAST(Garli):
 
         }}} """
 
+        # Open nexus file in read mode
+        with open(nexus_file, 'r') as nexus:
+                # Read into list
+                nexus = nexus.readlines()
+        # Get index of start
         range_start = nexus_file.index(start)
+        # Get index of end
         range_end = nexus_file.index(end)
         return range_start, range_end
     # }}}
@@ -852,7 +857,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_parameters
-    def w_beast_parameters(self, BEAST_XML_ele_dict):
+    def w_beast_parameters(self, BEAST_XML_ele_dict, BEAST_XML):
 
         """ {{{ Docstrings
 
@@ -872,7 +877,7 @@ class BEAST(Garli):
         # Frequency with which to save to tree file
         self._xml_ele_dit['tree_log'].set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
-        beast_string = ET.tostring(self._beast_xml_tree)
+        beast_string = ET.tostring(BEAST_XML)
         # Substitute every occurrence of "replace_taxon" and "replace_ID" with
         # self._sequence_name and self._identifier, respectively
         beast_string = sub('replace_taxon', self._sequence_name, beast_string)
@@ -1177,13 +1182,14 @@ class NexusFile(bGMYC):
 
     # {{{ __init__
     def __init__(self, path):
-        self._path = str(path)
-        self._sequence_name = self._path.replace('.nex', '')
+        self._nexus_file = str(path)
+        self._sequence_name = self._nexus_file.replace('.nex', '')
         self._identifier = '{0}_{1}'.format(
                 self._sequence_name, randrange(0, 999999999)
                 )
         jModelTest.__init__(self)
-        BEAST.__init__(self)
+        Garli.__init__(self, garli_conf)
+        BEAST.__init__(self, BEAST_XML, BEAST_XML_ele_dict)
         self._registry.append(self)
     # }}}
 
@@ -1195,7 +1201,7 @@ class NexusFile(bGMYC):
         os.mkdir(self._master_dir)
         for i in output_files:
             move(i, self._master_dir)
-        copy(self._path, self._master_dir)
+        copy(self._nexus_file, self._master_dir)
     # }}}
 # }}}
 
