@@ -1181,8 +1181,8 @@ class NexusFile(bGMYC):
     # }}}
 
     # {{{ __init__
-    def __init__(self, path):
-        self._nexus_file = str(path)
+    def __init__(self, nexus_file):
+        self._nexus_file = str(nexus_file)
         self._sequence_name = self._nexus_file.replace('.nex', '')
         self._identifier = '{0}_{1}'.format(
                 self._sequence_name, randrange(0, 999999999)
