@@ -1024,8 +1024,8 @@ class bGMYC(BEAST):
                         ),
                 default=50000000)
         args_bGMYC.add_argument(
-                '--burnin_bGMYC', type=float, help=(
-                        'Burnin (%%) for bGMYC analysis.'
+                '--burnin_bGMYC', type=int, help=(
+                        'Burnin for bGMYC analysis.'
                         ),
                 default=0.25)
         args_bGMYC.add_argument(
