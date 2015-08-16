@@ -517,40 +517,40 @@ class BEAST(Garli):
         }}} """
 
         # Initialize empty dictionary to store XML elements
-        xml_ele_dict = {}
+        BEAST_XML_ele_dict = {}
         # Set parser to automatically remove any impertinent whitespace as
         # well as any comments, respectively
         XML_parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
         # Parse BEAST XML input file template
         BEAST_XML = ET.parse('BEAST_standard.xml', XML_parser)
         # Get root of tree ('beast') element
-        xml_ele_dict['root'] = BEAST_XML.getroot()
+        BEAST_XML_ele_dict['root'] = BEAST_XML.getroot()
         # Get 'data' element where sequence information is stored
-        xml_ele_dict['data'] = BEAST_XML.xpath('data')[0]
+        BEAST_XML_ele_dict['data'] = BEAST_XML.xpath('data')[0]
         # Get 'run' element where information pertaining to BEAST parameters
         # is stored
-        xml_ele_dict['run'] = BEAST_XML.xpath('run')[0]
+        BEAST_XML_ele_dict['run'] = BEAST_XML.xpath('run')[0]
         # Get all pertinent subelements of run element
-        for element in xml_ele_dict['run'].iter():
+        for element in BEAST_XML_ele_dict['run'].iter():
             if element.tag == 'state':
-                xml_ele_dict['state'] = element
+                BEAST_XML_ele_dict['state'] = element
             if element.tag == 'substModel':
-                xml_ele_dict['substmodel'] = element
+                BEAST_XML_ele_dict['substmodel'] = element
             if element.tag == 'siteModel':
-                xml_ele_dict['sitemodel'] = element
-        for element in xml_ele_dict['sitemodel'].iter():
+                BEAST_XML_ele_dict['sitemodel'] = element
+        for element in BEAST_XML_ele_dict['sitemodel'].iter():
             if 'gammaShape.s:' in element.get('id'):
-                xml_ele_dict['gamma'] = element
+                BEAST_XML_ele_dict['gamma'] = element
             if 'proportionInvariant.s:' in element.get('id'):
-                xml_ele_dict['inv'] = element
-        for element in xml_ele_dict['run'].iterfind('logger'):
+                BEAST_XML_ele_dict['inv'] = element
+        for element in BEAST_XML_ele_dict['run'].iterfind('logger'):
             if 'treelog.t:' in element.get('id'):
-                xml_ele_dict['tree_log'] = element
-        return(BEAST_XML, xml_ele_dict)
+                BEAST_XML_ele_dict['tree_log'] = element
+        return(BEAST_XML, BEAST_XML_ele_dict)
     # }}}
 
     # {{{ __init__
-    def __init__(self, nexus_file, xml_ele_dict):
+    def __init__(self, nexus_file, BEAST_XML_ele_dict):
 
         """ {{{ Docstrings
 
@@ -561,10 +561,10 @@ class BEAST(Garli):
 
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
         self._BEAST_out = 'BEAST_{0}.out'.format(self._identifier)
-        self.w_beast_submodel(xml_ele_dict)
-        self.w_beast_rates(xml_ele_dict)
-        self.w_beast_sequences(nexus_file, xml_ele_dict)
-        self.w_beast_parameters(xml_ele_dict)
+        self.w_beast_submodel(BEAST_XML_ele_dict)
+        self.w_beast_rates(BEAST_XML_ele_dict)
+        self.w_beast_sequences(nexus_file, BEAST_XML_ele_dict)
+        self.w_beast_parameters(BEAST_XML_ele_dict)
         self.run_beast()
     # }}}
 
@@ -633,7 +633,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_submodel
-    def w_beast_submodel(self, xml_ele_dict):
+    def w_beast_submodel(self, BEAST_XML_ele_dict):
 
         """ {{{ Docstrings
 
@@ -654,7 +654,7 @@ class BEAST(Garli):
         # {{{ if estimate
         if Garli.models[str(model_selected)][1] == 'estimate':
             ET.SubElement(
-                    xml_ele_dict['state'], 'parameter',
+                    BEAST_XML_ele_dict['state'], 'parameter',
                     attrib={
                             'dimension': '4',
                             'id': 'freqParameter.s:{0}'.format(
@@ -665,7 +665,7 @@ class BEAST(Garli):
                             }
                     ).text = '0.25'
             ET.SubElement(
-                    xml_ele_dict['substmodel'], 'frequencies',
+                    BEAST_XML_ele_dict['substmodel'], 'frequencies',
                     attrib={
                             'id': 'freqParameter.s:{0}'.format(
                                     self._sequence_name
@@ -677,7 +677,7 @@ class BEAST(Garli):
                             }
                     )
             freq_operator = ET.SubElement(
-                    xml_ele_dict['run'], 'operator',
+                    BEAST_XML_ele_dict['run'], 'operator',
                     attrib={
                             'id': 'FrequenciesExchanger.s:{0}'.format(
                                     self._sequence_name
@@ -696,7 +696,7 @@ class BEAST(Garli):
                             }
                     )
             ET.SubElement(
-                    xml_ele_dict['trace_log'], 'log',
+                    BEAST_XML_ele_dict['trace_log'], 'log',
                     attrib={
                             'idref': 'freqParameter.s:{0}'.format(
                                     self._sequence_name
@@ -708,7 +708,7 @@ class BEAST(Garli):
         # {{{ elif equal
         elif Garli.models[str(model_selected)][1] == 'equal':
             ET.SubElement(
-                    xml_ele_dict['substmodel'], 'frequencies',
+                    BEAST_XML_ele_dict['substmodel'], 'frequencies',
                     attrib={
                             'id': 'equalFreqs.s:{0}'.format(
                                     self._sequence_name
@@ -723,15 +723,15 @@ class BEAST(Garli):
         # }}}
         # If model includes gamma distribution, do:
         if het:
-            xml_ele_dict['sitemodel'].set('gammaCategoryCount', '4')
-            xml_ele_dict['gamma'].text = self._jMT_parameters['gamma']
+            BEAST_XML_ele_dict['sitemodel'].set('gammaCategoryCount', '4')
+            BEAST_XML_ele_dict['gamma'].text = self._jMT_parameters['gamma']
         # If model includes proportion of invariant sites, do:
         if inv:
-            xml_ele_dict['inv'].text = self._jMT_parameters['pInv']
+            BEAST_XML_ele_dict['inv'].text = self._jMT_parameters['pInv']
     # }}}
 
     # {{{ w_beast_rates
-    def w_beast_rates(self, xml_ele_dict):
+    def w_beast_rates(self, BEAST_XML_ele_dict):
 
         """ {{{ Docstrings
 
@@ -749,7 +749,7 @@ class BEAST(Garli):
         model_selected = self._jMT_parameters['Model'].translate(None, '+IG')
         # Iterate over subelements of the substmodel element, define each
         # respectively, and append to list
-        for element in xml_ele_dict['substmodel'].iter():
+        for element in BEAST_XML_ele_dict['substmodel'].iter():
             if 'rateAC.s:' in element.get('id'):
                 rateAC = element
                 xml_elements.append(element)
@@ -810,7 +810,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_sequences
-    def w_beast_sequences(self, nexus_file, xml_ele_dict):
+    def w_beast_sequences(self, nexus_file, BEAST_XML_ele_dict):
 
         """ {{{ Docstrings
 
@@ -840,7 +840,7 @@ class BEAST(Garli):
                 sequence = line[1].strip()
                 # Create subelement
                 ET.SubElement(
-                        xml_ele_dict['data'], 'sequence',
+                        BEAST_XML_ele_dict['data'], 'sequence',
                         attrib={
                                 'id': 'seq_{0}'.format(sequence_id),
                                 'taxon': '{0}'.format(sequence_id),
@@ -852,7 +852,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ w_beast_parameters
-    def w_beast_parameters(self, xml_ele_dict):
+    def w_beast_parameters(self, BEAST_XML_ele_dict):
 
         """ {{{ Docstrings
 
@@ -864,11 +864,11 @@ class BEAST(Garli):
 
         # Set BEAST run parameters
         # Frequency with which to save to state file
-        xml_ele_dict['state'].set('storeEvery', str(args.log_every))
+        BEAST_XML_ele_dict['state'].set('storeEvery', str(args.log_every))
         # MCMC chain length
-        xml_ele_dict['run'].set('chainLength', str(args.MCMC_BEAST))
+        BEAST_XML_ele_dict['run'].set('chainLength', str(args.MCMC_BEAST))
         # MCMC burnin
-        xml_ele_dict['run'].set('preBurnin', str(args.burnin_BEAST))
+        BEAST_XML_ele_dict['run'].set('preBurnin', str(args.burnin_BEAST))
         # Frequency with which to save to tree file
         self._xml_ele_dit['tree_log'].set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
@@ -1230,6 +1230,9 @@ args = arg_parser.parse_args()
 # TODO(Edwin):
 # 1.) Add all non "add_args" static methods here.
 # {{{ Run non "add_args" staticmethods
+# {{{ Read garli configuration file
+garli_conf = Garli.r_garli_conf()
+# }}}
 # {{{ Read bGMYC dictionary file
 # If user specified name of bGMYC paramter file, do:
 if args.bGMYC_params:
