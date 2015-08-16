@@ -1100,6 +1100,14 @@ class bGMYC(BEAST):
 
     # {{{ __init__
     def __init__(self, bgmyc_param_dict):
+
+        """ {{{ Docstrings
+
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
         self.bGMYC(bgmyc_param_dict)
     # }}}
 
@@ -1181,7 +1189,17 @@ class NexusFile(bGMYC):
     # }}}
 
     # {{{ __init__
-    def __init__(self, nexus_file):
+    def __init__(
+            self, garli_conf, BEAST_XML_ele_dict, nexus_file, BEAST_XML
+            ):
+
+        """ {{{ Docstrings
+
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
         self._nexus_file = str(nexus_file)
         self._sequence_name = self._nexus_file.replace('.nex', '')
         self._identifier = '{0}_{1}'.format(
@@ -1189,8 +1207,7 @@ class NexusFile(bGMYC):
                 )
         jModelTest.__init__(self)
         Garli.__init__(self, garli_conf)
-        BEAST.__init__(self, BEAST_XML, BEAST_XML_ele_dict)
-        self._registry.append(self)
+        BEAST.__init__(self, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
     # }}}
 
     # {{{ clean_up
