@@ -1135,7 +1135,7 @@ class bGMYC(BEAST):
 
 
 # {{{ NexusFile
-class NexusFile(CleanUp):
+class NexusFile(bGMYC):
 
     """ {{{ Docstrings
     A class in which we will store the parameters associated with the
