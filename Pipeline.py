@@ -430,9 +430,8 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = 'mpirun garli -b -{0} garli_{1}.conf'.format(
-                args.no_proc, self._identifier
-                )
+        # TODO: Need to specify "-b" batch flag?
+        garli = 'mpirun garli -{0} garli.conf'.format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
@@ -1147,16 +1146,6 @@ class CleanUp(bGMYC):
         self._master_dir = self._identifier + '_MASTER'
     # }}}
 
-    # {{{ clean_up
-    def clean_up(self):
-        cwd = os.getcwd()
-        files_in_dir = os.listdir(cwd)
-        output_files = filter(lambda x: self._identifier in x, files_in_dir)
-        os.mkdir(self._master_dir)
-        for i in output_files:
-            move(i, self._master_dir)
-        copy(self._path, self._master_dir)
-    # }}}
 # }}}
 
 
@@ -1231,43 +1220,15 @@ class NexusFile(CleanUp):
         self._registry.append(self)
     # }}}
 
-    # {{{ write_call_file
-    def write_call_file(self, bGMYC_parameters):
-
-        """ {{{ Docstrings
-        For each instance of NexusFile class, writes a name file, corresponding
-        to the unique identifier, that contains: The run initiation date/time,
-        the sequence path, the sequence identifier, and how the script was
-        called (the Namespace [arguments given to script]).
-        }}} """
-
-        call_file = 'call_{0}.txt'.format(
-                self._identifier
-                )
-        # Local date (MM/DD/YY) and local time (HH:MM:SS [24 fmt])
-        call_time = 'Initiation date|time: {0}\n'.format(
-                strftime('%x|%X')
-                )
-        call_id = 'Sequence file: {0}\n'.format(
-                self._identifier
-                )
-        # Convert args to dictionary
-        opts = vars(args)
-        with open(call_file, 'w') as call:
-            call.write(call_time)
-            call.write(call_id)
-            for i in opts:
-                # bGMYC parameters handled by subsequent if statment
-                if i != 'bGMYC_params':
-                    f = '{0}={1}\n'.format(
-                            i, opts[i]
-                            )
-                    call.write(f)
-            if bGMYC_parameters.get(self._sequence_name):
-                call.write('bGMYC parameters: ')
-                call.write(str(bGMYC_parameters[self._sequence_name]))
-            else:
-                call.write('bGMYC parameters: Defaults')
+    # {{{ clean_up
+    def clean_up(self):
+        cwd = os.getcwd()
+        files_in_dir = os.listdir(cwd)
+        output_files = filter(lambda x: self._identifier in x, files_in_dir)
+        os.mkdir(self._master_dir)
+        for i in output_files:
+            move(i, self._master_dir)
+        copy(self._path, self._master_dir)
     # }}}
 # }}}
 
