@@ -1184,7 +1184,6 @@ class NexusFile(bGMYC):
                 )
         jModelTest.__init__(self)
         BEAST.__init__(self)
-        CleanUp.__init__(self)
         self._registry.append(self)
     # }}}
 
