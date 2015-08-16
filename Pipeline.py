@@ -405,9 +405,10 @@ class Garli(jModelTest):
         garli_params = map(lambda x: x + '\n', garli_params)
         # Write modified garli.conf
         # Open in write mode
-        with open(
-                'garli_{0}.conf'.format(self._identifier), 'w'
-                ) as garli_input:
+        # NOTE: Garli configuration file is initially written as "garli.conf"
+        # as that is how the MPI version of Garli expects it to be named. It
+        # is later renamed uniquely in NexusFile/cleanup.
+        with open('garli.conf', 'w') as garli_input:
             # Write lines
             for line in garli_params:
                 garli_input.write(line)
