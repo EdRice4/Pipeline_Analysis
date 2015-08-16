@@ -1229,11 +1229,15 @@ args = arg_parser.parse_args()
 
 # TODO(Edwin):
 # 1.) Add all non "add_args" static methods here.
+# {{{ Run non "add_args" staticmethods
 # {{{ Read bGMYC dictionary file
+# If user specified name of bGMYC paramter file, do:
 if args.bGMYC_params:
-    bGMYC_parameters = NexusFile.build_dict_bGMYC_params(args.bGMYC_params)
+    bGMYC_parameters = NexusFile.r_bgmyc_parameters(args.bGMYC_params)
+# Else, do:
 else:
     bGMYC_parameters = {}
+# }}}
 # }}}
 
 # {{{ Instantiate instances of NexusFile class
