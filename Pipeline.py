@@ -305,7 +305,7 @@ class Garli(jModelTest):
     # }}}
 
     # {{{ __init__
-    def __init__(self):
+    def __init__(self, garli_conf):
 
         """ {{{ Docstrings
 
