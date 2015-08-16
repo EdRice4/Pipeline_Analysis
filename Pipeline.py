@@ -1053,6 +1053,8 @@ class bGMYC(BEAST):
                 )
     # }}}
 
+    # TODO(Edwin):
+    # 1.) Docstrings/comments.
     # {{{ r_bgmyc_parameters
     @staticmethod
     def r_bgmyc_parameters(bgmyc_parameters_file):
@@ -1066,13 +1068,16 @@ class bGMYC(BEAST):
         return bgmyc_param_dict
     # }}}
 
+    # TODO(Edwin):
+    # 1.) Write __init__ function.
+
+    # TODO(Edwin):
+    # 1.) Docstrings/comments.
+    # 2.) Ensure directories are correct, given modifications to BEAST.
     # {{{ bGMYC
     def bGMYC(self, bgmyc_param_dict):
         burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
-        if bgmyc_param_dict.get(self._sequence_name):
-            parameters = bgmyc_param_dict[self._sequence_name]
-        else:
-            parameters = []
+        parameters = bgmyc_param_dict.get(self._sequence_name, [])
         os.chdir(self._master_dir)
         cwd = os.getcwd()
         fid = os.listdir(cwd)
