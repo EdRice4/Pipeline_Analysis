@@ -123,7 +123,7 @@ class jModelTest(object):
 
         }}} """
 
-        # Open jModelTest output in read model
+        # Open jModelTest output in read mode
         with open(jModelTest_file, 'r') as jmt_out:
             # Read into list
             jmt_out = jmt_out.readlines()
@@ -191,7 +191,7 @@ class jModelTest(object):
         """ {{{ Docstrings
 
         Concatenates r_jModelTest* functionality; performing all necessary
-        steps to generate "pretty" dictionary in format of:
+        steps to generate dictionary in format of:
 
                 dictionary = {
                         'variable' : 'value'
@@ -1053,18 +1053,44 @@ class bGMYC(BEAST):
                 )
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Docstrings/comments.
     # {{{ r_bgmyc_parameters
     @staticmethod
     def r_bgmyc_parameters(bgmyc_parameters_file):
+
+        """ {{{ Docstrings
+
+        Reads additional bGMYC paramters (see bGMYC documentation for
+        explanation of parameters and default settings) into a dictionary
+        with the format of:
+
+            dictionary = {
+                    'Taxon' : [
+                            '-bGMYC_parameter1',
+                            '-bGMYC_parameter2'
+                            ]
+                    'Taxon2' : [ ... ]
+                    }
+
+        Given the bGMYC paramter file as a string.
+
+        }}} """
+
+        # Initialize empty dicitonary to store parameters
         bgmyc_param_dict = {}
+        # Open bGMYC parameters file in read mode
         with open(bgmyc_parameters_file, 'r') as param_file:
+            # Read into list
             param_file = param_file.readlines()
+        # Strip values of leading and trailing whitespace characters
         param_file = map(lambda x: x.strip(), param_file)
+        # Split string by occurences of tab "\t" character
         param_file = map(lambda x: x.split('\t'), param_file)
-        for i in param_file:
-            bgmyc_param_dict[i[0]] = i[1:]
+        for line in param_file:
+            # Set variables for readability
+            taxon = line[0]
+            parameters = line[1:]
+            # Generate dictionary key, value pair
+            bgmyc_param_dict[taxon] = parameters
         return bgmyc_param_dict
     # }}}
 
