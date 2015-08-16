@@ -523,7 +523,7 @@ class BEAST(Garli):
         # well as any comments, respectively
         XML_parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
         # Parse BEAST XML input file template
-        BEAST_XML = ET.parse('Standard.xml', XML_parser)
+        BEAST_XML = ET.parse('BEAST_standard.xml', XML_parser)
         # Get root of tree ('beast') element
         xml_ele_dict['root'] = BEAST_XML.getroot()
         # Get 'data' element where sequence information is stored
