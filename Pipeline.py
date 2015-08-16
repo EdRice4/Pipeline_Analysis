@@ -296,7 +296,7 @@ class Garli(jModelTest):
         }}} """
 
         # Open in read mode
-        with open('garli.conf', 'r') as garli_conf:
+        with open('Garli_standard.conf', 'r') as garli_conf:
             # Read in as list
             garli_conf = garli_conf.readlines()
         # Strip leading and trailing white characters on every line
