@@ -1227,18 +1227,21 @@ args = arg_parser.parse_args()
 # }}}
 
 
-# TODO(Edwin):
-# 1.) Add all non "add_args" static methods here.
 # {{{ Run non "add_args" staticmethods
+# Read garli configuration file
 garli_conf = Garli.r_garli_conf()
+# Parse BEAST XML
 BEAST_XML, BEAST_XML_ele_dict = BEAST.parse_beast_xml()
-# If user specified name of bGMYC paramter file, do:
+# If user specified name of bGMYC parameter file, do:
 if args.bGMYC_params:
+    # Read bGMYC parameters
     bGMYC_parameters = NexusFile.r_bgmyc_parameters(args.bGMYC_params)
 # Else, do:
 else:
+    # Initiate empty dictionary
     bGMYC_parameters = {}
 # }}}
+
 
 # {{{ Instantiate instances of NexusFile class
 # If batch "-b or --batch" specified, do:
