@@ -923,8 +923,8 @@ class BEAST(Garli):
                 beast.split(), stderr=STDOUT, stdout=PIPE,
                 stdin=PIPE
                 )
-        # Open stdout of child process and print in real-time
-        # BEAST handles writing to file, unlike jModelTest
+        # Open stdout of child process and print in real-time BEAST handles
+        # writing to file, unlike jModelTest
         for line in iter(beast_run.stdout.readline, ''):
             print(line.strip())
         # Close stdout
@@ -1099,26 +1099,37 @@ class bGMYC(BEAST):
     # }}}
 
     # TODO(Edwin):
-    # 1.) Docstrings/comments.
+    # 1.) Ensure bGMYC.R correct.
     # {{{ run_bgmyc
     def run_bgmyc(self, bgmyc_param_dict):
         # Get parameters for taxon, if applicable
         # If not, return empty dict
         parameters = bgmyc_param_dict.get(self._sequence_name, [])
+        # Specify child process, including any pertinent arguments; see bGMYC
+        # documentation for explanation of additional arguments
+        # ::MODIFIABLE::
+        # NOTE: If you would like to modify arguments passed to bGMYC,
+        # simply format the following string in a matter of your choosing.
+        # You may also have to change the manner in which bGMYC is called,
+        # depending on your system.
         Rscript = (
-                'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
+                'Rscript --save bGMYC.R --args -taxon={0} -id={1} '
                 '-mcmc={2} -burnin={3} -thinning={4} {5}'
                 ).format(
                         self._sequence_name, self._identifier,
-                        args.MCMC_bGMYC, burnin_bGMYC, args.thinning,
+                        args.MCMC_bGMYC, args.burnin_bGMYC, args.thinning,
                         ' '.join(parameters)
                         )
-        bGMYC_run = Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE,
-                            stdin=PIPE)
+        # Spawn child process
+        bGMYC_run = Popen(
+                Rscript.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
+                )
+        # Open stdout of child process and print in real-time; bGMYC output
+        # is handled by code in "bGMYC.R."
         for line in iter(bGMYC_run.stdout.readline, ''):
             print(line.strip())
+        # Close stdout
         bGMYC_run.stdout.close()
-        os.chdir('../')
     # }}}
 # }}}
 
