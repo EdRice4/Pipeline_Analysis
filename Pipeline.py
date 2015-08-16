@@ -1100,15 +1100,11 @@ class bGMYC(BEAST):
 
     # TODO(Edwin):
     # 1.) Docstrings/comments.
-    # 2.) Ensure directories are correct, given modifications to BEAST.
     # {{{ run_bgmyc
     def run_bgmyc(self, bgmyc_param_dict):
         # Get parameters for taxon, if applicable
-        # If not, return emtpy dict
+        # If not, return empty dict
         parameters = bgmyc_param_dict.get(self._sequence_name, [])
-        os.chdir(i)
-        cwd = os.getcwd()
-        fid = os.listdir(cwd)
         Rscript = (
                 'Rscript --save ../../bGMYC.R --args -taxon={0} -id={1} '
                 '-mcmc={2} -burnin={3} -thinning={4} {5}'
