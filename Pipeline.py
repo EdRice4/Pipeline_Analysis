@@ -1258,8 +1258,8 @@ if args.batch:
     # Filter files_in_dir to only include nexus files
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
     # Instantiate instances of NexusFile class
-    for i in nexus_files:
-        NexusFile(i)
+    for nexus_file in nexus_files:
+        NexusFile(nexus_file)
 # Else, do:
 else:
     # Initiate empty list to store names of nexus files
@@ -1271,6 +1271,6 @@ else:
     for i in range(int(no_runs)):
         nexus_files.append(raw_input('Path to sequence file: '))
     # Instantiate instances of NexusFile class
-    for i in nexus_files:
-        NexusFile(i)
+    for nexus_file in nexus_files:
+        NexusFile(nexus_file)
 # }}}
