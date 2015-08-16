@@ -550,7 +550,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ __init__
-    def __init__(self):
+    def __init__(self, nexus_file, xml_ele_dict):
 
         """ {{{ Docstrings
 
@@ -561,10 +561,10 @@ class BEAST(Garli):
 
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
         self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
-        self.w_beast_submodel()
-        self.w_beast_rates()
-        self.w_beast_sequences()
-        self.w_beast_parameters()
+        self.w_beast_submodel(xml_ele_dict)
+        self.w_beast_rates(xml_ele_dict)
+        self.w_beast_sequences(nexus_file, xml_ele_dict)
+        self.w_beast_parameters(xml_ele_dict)
         self.run_beast()
     # }}}
 
@@ -1094,8 +1094,10 @@ class bGMYC(BEAST):
         return bgmyc_param_dict
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Write __init__ function.
+    # {{{ __init__
+    def __init__(self, bgmyc_param_dict):
+        self.bGMYC(bgmyc_param_dict)
+    # }}}
 
     # TODO(Edwin):
     # 1.) Docstrings/comments.
