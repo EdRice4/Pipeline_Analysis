@@ -873,9 +873,10 @@ class BEAST(Garli):
         self._xml_ele_dit['tree_log'].set('logEvery', '%s' % args.log_every)
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(self._beast_xml_tree)
-        # Substitute every occurrence of "replace_taxon" with
-        # self._sequence_name
+        # Substitute every occurrence of "replace_taxon" and "replace_ID" with
+        # self._sequence_name and self._identifier, respectively
         beast_string = sub('replace_taxon', self._sequence_name, beast_string)
+        beast_string = sub('replace_ID', self._identifier, beast_string)
         # Convert beast_string to file like object in order to re-parse it
         beast_file_obj = StringIO(beast_string)
         # Set parser to automatically remove any impertinent whitespace as
