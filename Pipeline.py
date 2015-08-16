@@ -1202,6 +1202,7 @@ class NexusFile(bGMYC):
 
 
 # {{{ ArgParser
+# Main argument parser
 arg_parser = argparse.ArgumentParser(
         prog='Pipeline',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -1214,13 +1215,14 @@ arg_parser = argparse.ArgumentParser(
                 )
         )
 # Run add_args for each class when passing '-h' flag and prior to instantiating
-# instances of any class.
+# instances of any class
 if __name__ == '__main__':
     jModelTest.add_args()
     Garli.add_args()
     BEAST.add_args()
     bGMYC.add_args()
     NexusFile.add_args()
+# Parse args into namespace
 args = arg_parser.parse_args()
 # }}}
 
@@ -1243,6 +1245,8 @@ else:
 # }}}
 
 
+# TODO(Edwin):
+# 1.) Add all non "add_args" static methods here.
 # {{{ Read bGMYC dictionary file
 if args.bGMYC_params:
     bGMYC_parameters = NexusFile.build_dict_bGMYC_params(args.bGMYC_params)
