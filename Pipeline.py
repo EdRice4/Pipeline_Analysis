@@ -1029,7 +1029,7 @@ class bGMYC(BEAST):
                 '--burnin_bGMYC', type=int, help=(
                         'Burnin for bGMYC analysis.'
                         ),
-                default=0.25)
+                default=10000000)
         args_bGMYC.add_argument(
                 '--thinning', type=int, help=(
                         'Sample interval for bGMYC analysis.'
