@@ -1101,8 +1101,8 @@ class bGMYC(BEAST):
     # TODO(Edwin):
     # 1.) Docstrings/comments.
     # 2.) Ensure directories are correct, given modifications to BEAST.
-    # {{{ bGMYC
-    def bGMYC(self, bgmyc_param_dict):
+    # {{{ run_bgmyc
+    def run_bgmyc(self, bgmyc_param_dict):
         # Get parameters for taxon, if applicable
         # If not, return emtpy dict
         parameters = bgmyc_param_dict.get(self._sequence_name, [])
