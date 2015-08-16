@@ -1214,6 +1214,15 @@ class NexusFile(bGMYC):
 
     # {{{ clean_up_dir
     def clean_up_dir(self):
+
+        """ {{{ Docstrings
+
+        After each respective run, clean up the directory, placing all
+        pertinent files, including in/output files, into unique
+        directory.
+
+        }}} """
+
         # Rename garli.conf
         move('garli.conf', self._garli_out)
         # Get current working directory
