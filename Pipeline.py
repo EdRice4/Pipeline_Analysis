@@ -1080,7 +1080,7 @@ class bGMYC(BEAST):
         }}} """
 
         # Initialize empty dicitonary to store parameters
-        bgmyc_param_dict = {}
+        bgmyc_parameters = {}
         # Open bGMYC parameters file in read mode
         with open(bgmyc_parameters_file, 'r') as param_file:
             # Read into list
@@ -1094,12 +1094,12 @@ class bGMYC(BEAST):
             taxon = line[0]
             parameters = line[1:]
             # Generate dictionary key, value pair
-            bgmyc_param_dict[taxon] = parameters
-        return bgmyc_param_dict
+            bgmyc_parameters[taxon] = parameters
+        return bgmyc_parameters
     # }}}
 
     # {{{ __init__
-    def __init__(self, bgmyc_param_dict):
+    def __init__(self, bgmyc_parameters):
 
         """ {{{ Docstrings
 
@@ -1108,16 +1108,16 @@ class bGMYC(BEAST):
 
         }}} """
 
-        self.bGMYC(bgmyc_param_dict)
+        self.bGMYC(bgmyc_parameters)
     # }}}
 
     # TODO(Edwin):
     # 1.) Ensure bGMYC.R correct.
     # {{{ run_bgmyc
-    def run_bgmyc(self, bgmyc_param_dict):
+    def run_bgmyc(self, bgmyc_parameters):
         # Get parameters for taxon, if applicable
         # If not, return empty dict
-        parameters = bgmyc_param_dict.get(self._sequence_name, [])
+        parameters = bgmyc_parameters.get(self._sequence_name, [])
         # Specify child process, including any pertinent arguments; see bGMYC
         # documentation for explanation of additional arguments
         # ::MODIFIABLE::
