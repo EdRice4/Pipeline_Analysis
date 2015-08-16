@@ -1071,7 +1071,9 @@ class bGMYC(BEAST):
                     'Taxon2' : [ ... ]
                     }
 
-        Given the bGMYC paramter file as a string.
+        Given the bGMYC paramter file as a string. Method is static because
+        only necessary to run once; do not need to run upon every
+        instantiation of bGMYC class.
 
         }}} """
 
