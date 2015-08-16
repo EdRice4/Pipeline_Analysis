@@ -560,7 +560,7 @@ class BEAST(Garli):
         }}} """
 
         self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
-        self._BEAST_ID = 'BEAST_{0}.out'.format(self._identifier)
+        self._BEAST_out = 'BEAST_{0}.out'.format(self._identifier)
         self.w_beast_submodel(xml_ele_dict)
         self.w_beast_rates(xml_ele_dict)
         self.w_beast_sequences(nexus_file, xml_ele_dict)
@@ -914,11 +914,10 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         beast = (
-                'java -jar {0} -working -prefix {1} -seed {2} -threads {3} '
-                '-beagle {4}'
+                'java -jar {0} -working -seed {1} -threads {2} '
+                '-beagle {3}'
                 ).format(
-                        args.BEAST, self._identifier,
-                        randrange(0, 999999999999), args.no_proc,
+                        args.BEAST, randrange(0, 999999999999), args.no_proc,
                         self._BEAST_XML
                 )
         # Spawn child process
@@ -970,7 +969,7 @@ class BEAST(Garli):
                     '-resume -statefile {3}.xml.state {4}'
                     ).format(
                             args.BEAST, str(randrange(0, 999999999999)),
-                            args.no_proc, self._sequence_name, self._BEAST_XML
+                            args.no_proc, self._identifier, self._BEAST_XML
                     )
             # Spawn child process
             beast_run = Popen(
@@ -1106,7 +1105,8 @@ class bGMYC(BEAST):
     # 2.) Ensure directories are correct, given modifications to BEAST.
     # {{{ bGMYC
     def bGMYC(self, bgmyc_param_dict):
-        burnin_bGMYC = round(args.MCMC_bGMYC * args.burnin_bGMYC)
+        # Get parameters for taxon, if applicable
+        # If not, return emtpy dict
         parameters = bgmyc_param_dict.get(self._sequence_name, [])
         os.chdir(self._master_dir)
         cwd = os.getcwd()
