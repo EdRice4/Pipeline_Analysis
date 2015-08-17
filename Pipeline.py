@@ -496,11 +496,6 @@ class BEAST(Garli):
                         'effective sample size did not meet this threshold).'
                         ),
                 default=0)
-        args_BEAST.add_argument(
-                '--lcom', type=str, help=(
-                        'Path to logcombiner. Only necessary if '
-                        'running in threshold mode.')
-                )
     # }}}
 
     # {{{ parse_beast_xml
