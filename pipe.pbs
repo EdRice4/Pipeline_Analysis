@@ -31,4 +31,4 @@ module load python/2.7.8
 cd $PBS_O_WORKDIR
 
 # Run python Pipeline
-python Pipeline2.py [options]
+python Pipeline.py [options]
