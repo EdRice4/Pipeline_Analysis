@@ -88,9 +88,9 @@ class jModelTest(object):
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
         jModelTest = (
-                'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a -BIC '
-                '-AIC -AICc -DT'
-                ).format(args.jMT, self._nexus_file)
+                'mpiexec java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a '
+                '-BIC -AIC -AICc -DT -tr {2}'
+                ).format(args.jMT, self._nexus_file, args.no_proc)
         # Spawn child process and run
         jMT_run = Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
@@ -430,7 +430,7 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = 'mpirun garli -{0} garli.conf'.format(args.no_proc)
+        garli = 'mpiexec garli -{0}'.format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
@@ -911,7 +911,7 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         beast = (
-                'java -jar {0} -working -seed {1} -threads {2} '
+                'mpiexec java -jar {0} -working -seed {1} -threads {2} '
                 '-beagle {3}'
                 ).format(
                         args.BEAST, randrange(0, 999999999999), args.no_proc,
