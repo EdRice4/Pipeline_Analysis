@@ -30,5 +30,7 @@ module load python/2.7.8
 #Change directory to that which script was ran from
 cd $PBS_O_WORKDIR
 
+# TODO(Edwin):
+# 1.) Add script arguments.
 # Run python Pipeline
 python Pipeline.py [options]
