@@ -64,12 +64,12 @@ class jModelTest(object):
         }}} """
 
         self._jMT_out = 'jModelTest_{0}.out'.format(self._identifier)
-        self.run_jModelTest()
+        self.run_jmodeltest()
         self._jMT_parameters = self.r_jModelTest_parameters(self._jMT_out)
     # }}}
 
-    # {{{ run_jModeltest
-    def run_jModelTest(self):
+    # {{{ run_jmodeltest
+    def run_jmodeltest(self):
 
         """ {{{ Docstrings
 
