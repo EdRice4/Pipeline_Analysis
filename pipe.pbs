@@ -30,7 +30,5 @@ module load python/2.7.8
 #Change directory to that which script was ran from
 cd $PBS_O_WORKDIR
 
-# TODO(Edwin):
-# 1.) Add script arguments.
-# Run python Pipeline
-python Pipeline.py [options]
+# Run python Pipeline; arguments are as follows:
+python Pipeline.py ~/local/beast/2.3.0/lib/beast.jar ~/local/jMT/2.1.7/jModelTest.jar --log_every 5000 -MCMC_bGMYC 10000 --burnin_bGMYC 1000 --thinning 100 --bGMYC_params Dictionary.txt -b -np 120
