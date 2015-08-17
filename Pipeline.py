@@ -97,7 +97,7 @@ class jModelTest(object):
                 universal_newlines=True
                 )
         # Open stdout of child process and print/write in real-time
-        with open(self._JMT_ID, 'w') as output:
+        with open(self._jMT_out, 'w') as output:
             for line in iter(jMT_run.stdout.readline, ''):
                 print(line.strip())
                 output.write(str(line))
