@@ -430,7 +430,6 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        # TODO: Need to specify "-b" batch flag?
         garli = 'mpirun garli -{0} garli.conf'.format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
@@ -1111,8 +1110,6 @@ class bGMYC(BEAST):
         self.bGMYC(bgmyc_parameters)
     # }}}
 
-    # TODO(Edwin):
-    # 1.) Ensure bGMYC.R correct.
     # {{{ run_bgmyc
     def run_bgmyc(self, bgmyc_parameters):
         # Get parameters for taxon, if applicable
