@@ -943,6 +943,9 @@ class BEAST(Garli):
             # Specify child process, including any pertinent arguments
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
+            # TODO(Edwin):
+            # 1.) Since am already directing BEAST to append previous out
+            #     files, need to specify STDOUT redirect?
             beast = (
                     'java -jar {0} -working -seed {1} -threads {2} -beagle '
                     '-resume -statefile {3}.xml.state {4}'
@@ -951,16 +954,10 @@ class BEAST(Garli):
                             args.no_proc, self._BEAST_out, self._BEAST_XML
                     )
             # Spawn child process
-            beast_run = Popen(
+            Popen(
                     beast.split(), stderr=STDOUT, stdout=PIPE,
                     stdin=PIPE
                     )
-            # Open stdout of child process and print in real-time
-            # BEAST handles writing to file, unlike jModelTest
-            for line in iter(beast_run.stdout.readline, ''):
-                print(line.strip())
-            # Close stdout
-            beast_run.stdout.close()
             # Get effective sample size after run
             effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
