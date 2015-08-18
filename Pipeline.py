@@ -88,8 +88,8 @@ class jModelTest(object):
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
         jModelTest = (
-                'mpiexec java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a '
-                '-BIC -AIC -AICc -DT -tr {2}'
+                'mpiexec -n 1 java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
+                '-v -a -BIC -AIC -AICc -DT -tr {2}'
                 ).format(
                         args.jMT, self._nexus_file, args.no_proc,
                         self._jMT_out
