@@ -931,12 +931,11 @@ class BEAST(Garli):
                 )
         # For line in STDOUT of child process, print and write line output
         # file, respectively
-        with open(self._BEAST_out, 'w') as BEAST_out:
-            for line in BEAST_run.stdout:
-                print(line.strip())
-                # TODO(Edwin):
-                # 1.) BEAST handles writing, no?
-                # BEAST_out.write(line)
+        for line in BEAST_run.stdout:
+            print(line.strip())
+            # TODO(Edwin):
+            # 1.) BEAST handles writing, no?
+            # BEAST_out.write(line)
         # If user specified threshold in command line arguments, run
         # resume_beast
         if args.threshold:
@@ -984,12 +983,11 @@ class BEAST(Garli):
                     )
             # For line in STDOUT of child process, print and write line output
             # file, respectively
-            with open(self._BEAST_out, 'w') as BEAST_out:
-                for line in BEAST_run.stdout:
-                    print(line.strip())
-                    # TODO(Edwin):
-                    # 1.) BEAST handles writing, no?
-                    # BEAST_out.write(line)
+            for line in BEAST_run.stdout:
+                print(line.strip())
+                # TODO(Edwin):
+                # 1.) BEAST handles writing, no?
+                # BEAST_out.write(line)
             # Get effective sample size after run
             effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
