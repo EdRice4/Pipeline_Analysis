@@ -906,16 +906,10 @@ class BEAST(Garli):
                         self._BEAST_XML
                 )
         # Spawn child process
-        beast_run = Popen(
+        Popen(
                 beast.split(), stderr=STDOUT, stdout=PIPE,
                 stdin=PIPE
                 )
-        # Open stdout of child process and print in real-time BEAST handles
-        # writing to file, unlike jModelTest
-        for line in iter(beast_run.stdout.readline, ''):
-            print(line.strip())
-        # Close stdout
-        beast_run.stdout.close()
         # If user specified threshold in command line arguments, run
         # resume_beast
         if args.threshold:
