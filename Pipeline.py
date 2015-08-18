@@ -445,7 +445,9 @@ class Garli(jModelTest):
         with open(self._garli_out, 'w') as garli_out:
             for line in garli_run.stdout:
                 print(line.strip())
-                garli_out.write(line)
+                # TODO(Edwin):
+                # 1.) Garli handles writing, no?
+                # garli_out.write(line)
     # }}}
 # }}}
 
@@ -932,7 +934,9 @@ class BEAST(Garli):
         with open(self._BEAST_out, 'w') as BEAST_out:
             for line in BEAST_run.stdout:
                 print(line.strip())
-                BEAST_out.write(line)
+                # TODO(Edwin):
+                # 1.) BEAST handles writing, no?
+                # BEAST_out.write(line)
         # If user specified threshold in command line arguments, run
         # resume_beast
         if args.threshold:
@@ -980,10 +984,12 @@ class BEAST(Garli):
                     )
             # For line in STDOUT of child process, print and write line output
             # file, respectively
-            with open(self._jMT_out, 'w') as jMT_out:
-                for line in jMT_run.stdout:
+            with open(self._BEAST_out, 'w') as BEAST_out:
+                for line in BEAST_run.stdout:
                     print(line.strip())
-                    jMT_out.write(line)
+                    # TODO(Edwin):
+                    # 1.) BEAST handles writing, no?
+                    # BEAST_out.write(line)
             # Get effective sample size after run
             effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
@@ -1122,7 +1128,7 @@ class bGMYC(BEAST):
         # simply format the following string in a matter of your choosing.
         # You may also have to change the manner in which bGMYC is called,
         # depending on your system.
-        Rscript = (
+        bGMYC = (
                 'Rscript --save bGMYC.R --args -taxon={0} -id={1} '
                 '-mcmc={2} -burnin={3} -thinning={4} {5}'
                 ).format(
@@ -1131,7 +1137,9 @@ class bGMYC(BEAST):
                         ' '.join(parameters)
                         )
         # Spawn child process
-        Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+        bGMYC_run = Popen(
+                bGMYC.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
+                )
     # }}}
 # }}}
 
