@@ -1142,7 +1142,7 @@ class bGMYC(BEAST):
                 )
         # For line in STDOUT of child process, print and write line output
         # file, respectively
-        for line in jMT_run.stdout:
+        for line in bGMYC_run.stdout:
                 print(line.strip())
     # }}}
 # }}}
