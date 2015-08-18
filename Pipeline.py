@@ -87,9 +87,6 @@ class jModelTest(object):
         # simply format the following string in a matter of your choosing.
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
-        # TODO(Edwin):
-        # 1.) Redirecot output utilizing greater than ">" sympol and
-        #     referencing self._jMT_ID.
         jModelTest = (
                 'mpiexec java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a '
                 '-BIC -AIC -AICc -DT -tr {2} >{3}'
@@ -434,12 +431,6 @@ class Garli(jModelTest):
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
                 )
-        # Open stdout of child process and print in real-time
-        # Garli handles writing to file, unlike jModelTest
-        for line in iter(garli_run.stdout.readline, ''):
-            print(line.strip())
-        # Close stdout
-        garli_run.stdout.close()
     # }}}
 # }}}
 
