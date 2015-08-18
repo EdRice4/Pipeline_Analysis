@@ -1140,6 +1140,10 @@ class bGMYC(BEAST):
         bGMYC_run = Popen(
                 bGMYC.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
                 )
+        # For line in STDOUT of child process, print and write line output
+        # file, respectively
+        for line in jMT_run.stdout:
+                print(line.strip())
     # }}}
 # }}}
 
