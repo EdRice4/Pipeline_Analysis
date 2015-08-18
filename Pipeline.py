@@ -1105,15 +1105,9 @@ class bGMYC(BEAST):
                         ' '.join(parameters)
                         )
         # Spawn child process
-        bGMYC_run = Popen(
+        Popen(
                 Rscript.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
                 )
-        # Open stdout of child process and print in real-time; bGMYC output
-        # is handled by code in "bGMYC.R."
-        for line in iter(bGMYC_run.stdout.readline, ''):
-            print(line.strip())
-        # Close stdout
-        bGMYC_run.stdout.close()
     # }}}
 # }}}
 
