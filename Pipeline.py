@@ -549,7 +549,7 @@ class BEAST(Garli):
         return(BEAST_XML, BEAST_XML_ele_dict)
     # }}}
 
-      {{{ __init__
+    # {{{ __init__
     def __init__(self, BEAST_XML_ele_dict, BEAST_XML):
 
         """ {{{ Docstrings
