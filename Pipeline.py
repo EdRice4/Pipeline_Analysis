@@ -426,11 +426,9 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = 'mpiexec garli -{0}'.format(args.no_proc)
+        garli = 'mpiexec garli -{0} >{1}'.format(args.no_proc, self._garli_out)
         # Spawn child process
-        garli_run = Popen(
-                garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
-                )
+        Popen(garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
     # }}}
 # }}}
 
