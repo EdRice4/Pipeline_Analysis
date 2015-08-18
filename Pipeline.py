@@ -442,12 +442,11 @@ class Garli(jModelTest):
                 )
         # For line in STDOUT of child process, print and write line output
         # file, respectively
-        with open(self._garli_out, 'w') as garli_out:
-            for line in garli_run.stdout:
-                print(line.strip())
-                # TODO(Edwin):
-                # 1.) Garli handles writing, no?
-                # garli_out.write(line)
+        for line in garli_run.stdout:
+            print(line.strip())
+            # TODO(Edwin):
+            # 1.) Garli handles writing, no?
+            # garli_out.write(line)
     # }}}
 # }}}
 
