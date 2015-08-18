@@ -1087,7 +1087,7 @@ class bGMYC(BEAST):
     # {{{ run_bgmyc
     def run_bgmyc(self, bgmyc_parameters):
         # Get parameters for taxon, if applicable
-        # If not, return empty dict
+        # If not, return empty list
         parameters = bgmyc_parameters.get(self._sequence_name, [])
         # Specify child process, including any pertinent arguments; see bGMYC
         # documentation for explanation of additional arguments
@@ -1105,9 +1105,7 @@ class bGMYC(BEAST):
                         ' '.join(parameters)
                         )
         # Spawn child process
-        Popen(
-                Rscript.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
-                )
+        Popen(Rscript.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
     # }}}
 # }}}
 
