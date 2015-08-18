@@ -384,7 +384,7 @@ class Garli(jModelTest):
                 ]
         # Values of variables to insert
         garli_values = [
-                self._nexus_file, self._identifier, str(args.np),
+                self._nexus_file, self._identifier, str(args.no_proc),
                 str(args.bstr), Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
