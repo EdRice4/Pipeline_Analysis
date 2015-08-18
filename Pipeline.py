@@ -975,7 +975,7 @@ class BEAST(Garli):
                     )
             # Spawn child process
             BEAST_run = Popen(
-                    beast.split(), stderr=STDOUT, stdout=PIPE,
+                    BEAST.split(), stderr=STDOUT, stdout=PIPE,
                     stdin=PIPE
                     )
             # For line in STDOUT of child process, print and write line output
