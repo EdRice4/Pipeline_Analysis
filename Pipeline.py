@@ -548,7 +548,7 @@ class BEAST(Garli):
         return(BEAST_XML, BEAST_XML_ele_dict)
     # }}}
 
-    # {{{ __init__
+      {{{ __init__
     def __init__(self, BEAST_XML_ele_dict, BEAST_XML):
 
         """ {{{ Docstrings
@@ -916,17 +916,23 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         beast = (
-                'mpiexec java -jar {0} -working -seed {1} -threads {2} '
-                '-beagle {3} >{4}'
+                'mpiexec -n 1 java -jar {0} -working -seed {1} -threads {2} '
+                '-beagle {3}'
                 ).format(
                         args.BEAST, randrange(0, 999999999999), args.no_proc,
-                        self._BEAST_XML, self._BEAST_out
-                )
+                        self._BEAST_XML
+                        )
         # Spawn child process
-        Popen(
+        BEAST_run = Popen(
                 beast.split(), stderr=STDOUT, stdout=PIPE,
                 stdin=PIPE
                 )
+        # For line in STDOUT of child process, print and write line output
+        # file, respectively
+        with open(self._BEAST_out, 'w') as BEAST_out:
+            for line in BEAST_run.stdout:
+                print(line.strip())
+                BEAST_out.write(line)
         # If user specified threshold in command line arguments, run
         # resume_beast
         if args.threshold:
