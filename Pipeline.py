@@ -87,12 +87,18 @@ class jModelTest(object):
         # simply format the following string in a matter of your choosing.
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
+        # TODO(Edwin):
+        # 1.) Redirecot output utilizing greater than ">" sympol and
+        #     referencing self._jMT_ID.
         jModelTest = (
                 'mpiexec java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f -v -a '
-                '-BIC -AIC -AICc -DT -tr {2}'
-                ).format(args.jMT, self._nexus_file, args.no_proc)
+                '-BIC -AIC -AICc -DT -tr {2} >{3}'
+                ).format(
+                        args.jMT, self._nexus_file, args.no_proc,
+                        self._jMT_out
+                        )
         # Spawn child process and run
-        jMT_run = Popen(
+        Popen(
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                 universal_newlines=True
                 )
