@@ -900,10 +900,10 @@ class BEAST(Garli):
         # depending on your system.
         beast = (
                 'mpiexec java -jar {0} -working -seed {1} -threads {2} '
-                '-beagle {3}'
+                '-beagle {3} >{4}'
                 ).format(
                         args.BEAST, randrange(0, 999999999999), args.no_proc,
-                        self._BEAST_XML
+                        self._BEAST_XML, self._BEAST_out
                 )
         # Spawn child process
         Popen(
