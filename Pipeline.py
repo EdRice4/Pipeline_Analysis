@@ -102,8 +102,11 @@ class jModelTest(object):
                 jModelTest.split(), stderr=STDOUT, stdout=PIPE,
                 universal_newlines=True
                 )
+        # For line in STDOUT of child process, print and write line output
+        # file, respectively
         with open(self._jMT_out, 'w') as jMT_out:
             for line in jMT_run.stdout:
+                print(line.strip())
                 jMT_out.write(line)
     # }}}
 
@@ -432,9 +435,17 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = 'mpiexec garli -{0} >{1}'.format(args.no_proc, self._garli_out)
+        garli = 'mpiexec garli -{0}'.format(args.no_proc)
         # Spawn child process
-        Popen(garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE)
+        garli_run = Popen(
+                garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
+                )
+        # For line in STDOUT of child process, print and write line output
+        # file, respectively
+        with open(self._garli_out, 'w') as garli_out:
+            for line in garli_run.stdout:
+                print(line.strip())
+                garli_out.write(line)
     # }}}
 # }}}
 
