@@ -915,7 +915,7 @@ class BEAST(Garli):
         # simply format the following string in a matter of your choosing.
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
-        beast = (
+        BEAST = (
                 'mpiexec -n 1 java -jar {0} -working -seed {1} -threads {2} '
                 '-beagle {3}'
                 ).format(
@@ -924,7 +924,7 @@ class BEAST(Garli):
                         )
         # Spawn child process
         BEAST_run = Popen(
-                beast.split(), stderr=STDOUT, stdout=PIPE,
+                BEAST.split(), stderr=STDOUT, stdout=PIPE,
                 stdin=PIPE
                 )
         # For line in STDOUT of child process, print and write line output
@@ -966,21 +966,24 @@ class BEAST(Garli):
             # Specify child process, including any pertinent arguments
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
-            # TODO(Edwin):
-            # 1.) Since am already directing BEAST to append previous out
-            #     files, need to specify STDOUT redirect?
-            beast = (
-                    'java -jar {0} -working -seed {1} -threads {2} -beagle '
-                    '-resume -statefile {3}.xml.state {4}'
+            BEAST = (
+                    'mpiexec -n 1 java -jar {0} -working -seed {1} '
+                    '-threads {2} -beagle -resume -statefile {3}.xml.state {4}'
                     ).format(
                             args.BEAST, str(randrange(0, 999999999999)),
                             args.no_proc, self._BEAST_out, self._BEAST_XML
                     )
             # Spawn child process
-            Popen(
+            BEAST_run = Popen(
                     beast.split(), stderr=STDOUT, stdout=PIPE,
                     stdin=PIPE
                     )
+            # For line in STDOUT of child process, print and write line output
+            # file, respectively
+            with open(self._jMT_out, 'w') as jMT_out:
+                for line in jMT_run.stdout:
+                    print(line.strip())
+                    jMT_out.write(line)
             # Get effective sample size after run
             effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
