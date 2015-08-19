@@ -378,7 +378,7 @@ class Garli(jModelTest):
         # the corresponding value, in the corresponding position, to
         # garli_values
         garli_variables = [
-                'datafname =', 'ofprefix =', 'searchreps ='
+                'datafname =', 'ofprefix =', 'searchreps =',
                 'bootstrapreps =', 'ratematrix =', 'statefrequencies =',
                 'ratehetmodel =', 'numratecats =', 'invariantsites ='
                 ]
