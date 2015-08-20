@@ -15,13 +15,14 @@ set -x
 trap "cd $PBS_O_WORKDIR;mkdir $PBS_JOBID;cp -R $TMPDIR/* $PBS_JOBID" TERM
 
 # Load pertinent modules
-module load java/1.8.51
+module load java/1.8.60
 module load beagle/2.1
 module load beast/2.3.0
 module load ncl/2.1.21
 module load garli/2.01
 module load jMT/2.1.7
 module load python/2.7.8
+module load R/3.2.0
 
 #Change directory to that which script was ran from
 cd $PBS_O_WORKDIR

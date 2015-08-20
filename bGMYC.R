@@ -1,5 +1,7 @@
 library(ape)
 library(bGMYC)
+library(Rmpi)
+library(parallel)
 source('bgmyc.gibbs.mpi.R')
 source('bgmyc.multiphylo.mpi.R')
 suppressMessages(library(R.utils))
