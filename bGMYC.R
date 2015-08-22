@@ -1,6 +1,5 @@
 library(ape)
 library(bGMYC)
-library(Rmpi)
 library(parallel)
 suppressMessages(library(R.utils))
 source('bgmyc.gibbs.mpi.R')
