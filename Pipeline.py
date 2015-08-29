@@ -340,10 +340,10 @@ class Garli(jModelTest):
 
         # Iterate through lines_to_edit and values_to_insert in tandem
         for i, j in zip(lines_to_edit, values_to_insert):
+            # Define variables for readability
+            line = garli_conf.index(i)
             # Append value
-            garli_conf[garli_conf.index(i)] = '{0} {1}'.format(
-                    garli_conf[garli_conf.index(i)], j
-                    )
+            garli_conf[line] = '{0} {1}'.format(garli_conf[line], j)
         return garli_conf
     # }}}
 
