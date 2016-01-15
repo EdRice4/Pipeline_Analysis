@@ -88,12 +88,10 @@ class jModelTest(object):
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
         jModelTest = (
-                'mpiexec -n 1 java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
+                'mpiexec --prefix /usr/local/openmpi/intel/15/1.10 '
+                '-n 1 java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
                 '-v -a -BIC -AIC -AICc -DT -tr {2}'
-                ).format(
-                        args.jMT, self._nexus_file, args.no_proc,
-                        self._jMT_out
-                        )
+                ).format(args.jMT, self._nexus_file, args.no_proc)
         # Spawn child process and run
         # TODO(Edwin):
         # 1.) Open jMT_out prior to spawning child process and pass to stdout?
@@ -435,7 +433,10 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = 'mpiexec garli -{0}'.format(args.no_proc)
+        garli = (
+                'mpiexec --prefix /usr/local/openmpi/intel/15/1.10 '
+                'garli -{0}'
+                ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
@@ -917,7 +918,8 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         BEAST = (
-                'mpiexec -n 1 java -jar {0} -working -seed {1} -threads {2} '
+                'mpiexec --prefix /usr/local/openmpi/intel/15/1.10 '
+                '-n 1 java -jar {0} -working -seed {1} -threads {2} '
                 '-beagle {3}'
                 ).format(
                         args.BEAST, randrange(0, 999999999999), args.no_proc,
