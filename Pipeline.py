@@ -88,7 +88,7 @@ class jModelTest(object):
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
         jModelTest = (
-                'mpiexec --prefix /usr/local/openmpi/intel/15/1.10 '
+                'mpiexec --prefix /nfs/01/osu9880/local/openmpi/1.10.1 '
                 '-n 1 java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
                 '-v -a -BIC -AIC -AICc -DT -tr {2}'
                 ).format(args.jMT, self._nexus_file, args.no_proc)
@@ -376,14 +376,14 @@ class Garli(jModelTest):
         # the corresponding value, in the corresponding position, to
         # garli_values
         garli_variables = [
-                'datafname =', 'ofprefix =', 'searchreps =',
-                'bootstrapreps =', 'ratematrix =', 'statefrequencies =',
-                'ratehetmodel =', 'numratecats =', 'invariantsites ='
+                'datafname =', 'ofprefix =', 'ratematrix =',
+                'statefrequencies =', 'ratehetmodel =', 'numratecats =',
+                'invariantsites ='
                 ]
         # Values of variables to insert
         garli_values = [
-                self._nexus_file, self._identifier, str(args.no_proc),
-                str(args.bstr), Garli.models[str(model_selected)][0],
+                self._nexus_file, self._identifier,
+                Garli.models[str(model_selected)][0],
                 Garli.models[str(model_selected)][1]
                 ]
         # If model selected by jModelTest included gamma distribution, do so
@@ -434,8 +434,8 @@ class Garli(jModelTest):
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
         garli = (
-                'mpiexec --prefix /usr/local/openmpi/intel/15/1.10 '
-                'garli -{0}'
+                'mpiexec --prefix /nfs/01/osu9880/local/openmpi/1.10.1 '
+                'Garli -{0}'
                 ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
@@ -918,7 +918,7 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         BEAST = (
-                'mpiexec --prefix /usr/local/openmpi/intel/15/1.10 '
+                'mpiexec --prefix /nfs/01/osu9880/local/openmpi/1.10.1 '
                 '-n 1 java -jar {0} -working -seed {1} -threads {2} '
                 '-beagle {3}'
                 ).format(
