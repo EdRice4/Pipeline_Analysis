@@ -88,8 +88,7 @@ class jModelTest(object):
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
         jModelTest = (
-                'mpiexec --prefix /nfs/01/osu9880/local/openmpi/1.10.1 '
-                '-n 1 java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
+                'mpiexec java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
                 '-v -a -BIC -AIC -AICc -DT -tr {2}'
                 ).format(args.jMT, self._nexus_file, args.no_proc)
         # Spawn child process and run
@@ -434,8 +433,7 @@ class Garli(jModelTest):
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
         garli = (
-                'mpiexec --prefix /nfs/01/osu9880/local/openmpi/1.10.1 '
-                'Garli -{0}'
+                'mpiexec Garli -{0}'
                 ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
@@ -918,8 +916,7 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         BEAST = (
-                'mpiexec --prefix /nfs/01/osu9880/local/openmpi/1.10.1 '
-                '-n 1 java -jar {0} -working -seed {1} -threads {2} '
+                'mpiexec -n 1 java -jar {0} -working -seed {1} -threads {2} '
                 '-beagle {3}'
                 ).format(
                         args.BEAST, randrange(0, 999999999999), args.no_proc,
@@ -971,7 +968,7 @@ class BEAST(Garli):
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
             BEAST = (
-                    'mpiexec -n 1 java -jar {0} -working -seed {1} '
+                    'mpiexec java -jar {0} -working -seed {1} '
                     '-threads {2} -beagle -resume -statefile {3}.xml.state {4}'
                     ).format(
                             args.BEAST, str(randrange(0, 999999999999)),
