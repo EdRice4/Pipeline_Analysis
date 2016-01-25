@@ -105,6 +105,8 @@ class jModelTest(object):
             for line in jMT_run.stdout:
                 print(line.strip())
                 jMT_out.write(line)
+        # Close stdout of jMT_run
+        jMT_run.stdout.close()
     # }}}
 
     # {{{ r_jModelTest_output
