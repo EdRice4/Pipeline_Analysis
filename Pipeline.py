@@ -99,10 +99,9 @@ class jModelTest(object):
                 jModelTest.split(), stderr=PIPE, stdout=PIPE,
                 universal_newlines=True
                 )
-        jMT_run.wait()
+        # Communicate with PIPE to get standard output and errors, respectively
         jMT_run_stdout, jMT_run_stderr = jMT_run.communicate()
-        # For line in STDOUT of child process, print and write line to output
-        # file, respectively
+        # Write standard output to file
         with open(self._jMT_out, 'w') as jMT_out:
             jMT_out.write(jMT_run_stdout)
     # }}}
@@ -437,12 +436,13 @@ class Garli(jModelTest):
                 ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
-                garli.split(), stderr=STDOUT, stdout=PIPE
+                garli.split(), stderr=PIPE, stdout=PIPE,
+                universal_newlines=True
                 )
         # For line in STDOUT of child process, print line in output
         # file, respectively
-        for line in garli_run.stdout:
-            print(line.strip())
+        # for line in garli_run.stdout:
+            # print(line.strip())
             # TODO(Edwin):
             # 1.) Garli handles writing, no?
             # garli_out.write(line)
