@@ -12,7 +12,7 @@
 
 
 # {{{ Imports
-from subprocess import Popen, STDOUT, PIPE
+from subprocess import Popen, PIPE
 from lxml import etree as ET
 from random import randrange
 from numpy import genfromtxt
@@ -439,13 +439,10 @@ class Garli(jModelTest):
                 garli.split(), stderr=PIPE, stdout=PIPE,
                 universal_newlines=True
                 )
-        # For line in STDOUT of child process, print line in output
-        # file, respectively
-        # for line in garli_run.stdout:
-            # print(line.strip())
-            # TODO(Edwin):
-            # 1.) Garli handles writing, no?
-            # garli_out.write(line)
+        # Wait until process has completed to continue
+        # NOTE: Do not need to write standard output to file as garli
+        # automatically handles this
+        garli_run.communicate()
     # }}}
 # }}}
 
@@ -543,6 +540,8 @@ class BEAST(Garli):
             if 'proportionInvariant.s:' in element.get('id'):
                 BEAST_XML_ele_dict['inv'] = element
         for element in BEAST_XML_ele_dict['run'].iterfind('logger'):
+            if 'tracelog' in element.get('id'):
+                BEAST_XML_ele_dict['trace_log'] = element
             if 'treelog.t:' in element.get('id'):
                 BEAST_XML_ele_dict['tree_log'] = element
         return(BEAST_XML, BEAST_XML_ele_dict)
@@ -651,7 +650,7 @@ class BEAST(Garli):
         model_selected = model_selected.translate(None, '+IG')
         # If frequencies are estimated, do:
         # {{{ if estimate
-        if Garli.models[str(model_selected)][1] == 'estimate':
+        if Garli.models[model_selected][1] == 'estimate':
             ET.SubElement(
                     BEAST_XML_ele_dict['state'], 'parameter',
                     attrib={
@@ -927,13 +926,10 @@ class BEAST(Garli):
                 BEAST.split(), stderr=STDOUT, stdout=PIPE,
                 stdin=PIPE
                 )
-        # For line in STDOUT of child process, print and write line to output
-        # file, respectively
-        for line in BEAST_run.stdout:
-            print(line.strip())
-            # TODO(Edwin):
-            # 1.) BEAST handles writing, no?
-            # BEAST_out.write(line)
+        # Wait until process has completed to continue
+        BEAST_run.communicate()
+        # NOTE: Do not need to write standard output to file as garli
+        # automatically handles this
         # If user specified threshold in command line arguments, run
         # resume_beast
         if args.threshold:
@@ -979,14 +975,11 @@ class BEAST(Garli):
                     BEAST.split(), stderr=STDOUT, stdout=PIPE,
                     stdin=PIPE
                     )
-            # For line in STDOUT of child process, print and write line output
-            # file, respectively
-            for line in BEAST_run.stdout:
-                print(line.strip())
-                # TODO(Edwin):
-                # 1.) BEAST handles writing, no?
-                # BEAST_out.write(line)
-            # Get effective sample size after run
+            # Wait until process has completed to continue
+            BEAST_run.communicate()
+            # NOTE: Do not need to write standard output to file as garli
+            # automatically handles this
+            # Get effective sample size of run
             effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
             # the threshold; if none are, empty list of NoneType is returned
