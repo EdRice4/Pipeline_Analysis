@@ -96,17 +96,15 @@ class jModelTest(object):
         # 1.) Open jMT_out prior to spawning child process and pass to stdout?
         # https://stackoverflow.com/questions/15167603/python-using-files-as-stdin-and-stdout-for-subprocess
         jMT_run = Popen(
-                jModelTest.split(), stderr=STDOUT, stdout=PIPE,
+                jModelTest.split(), stderr=PIPE, stdout=PIPE,
                 universal_newlines=True
                 )
-        # For line in STDOUT of child process, print and write line output
+        jMT_run.wait()
+        jMT_run_stdout, jMT_run_stderr = jMT_run.communicate()
+        # For line in STDOUT of child process, print and write line to output
         # file, respectively
         with open(self._jMT_out, 'w') as jMT_out:
-            for line in jMT_run.stdout:
-                print(line.strip())
-                jMT_out.write(line)
-        # Close stdout of jMT_run
-        jMT_run.stdout.close()
+            jMT_out.write(jMT_run_stdout)
     # }}}
 
     # {{{ r_jModelTest_output
@@ -250,7 +248,7 @@ class Garli(jModelTest):
             'TM1ef': ['(0 1 2 2 3 0)', 'equal'],  # Remove 'I' for translate
             'TM1': ['(0 1 2 2 3 0)', 'estimate'],  # Remove 'I' for translate
             'TM2ef': ['(0 1 0 2 3 2)', 'equal'],
-            'TM2': ['((0 1 0 2 3 2))', 'estimate'],
+            'TM2': ['(0 1 0 2 3 2)', 'estimate'],
             'TM3ef': ['(0 1 2 0 3 2)', 'equal'],
             'TM3': ['(0 1 2 0 3 2)', 'estimate'],
             'TVMef': ['(0 1 2 3 1 4)', 'equal'],
@@ -384,8 +382,8 @@ class Garli(jModelTest):
         # Values of variables to insert
         garli_values = [
                 self._nexus_file, self._identifier,
-                Garli.models[str(model_selected)][0],
-                Garli.models[str(model_selected)][1]
+                Garli.models[model_selected][0],
+                Garli.models[model_selected][1]
                 ]
         # If model selected by jModelTest included gamma distribution, do so
         # in garli.conf
@@ -439,9 +437,9 @@ class Garli(jModelTest):
                 ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
-                garli.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
+                garli.split(), stderr=STDOUT, stdout=PIPE
                 )
-        # For line in STDOUT of child process, print and write line output
+        # For line in STDOUT of child process, print line in output
         # file, respectively
         for line in garli_run.stdout:
             print(line.strip())
@@ -929,7 +927,7 @@ class BEAST(Garli):
                 BEAST.split(), stderr=STDOUT, stdout=PIPE,
                 stdin=PIPE
                 )
-        # For line in STDOUT of child process, print and write line output
+        # For line in STDOUT of child process, print and write line to output
         # file, respectively
         for line in BEAST_run.stdout:
             print(line.strip())
@@ -1177,7 +1175,7 @@ class NexusFile(bGMYC):
                         ),
                 action='store_true')
         args_nex.add_argument(
-                '-np', '--no_proc', help=(
+                '-np', '--no_proc', type=int, help=(
                         'When running script in HPC environment, specify '
                         'total number of processors requested so that the '
                         'script has knowledge of the environment and can '
