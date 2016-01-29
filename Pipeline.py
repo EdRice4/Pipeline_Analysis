@@ -432,7 +432,7 @@ class Garli(jModelTest):
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
         garli = (
-                'mpiexec Garli -{0}'
+                'Garli -{0}'
                 ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
@@ -915,7 +915,7 @@ class BEAST(Garli):
         # You may also have to change the manner in which BEAST is called,
         # depending on your system.
         BEAST = (
-                'mpiexec -n 1 java -jar {0} -working -seed {1} -threads {2} '
+                'java -jar {0} -working -seed {1} -threads {2} '
                 '-beagle {3}'
                 ).format(
                         args.BEAST, randrange(0, 999999999999), args.no_proc,
