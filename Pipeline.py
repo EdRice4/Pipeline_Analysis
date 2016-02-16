@@ -806,9 +806,9 @@ class BEAST(Garli):
                 # Read into list
                 nexus = nexus.readlines()
         # Get index of start
-        range_start = nexus_file.index(start)
+        range_start = nexus.index(start)
         # Get index of end
-        range_end = nexus_file.index(end)
+        range_end = nexus.index(end)
         return range_start, range_end
     # }}}
 
