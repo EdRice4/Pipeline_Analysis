@@ -971,8 +971,7 @@ class BEAST(Garli):
                     )
             # Spawn child process
             BEAST_run = Popen(
-                    BEAST.split(), stderr=STDOUT, stdout=PIPE,
-                    stdin=PIPE
+                    BEAST.split(), stderr=PIPE, stdout=PIPE,
                     )
             # Wait until process has completed to continue
             BEAST_run.communicate()
