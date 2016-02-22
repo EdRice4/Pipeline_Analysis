@@ -964,7 +964,7 @@ class BEAST(Garli):
             # ::MODIFIABLE::
             # NOTE: See run_beast above.
             BEAST = (
-                    'mpiexec java -jar {0} -working -seed {1} '
+                    'java -jar {0} -working -seed {1} '
                     '-threads {2} -beagle -resume -statefile {3}.xml.state {4}'
                     ).format(
                             args.BEAST, str(randrange(0, 999999999999)),
