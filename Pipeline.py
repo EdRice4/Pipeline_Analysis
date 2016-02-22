@@ -784,7 +784,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ get_sequence_range
-    def get_sequence_range(self, start, end):
+    def get_sequence_range(self, nexus_file, start, end):
 
         """ {{{ Docstrings
 
@@ -802,14 +802,10 @@ class BEAST(Garli):
 
         }}} """
 
-        # Open nexus file in read mode
-        with open(self._nexus_file, 'r') as nexus:
-                # Read into list
-                nexus = nexus.readlines()
         # Get index of start
-        range_start = nexus.index(start)
+        range_start = nexus_file.index(start)
         # Get index of end
-        range_end = nexus.index(end)
+        range_end = nexus_file.index(end)
         return range_start, range_end
     # }}}
 
@@ -824,35 +820,38 @@ class BEAST(Garli):
 
         }}} """
 
+        # Open nexus file in read mode
+        with open(self._nexus_file, 'r') as nexus_file:
+                # Read into list
+                nexus_file = nexus_file.readlines()
         # Get start and end position of sequence block in nexus file
         sequence_start, sequence_end = self.get_sequence_range(
-                'matrix\n', ';\n'
+                nexus_file, 'matrix\n', ';\n'
                 )
         # However, do not want to include these lines, just the lines between
         # them
         sequence_start += 1
         sequence_end -= 1
-        # Iterate over lines in nexus file, defining each respective XML element
-        for line in nexus_file:
-            while sequence_start <= sequence_end:
-                # Define variables for readability
-                # Split line by occurrence of tab "\t" character
-                line = nexus_file[int(sequence_start)].split('\t')
-                # Get sequence ID
-                sequence_id = line[0].strip()
-                # Get sequence
-                sequence = line[1].strip()
-                # Create subelement
-                ET.SubElement(
-                        BEAST_XML_ele_dict['data'], 'sequence',
-                        attrib={
-                                'id': 'seq_{0}'.format(sequence_id),
-                                'taxon': '{0}'.format(sequence_id),
-                                'totalcount': '4',
-                                'value': '{0}'.format(sequence)
-                        }
-                )
-                sequence_start += 1
+        # Iterate over lines in nexus file, defining each respective XML
+        # element
+        for line in nexus_file[sequence_start:sequence_end]:
+            # Define variables for readability
+            # Split line by occurrence of tab "\t" character
+            line = line.split('\t')
+            # Get sequence ID
+            sequence_id = line[0].strip()
+            # Get sequence
+            sequence = line[1].strip()
+            # Create subelement
+            ET.SubElement(
+                    BEAST_XML_ele_dict['data'], 'sequence',
+                    attrib={
+                            'id': 'seq_{0}'.format(sequence_id),
+                            'taxon': '{0}'.format(sequence_id),
+                            'totalcount': '4',
+                            'value': '{0}'.format(sequence)
+                    }
+            )
     # }}}
 
     # {{{ w_beast_parameters
