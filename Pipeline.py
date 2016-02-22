@@ -1125,7 +1125,7 @@ class bGMYC(BEAST):
                         )
         # Spawn child process
         bGMYC_run = Popen(
-                bGMYC.split(), stderr=STDOUT, stdout=PIPE, stdin=PIPE
+                bGMYC.split(), stderr=PIPE, stdout=PIPE
                 )
         # For line in STDOUT of child process, print and write line output
         # file, respectively
