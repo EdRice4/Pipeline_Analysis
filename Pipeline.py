@@ -1127,6 +1127,8 @@ class bGMYC(BEAST):
         bGMYC_run = Popen(
                 bGMYC.split(), stderr=PIPE, stdout=PIPE
                 )
+        # Wait until process has completed to continue
+        bGMYC_run.communicate()
         # For line in STDOUT of child process, print and write line output
         # file, respectively
         for line in bGMYC_run.stdout:
