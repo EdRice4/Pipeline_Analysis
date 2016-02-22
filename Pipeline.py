@@ -1129,10 +1129,6 @@ class bGMYC(BEAST):
                 )
         # Wait until process has completed to continue
         bGMYC_run.communicate()
-        # For line in STDOUT of child process, print and write line output
-        # file, respectively
-        for line in bGMYC_run.stdout:
-                print(line.strip())
     # }}}
 # }}}
 
