@@ -775,12 +775,12 @@ class BEAST(Garli):
             BEAST.K80_HKY(self, xml_elements)
         # Else, set each rate individually
         else:
-            rateAC.text = '%s' % self._jMT_parameters['Ra']
-            rateAG.text = '%s' % self._jMT_parameters['Rb']
-            rateAT.text = '%s' % self._jMT_parameters['Rc']
-            rateCG.text = '%s' % self._jMT_parameters['Rd']
-            rateCT.text = '%s' % self._jMT_parameters['Re']
-            rateGT.text = '%s' % self._jMT_parameters['Rf']
+            rateAC.text = self._jMT_parameters['Ra']
+            rateAG.text = self._jMT_parameters['Rb']
+            rateAT.text = self._jMT_parameters['Rc']
+            rateCG.text = self._jMT_parameters['Rd']
+            rateCT.text = self._jMT_parameters['Re']
+            rateGT.text = self._jMT_parameters['Rf']
     # }}}
 
     # {{{ get_sequence_range
