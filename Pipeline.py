@@ -873,7 +873,7 @@ class BEAST(Garli):
         # MCMC burnin
         BEAST_XML_ele_dict['run'].set('preBurnin', str(args.burnin_BEAST))
         # Frequency with which to save to tree file
-        self._xml_ele_dict['tree_log'].set('logEvery', str(args.log_every))
+        BEAST_XML_ele_dict['tree_log'].set('logEvery', str(args.log_every))
         # Convert ElementTree to string in order to perform substitution
         beast_string = ET.tostring(BEAST_XML)
         # Substitute every occurrence of "replace_taxon" and "replace_ID" with
