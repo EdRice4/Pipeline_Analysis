@@ -1100,7 +1100,7 @@ class bGMYC(BEAST):
 
         }}} """
 
-        self.bGMYC(bgmyc_parameters)
+        self.run_bgmyc(bgmyc_parameters)
     # }}}
 
     # {{{ run_bgmyc
