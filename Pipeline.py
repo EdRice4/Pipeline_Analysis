@@ -666,7 +666,7 @@ class BEAST(Garli):
             ET.SubElement(
                     BEAST_XML_ele_dict['substmodel'], 'frequencies',
                     attrib={
-                            'id': 'freqParameter.s:{0}'.format(
+                            'id': 'estimatedFreqs.s:{0}'.format(
                                     self._sequence_name
                                     ),
                             'spec': 'Frequencies',
