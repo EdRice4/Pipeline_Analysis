@@ -27,10 +27,11 @@
                 <alignment idref="replace_taxon"/>
             </taxonset>
         </tree>
-        <parameter id="mutationRate.s:replace_taxon" lower="1.18" name="stateNode" upper="1.76">1.57</parameter>
+        <parameter id="mutationRate.s:replace_taxon" name="stateNode">1.0</parameter>
+        <parameter id="ucldMean.c:replace_taxon" name="stateNode">1.0</parameter>
         <parameter id="ucldStdev.c:replace_taxon" lower="0.0" name="stateNode">0.1</parameter>
+        <parameter id="birthRateY.t:replace_taxon" name="stateNode">1.0</parameter>
         <stateNode id="rateCategories.c:replace_taxon" spec="parameter.IntegerParameter" dimension="426">1</stateNode>
-        <parameter id="popSize.t:Adetomyrma" name="stateNode">0.3</parameter>
     </state>
 
     <init id="RandomTree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:replace_taxon" taxa="@replace_taxon">
@@ -41,17 +42,17 @@
 
     <distribution id="posterior" spec="util.CompoundDistribution">
         <distribution id="prior" spec="util.CompoundDistribution">
-            <distribution id="CoalescentConstant.t:replace_taxon" spec="Coalescent">
-                <populationModel id="ConstantPopulation.t:replace_taxon" spec="ConstantPopulation" popSize="@popSize.t:replace_taxon"/>
-                <treeIntervals id="TreeIntervals.t:replace_taxon" spec="TreeIntervals" tree="@Tree.t:replace_taxon"/>
-            </distribution>
-            <prior id="PopSizePrior.t:replace_taxon" name="distribution" x="@popSize.t:replace_taxon">
-                <OneOnX id="OneOnX.0" name="distr"/>
+            <distribution id="CalibratedYuleModel.t:replace_taxon" spec="beast.evolution.speciation.CalibratedYuleModel" birthRate="@birthRateY.t:replace_taxon" tree="@Tree.t:replace_taxon"/>
+            <prior id="CalibratedYuleBirthRatePrior.t:replace_taxon" name="distribution" x="@birthRateY.t:replace_taxon">
+                <Uniform id="Uniform.0" name="distr" upper="1000.0"/>
+            </prior>
+            <prior id="MeanRatePrior.c:replace_taxon" name="distribution" x="@ucldMean.c:replace_taxon">
+                <Uniform id="Uniform.01" name="distr" upper="Infinity"/>
             </prior>
             <prior id="ucldStdevPrior.c:replace_taxon" name="distribution" x="@ucldStdev.c:replace_taxon">
-                <Gamma id="Gamma.05" name="distr">
-                    <parameter id="RealParameter.010" estimate="false" name="alpha">0.5396</parameter>
-                    <parameter id="RealParameter.011" estimate="false" name="beta">0.3819</parameter>
+                <Gamma id="Gamma.0" name="distr">
+                    <parameter id="RealParameter.0" estimate="false" name="alpha">0.5396</parameter>
+                    <parameter id="RealParameter.01" estimate="false" name="beta">0.3819</parameter>
                 </Gamma>
             </prior>
         </distribution>
@@ -69,11 +70,10 @@
                         <parameter estimate="false" id="rateGT.s:replace_taxon" lower="0.0" name="rateGT">1.0</parameter>
                     </substModel>
                 </siteModel>
-                <branchRateModel id="RelaxedClock.c:replace_taxon" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" rateCategories="@rateCategories.c:replace_taxon" tree="@Tree.t:replace_taxon">
+                <branchRateModel id="RelaxedClock.c:replace_taxon" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" clock.rate="@ucldMean.c:replace_taxon" rateCategories="@rateCategories.c:replace_taxon" tree="@Tree.t:replace_taxon">
                     <LogNormal id="LogNormalDistributionModel.c:replace_taxon" S="@ucldStdev.c:replace_taxon" meanInRealSpace="true" name="distr">
-                        <parameter id="RealParameter.012" estimate="false" lower="0.0" name="M" upper="1.0">1.0</parameter>
+                        <parameter id="RealParameter.02" estimate="false" lower="0.0" name="M" upper="1.0">1.0</parameter>
                     </LogNormal>
-                    <parameter id="ucldMean.c:replace_taxon" estimate="false" name="clock.rate">1.0</parameter>
                 </branchRateModel>
             </distribution>
         </distribution>
@@ -81,9 +81,10 @@
 
     <operator id="FixMeanMutationRatesOperator" spec="DeltaExchangeOperator" delta="0.75" weight="2.0">
         <parameter idref="mutationRate.s:replace_taxon"/>
-        <weightvector id="weightparameter" spec="parameter.IntegerParameter" estimate="false" lower="0" upper="0">901</weightvector>
+        <weightvector id="weightparameter" spec="parameter.IntegerParameter" estimate="false" lower="0" upper="0">799</weightvector>
     </operator>
 
+    <operator id="ucldMeanScaler.c:replace_taxon" spec="ScaleOperator" parameter="@ucldMean.c:replace_taxon" scaleFactor="0.5" weight="1.0"/>
 
     <operator id="ucldStdevScaler.c:replace_taxon" spec="ScaleOperator" parameter="@ucldStdev.c:replace_taxon" scaleFactor="0.5" weight="3.0"/>
 
@@ -93,21 +94,26 @@
 
     <operator id="CategoriesUniform.c:replace_taxon" spec="UniformOperator" parameter="@rateCategories.c:replace_taxon" weight="10.0"/>
 
-    <operator id="CoalescentConstantTreeScaler.t:replace_taxon" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
+    <operator id="CalibratedYuleModelTreeScaler.t:replace_taxon" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CoalescentConstantTreeRootScaler.t:replace_taxon" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
+    <operator id="CalibratedYuleModelTreeRootScaler.t:replace_taxon" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CoalescentConstantUniformOperator.t:replace_taxon" spec="Uniform" tree="@Tree.t:replace_taxon" weight="30.0"/>
+    <operator id="CalibratedYuleModelUniformOperator.t:replace_taxon" spec="Uniform" tree="@Tree.t:replace_taxon" weight="30.0"/>
 
-    <operator id="CoalescentConstantSubtreeSlide.t:replace_taxon" spec="SubtreeSlide" tree="@Tree.t:replace_taxon" weight="15.0"/>
+    <operator id="CalibratedYuleModelSubtreeSlide.t:replace_taxon" spec="SubtreeSlide" tree="@Tree.t:replace_taxon" weight="15.0"/>
 
-    <operator id="CoalescentConstantNarrow.t:replace_taxon" spec="Exchange" tree="@Tree.t:replace_taxon" weight="15.0"/>
+    <operator id="CalibratedYuleModelNarrow.t:replace_taxon" spec="Exchange" tree="@Tree.t:replace_taxon" weight="15.0"/>
 
-    <operator id="CoalescentConstantWide.t:replace_taxon" spec="Exchange" isNarrow="false" tree="@Tree.t:replace_taxon" weight="3.0"/>
+    <operator id="CalibratedYuleModelWide.t:replace_taxon" spec="Exchange" isNarrow="false" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="CoalescentConstantWilsonBalding.t:replace_taxon" spec="WilsonBalding" tree="@Tree.t:replace_taxon" weight="3.0"/>
+    <operator id="CalibratedYuleModelWilsonBalding.t:replace_taxon" spec="WilsonBalding" tree="@Tree.t:replace_taxon" weight="3.0"/>
 
-    <operator id="PopSizeScaler.t:replace_taxon" spec="ScaleOperator" parameter="@popSize.t:replace_taxon" scaleFactor="0.75" weight="3.0"/>
+    <operator id="CalibratedYuleBirthRateScaler.t:replace_taxon" spec="ScaleOperator" parameter="@birthRateY.t:replace_taxon" scaleFactor="0.75" weight="3.0"/>
+
+    <operator id="relaxedUpDownOperator.c:replace_taxon" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
+        <up idref="ucldMean.c:replace_taxon"/>
+        <down idref="Tree.t:replace_taxon"/>
+    </operator>
 
     <logger id="tracelog" fileName="replace_ID.out" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
         <log idref="posterior"/>
@@ -116,10 +122,11 @@
         <log idref="treeLikelihood.replace_taxon"/>
         <log id="TreeHeight.t:replace_taxon" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:replace_taxon"/>
         <log idref="mutationRate.s:replace_taxon"/>
+        <log idref="ucldMean.c:replace_taxon"/>
         <log idref="ucldStdev.c:replace_taxon"/>
         <log id="rate.c:replace_taxon" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:replace_taxon" tree="@Tree.t:replace_taxon"/>
-        <parameter idref="popSize.t:replace_taxon" name="log"/>
-        <log idref="CoalescentConstant.t:replace_taxon"/>
+        <log idref="CalibratedYuleModel.t:replace_taxon"/>
+        <log idref="birthRateY.t:replace_taxon"/>
     </logger>
 
     <logger id="screenlog" logEvery="1000">
