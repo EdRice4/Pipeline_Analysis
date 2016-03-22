@@ -89,13 +89,14 @@ class jModelTest(object):
         # You may also have to change the manner in which jModelTest is
         # called, depending on your system.
         jModelTest = (
-                'java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f '
-                '-v -a -BIC -AIC -AICc -DT -tr {2}'
+                "java -jar {0} -d {1} -t fixed -s 11 -i -g 4 -f "
+                "-v -a -BIC -AIC -AICc -DT -tr {2}"
                 ).format(args.jMT, self._nexus_file, args.no_proc)
         # Spawn child process and run
         # TODO(Edwin):
         # 1.) Open jMT_out prior to spawning child process and pass to stdout?
         # https://stackoverflow.com/questions/15167603/python-using-files-as-stdin-and-stdout-for-subprocess
+        print(jModelTest)
         jMT_run = Popen(
                 jModelTest.split(), stderr=PIPE, stdout=PIPE,
                 universal_newlines=True
