@@ -1170,7 +1170,7 @@ class NexusFile(bGMYC):
                         'script has knowledge of the environment and can '
                         'take full advantage of it.'
                         ),
-                default=0
+                default=1
                 )
     # }}}
 
