@@ -927,7 +927,7 @@ class BEAST(Garli):
                 )
         # Wait until process has completed to continue
         BEAST_run.communicate()
-        # NOTE: Do not need to write standard output to file as garli
+        # NOTE: Do not need to write standard output to file as BEAST
         # automatically handles this
         # If user specified threshold in command line arguments, run
         # resume_beast
