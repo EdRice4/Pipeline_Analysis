@@ -102,6 +102,9 @@ class jModelTest(object):
                 )
         # Communicate with PIPE to get standard output and errors, respectively
         jMT_run_stdout, jMT_run_stderr = jMT_run.communicate()
+        if jMT_run_stderr:
+                print(jMT_run_stderr)
+                break
         # Write standard output to file
         with open(self._jMT_out, 'w') as jMT_out:
             jMT_out.write(jMT_run_stdout)
@@ -1192,7 +1195,8 @@ class NexusFile(bGMYC):
                 self._sequence_name, randrange(0, 999999999)
                 )
         jModelTest.__init__(self)
-        Garli.__init__(self, garli_conf)
+        if args.garli:
+            Garli.__init__(self, garli_conf)
         BEAST.__init__(self, BEAST_XML_ele_dict, BEAST_XML)
         bGMYC.__init__(self, bGMYC_parameters)
         self.clean_up_dir()
