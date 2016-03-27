@@ -1120,10 +1120,10 @@ class bGMYC(BEAST):
         # depending on your system.
         bGMYC = (
                 'Rscript --save bGMYC.R --args -id={0} -mcmc={1} -burnin={2} '
-                '-thinning={3} {4}'
+                '-thinning={3} -noproc={4} {5}'
                 ).format(
                         self._identifier, args.MCMC_bGMYC, args.burnin_bGMYC,
-                        args.thinning, ' '.join(parameters)
+                        args.thinning, args.no_proc, ' '.join(parameters)
                         )
         # Spawn child process
         bGMYC_run = Popen(
