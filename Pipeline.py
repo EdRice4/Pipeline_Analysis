@@ -882,7 +882,7 @@ class BEAST(Garli):
         # Substitute every occurrence of "replace_taxon" and "replace_ID" with
         # self._sequence_name and self._identifier, respectively
         beast_string = sub('replace_taxon', self._sequence_name, beast_string)
-        beast_string = sub('replace_ID', self._BEAST_out, beast_string)
+        beast_string = sub('replace_ID', self._identifier, beast_string)
         # Convert beast_string to file like object in order to re-parse it
         beast_file_obj = StringIO(beast_string)
         # Set parser to automatically remove any impertinent whitespace as
