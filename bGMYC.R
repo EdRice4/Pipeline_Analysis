@@ -9,7 +9,8 @@ args <- commandArgs(
                 trailingOnly=TRUE, asValues=TRUE,
                 defaults=c(
                         py1=0, py2=2, pc1=0, pc2=2, t1=2, t2=51,
-                        scale=c(20, 10, 5), start=c(1, 0.5, 50)
+                        scale=c(20, 10, 5), start=c(1, 0.5, 50),
+                        noproc=1
                         ),
                 adhoc=TRUE
                 )
