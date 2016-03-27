@@ -1119,8 +1119,8 @@ class bGMYC(BEAST):
         # You may also have to change the manner in which bGMYC is called,
         # depending on your system.
         bGMYC = (
-                'Rscript --save bGMYC.R --args -id={1} -mcmc={2} -burnin={3} '
-                '-thinning={4} {5}'
+                'Rscript --save bGMYC.R --args -id={0} -mcmc={1} -burnin={2} '
+                '-thinning={3} {4}'
                 ).format(
                         self._identifier, args.MCMC_bGMYC, args.burnin_bGMYC,
                         args.thinning, ' '.join(parameters)
