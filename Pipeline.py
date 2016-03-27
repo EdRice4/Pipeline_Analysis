@@ -1119,12 +1119,11 @@ class bGMYC(BEAST):
         # You may also have to change the manner in which bGMYC is called,
         # depending on your system.
         bGMYC = (
-                'Rscript --save bGMYC.R --args -taxon={0} -id={1} '
-                '-mcmc={2} -burnin={3} -thinning={4} {5}'
+                'Rscript --save bGMYC.R --args -id={1} -mcmc={2} -burnin={3} '
+                '-thinning={4} {5}'
                 ).format(
-                        self._sequence_name, self._identifier,
-                        args.MCMC_bGMYC, args.burnin_bGMYC, args.thinning,
-                        ' '.join(parameters)
+                        self._identifier, args.MCMC_bGMYC, args.burnin_bGMYC,
+                        args.thinning, ' '.join(parameters)
                         )
         # Spawn child process
         bGMYC_run = Popen(
