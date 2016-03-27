@@ -1081,9 +1081,9 @@ class bGMYC(BEAST):
             # Read into list
             param_file = param_file.readlines()
         # Strip values of leading and trailing whitespace characters
-        param_file = map(lambda x: x.strip(), param_file)
+        param_file = [x.strip() for x in param_file]
         # Split string by occurences of tab "\t" character
-        param_file = map(lambda x: x.split('\t'), param_file)
+        param_file = [x.split('\t') for x in param_file]
         for line in param_file:
             # Set variables for readability
             taxon = line[0]
