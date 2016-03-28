@@ -102,6 +102,7 @@ class jModelTest(object):
                 )
         # Communicate with PIPE to get standard output and errors, respectively
         jMT_run_stdout, jMT_run_stderr = jMT_run.communicate()
+        # TODO: Exception handling.
         if jMT_run_stderr:
                 print(jMT_run_stderr)
                 break
