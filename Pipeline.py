@@ -444,10 +444,11 @@ class Garli(jModelTest):
                 garli.split(), stderr=PIPE, stdout=PIPE,
                 universal_newlines=True
                 )
-        # Wait until process has completed to continue
         # NOTE: Do not need to write standard output to file as garli
         # automatically handles this
-        garli_run.communicate()
+        # NOTE: Will not wait for process to complete to continue as can run
+        # garli and BEAST analysis concurrently.
+        # garli_run.communicate()
     # }}}
 # }}}
 
