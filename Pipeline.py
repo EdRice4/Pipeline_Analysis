@@ -433,9 +433,15 @@ class Garli(jModelTest):
         # ::MODIFIABLE::
         # NOTE: You may have to change the manner in which garli is called,
         # depending on your system
-        garli = (
-                'Garli -{0}'
-                ).format(args.no_proc)
+        # Do not want to run heinous number of garli threads, so limit to five
+        if args.no_proc > 5:
+            garli = (
+                    'Garli -{0}'
+                    ).format(5)
+        else:
+            garli = (
+                    'Garli -{0}'
+                    ).format(args.no_proc)
         # Spawn child process
         garli_run = Popen(
                 garli.split(), stderr=PIPE, stdout=PIPE,
