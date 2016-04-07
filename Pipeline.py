@@ -983,7 +983,7 @@ class BEAST(Garli):
                     )
             # Wait until process has completed to continue
             BEAST_run.communicate()
-            # NOTE: Do not need to write standard output to file as garli
+            # NOTE: Do not need to write standard output to file as BEAST
             # automatically handles this
             # Get effective sample size of run
             effective_sample_size = self.calculate_ess()
@@ -1217,8 +1217,9 @@ class NexusFile(bGMYC):
 
         }}} """
 
-        # Rename garli.conf
-        move('garli.conf', self._garli_out)
+        if args.garli:
+            # Rename garli.conf iff garli was ran
+            move('garli.conf', self._garli_out)
         # Get current working directory
         cwd = os.getcwd()
         # Get all files in current working directory
