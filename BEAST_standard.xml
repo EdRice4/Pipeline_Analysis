@@ -28,7 +28,7 @@
         <parameter id="mutationRate.s:replace_taxon" lower="1.18" name="stateNode" upper="1.76">1.57</parameter>
         <parameter id="ucldStdev.c:replace_taxon" lower="0.0" name="stateNode">0.1</parameter>
         <stateNode id="rateCategories.c:replace_taxon" spec="parameter.IntegerParameter" dimension="426">1</stateNode>
-        <parameter id="popSize.t:Adetomyrma" name="stateNode">0.3</parameter>
+        <parameter id="popSize.t:replace_taxon" name="stateNode">0.3</parameter>
     </state>
 
     <init id="RandomTree.t:replace_taxon" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:replace_taxon" taxa="@replace_taxon">
