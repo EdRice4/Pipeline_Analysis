@@ -286,7 +286,6 @@ class Garli(jModelTest):
     # }}}
 
     # {{{ r_garli_conf
-    @staticmethod
     def r_garli_conf():
 
         """ {{{ Docstrings
@@ -307,7 +306,7 @@ class Garli(jModelTest):
     # }}}
 
     # {{{ __init__
-    def __init__(self, garli_conf):
+    def __init__(self):
 
         """ {{{ Docstrings
 
@@ -444,10 +443,7 @@ class Garli(jModelTest):
                     'Garli -{0}'
                     ).format(args.no_proc)
         # Spawn child process
-        garli_run = Popen(
-                garli.split(), stderr=PIPE, stdout=PIPE,
-                universal_newlines=True
-                )
+        Popen(garli.split(), stderr=PIPE, stdout=PIPE, universal_newlines=True)
         # NOTE: Do not need to write standard output to file as garli
         # automatically handles this
         # NOTE: Will not wait for process to complete to continue as can run
@@ -511,7 +507,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ __init__
-    def __init__(self, BEAST_XML_ele_dict, BEAST_XML):
+    def __init__(self):
 
         """ {{{ Docstrings
 
@@ -1183,9 +1179,7 @@ class NexusFile(bGMYC):
     # }}}
 
     # {{{ __init__
-    def __init__(
-            self, garli_conf, BEAST_XML_ele_dict, nexus_file, BEAST_XML
-            ):
+    def __init__(self, nexus_file):
 
         """ {{{ Docstrings
 
@@ -1201,8 +1195,8 @@ class NexusFile(bGMYC):
                 )
         jModelTest.__init__(self)
         if args.garli:
-            Garli.__init__(self, garli_conf)
-        BEAST.__init__(self, BEAST_XML_ele_dict, BEAST_XML)
+            Garli.__init__(self)
+        BEAST.__init__(self)
         bGMYC.__init__(self, bGMYC_parameters)
         self.clean_up_dir()
     # }}}
@@ -1290,7 +1284,7 @@ if args.batch:
     nexus_files = filter(lambda x: '.nex' in x, files_in_dir)
     # Instantiate instances of NexusFile class
     for nexus_file in nexus_files:
-        NexusFile(garli_conf, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
+        NexusFile(nexus_file)
 # Else, do:
 else:
     # Initiate empty list to store names of nexus files
@@ -1303,5 +1297,5 @@ else:
         nexus_files.append(raw_input('Path to sequence file: '))
     # Instantiate instances of NexusFile class
     for nexus_file in nexus_files:
-        NexusFile(garli_conf, BEAST_XML_ele_dict, nexus_file, BEAST_XML)
+        NexusFile(nexus_file)
 # }}}
