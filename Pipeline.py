@@ -317,6 +317,7 @@ class Garli(jModelTest):
         }}} """
 
         self._garli_out = 'garli_{0}'.format(self._identifier)
+        garli_conf = self.r_garli_conf()
         self.w_garli_conf(garli_conf)
         self.run_garli()
     # }}}
@@ -509,8 +510,61 @@ class BEAST(Garli):
                 default=0)
     # }}}
 
+    # {{{ __init__
+    def __init__(self, BEAST_XML_ele_dict, BEAST_XML):
+
+        """ {{{ Docstrings
+
+        Upon instantiating instance of class, run functions and store
+        parameters.
+
+        }}} """
+
+        self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
+        self._BEAST_out = 'BEAST_{0}.out'.format(self._identifier)
+        BEAST_XML, BEAST_XML_ele_dict = self.parse_beast_xml()
+        self.w_beast_submodel(BEAST_XML_ele_dict)
+        self.w_beast_rates(BEAST_XML_ele_dict)
+        self.w_beast_sequences(BEAST_XML_ele_dict)
+        self.w_beast_parameters(BEAST_XML_ele_dict, BEAST_XML)
+        self.run_beast()
+    # }}}
+
+    # {{{ JC_F81
+    def JC_F81(self, xml_elements):
+
+        """ {{{ Docstrings
+
+        Function to handle setting of transition rates in BEAST XML input file
+        for JC and F81 models given list of XML elements to edit.
+
+        }}} """
+
+        # Every transition rate is equal to "1.0"
+        for i in xml_elements:
+            i.text = '1.0'
+    # }}}
+
+    # {{{ K80_HKY
+    def K80_HKY(self, xml_elements):
+
+        """ {{{ Docstrings
+
+        Function to handle setting of transition rates in BEAST XML input file
+        for k80 and HKY models, given list of XML elements to edit.
+
+        }}} """
+
+        # Two distinct transition rates, one for transitions, the other for
+        # transversions
+        for i in xml_elements:
+            if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
+                i.text = self._jMT_parameters['titv']
+            else:
+                i.text = '1.0'
+    # }}}
+
     # {{{ parse_beast_xml
-    @staticmethod
     def parse_beast_xml():
 
         """ {{{ Docstrings
@@ -554,59 +608,6 @@ class BEAST(Garli):
             if 'treelog.t:' in element.get('id'):
                 BEAST_XML_ele_dict['tree_log'] = element
         return(BEAST_XML, BEAST_XML_ele_dict)
-    # }}}
-
-    # {{{ __init__
-    def __init__(self, BEAST_XML_ele_dict, BEAST_XML):
-
-        """ {{{ Docstrings
-
-        Upon instantiating instance of class, run functions and store
-        parameters.
-
-        }}} """
-
-        self._BEAST_XML = 'BEAST_{0}.xml'.format(self._identifier)
-        self._BEAST_out = 'BEAST_{0}.out'.format(self._identifier)
-        self.w_beast_submodel(BEAST_XML_ele_dict)
-        self.w_beast_rates(BEAST_XML_ele_dict)
-        self.w_beast_sequences(BEAST_XML_ele_dict)
-        self.w_beast_parameters(BEAST_XML_ele_dict, BEAST_XML)
-        self.run_beast()
-    # }}}
-
-    # {{{ JC_F81
-    def JC_F81(self, xml_elements):
-
-        """ {{{ Docstrings
-
-        Function to handle setting of transition rates in BEAST XML input file
-        for JC and F81 models given list of XML elements to edit.
-
-        }}} """
-
-        # Every transition rate is equal to "1.0"
-        for i in xml_elements:
-            i.text = '1.0'
-    # }}}
-
-    # {{{ K80_HKY
-    def K80_HKY(self, xml_elements):
-
-        """ {{{ Docstrings
-
-        Function to handle setting of transition rates in BEAST XML input file
-        for k80 and HKY models, given list of XML elements to edit.
-
-        }}} """
-
-        # Two distinct transition rates, one for transitions, the other for
-        # transversions
-        for i in xml_elements:
-            if 'rateAG.s:' in i.get('id') or 'rateCT.s:' in i.get('id'):
-                i.text = self._jMT_parameters['titv']
-            else:
-                i.text = '1.0'
     # }}}
 
     # {{{ calculate_ess
@@ -1046,7 +1047,7 @@ class bGMYC(BEAST):
                         'Periplaneta americana, the American cockroach, and '
                         'wanted to modify the \'t1\' and \'start\' variables '
                         '(see documentation provided by Noah for explanation '
-                        'of parameters), then my files would perhaps look '
+                        'of parameters), then my file would look '
                         'like: P_americana.nex, P_americana.txt and the .txt '
                         'file would contain: P_americana\\t-t1=32\\tstart1=0'
                         '\\tstart2=0\\tstart3=0.5. Notice how each value of '
@@ -1267,10 +1268,6 @@ args = arg_parser.parse_args()
 
 
 # {{{ Run non "add_args" staticmethods
-# Read garli configuration file
-garli_conf = Garli.r_garli_conf()
-# Parse BEAST XML
-BEAST_XML, BEAST_XML_ele_dict = BEAST.parse_beast_xml()
 # If user specified name of bGMYC parameter file, do:
 if args.bGMYC_params:
     # Read bGMYC parameters
