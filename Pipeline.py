@@ -1032,6 +1032,7 @@ class bGMYC(BEAST):
                         'Sample interval for bGMYC analysis.'
                         ),
                 default=10000)
+        # TODO:Change name of dictionary file.
         args_bGMYC.add_argument(
                 '--bGMYC_params', type=str, help=(
                         'Name of the file containing additional arguments for '
