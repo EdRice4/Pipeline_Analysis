@@ -1051,7 +1051,7 @@ class bGMYC(BEAST):
                         '\\tstart2=0\\tstart3=0.5. Notice how each value of '
                         'start vector must be specified seperately.'
                         ),
-                actions='store_true'
+                action='store_true'
                 )
     # }}}
 
