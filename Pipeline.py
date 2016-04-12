@@ -19,7 +19,7 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move
-from StringIO import StringIO
+from io import StringIO
 from glob import glob
 import argparse
 import os
@@ -275,7 +275,8 @@ class Garli(jModelTest):
                 )
         args_garli.add_argument(
                 '-g', '--garli', help='Run garli analysis.',
-                action='store_true')
+                action='store_true'
+                )
         args_garli.add_argument(
                 '--bstr', type=int, help=(
                         '# of bootstrap replications for garli analysis, if '
@@ -283,26 +284,6 @@ class Garli(jModelTest):
                         ),
                 default=0
                 )
-    # }}}
-
-    # {{{ r_garli_conf
-    def r_garli_conf():
-
-        """ {{{ Docstrings
-
-        Reads in garli.conf template file as a list. Method is static because
-        only necessary to run once; do not need to run upon every
-        instantiation of Garli class.
-
-        }}} """
-
-        # Open in read mode
-        with open('Garli_standard.conf', 'r') as garli_conf:
-            # Read in as list
-            garli_conf = garli_conf.readlines()
-        # Strip leading and trailing white characters on every line
-        garli_conf = map(lambda x: x.strip(), garli_conf)
-        return garli_conf
     # }}}
 
     # {{{ __init__
@@ -319,6 +300,27 @@ class Garli(jModelTest):
         garli_conf = self.r_garli_conf()
         self.w_garli_conf(garli_conf)
         self.run_garli()
+    # }}}
+
+    # {{{ r_garli_conf
+    def r_garli_conf(self):
+
+        """ {{{ Docstrings
+
+        Reads in garli.conf template file as a list. Method is static because
+        only necessary to run once; do not need to run upon every
+        instantiation of Garli class.
+
+        }}} """
+
+        # Open in read mode
+        with open('Garli_standard.conf', 'r') as garli_conf:
+            # Read in as list
+            garli_conf = garli_conf.readlines()
+        # Strip leading and trailing white characters on every line
+        garli_conf = [line.strip() for line in garli_conf]
+        # garli_conf = map(lambda x: x.strip(), garli_conf)
+        return garli_conf
     # }}}
 
     # {{{ edit_garli_conf
@@ -561,7 +563,7 @@ class BEAST(Garli):
     # }}}
 
     # {{{ parse_beast_xml
-    def parse_beast_xml():
+    def parse_beast_xml(self):
 
         """ {{{ Docstrings
 
@@ -986,9 +988,9 @@ class BEAST(Garli):
             effective_sample_size = self.calculate_ess()
             # Filter effective_sample_size to only include values greater than
             # the threshold; if none are, empty list of NoneType is returned
-            effective_sample_size = filter(
-                    lambda x: x < args.threshold, effective_sample_size
-                    )
+            effective_sample_size = [
+                    x for x in effective_sample_size if x < args.threshold
+                    ]
     # }}}
 # }}}
 
@@ -1032,10 +1034,9 @@ class bGMYC(BEAST):
                         'Sample interval for bGMYC analysis.'
                         ),
                 default=10000)
-        # TODO:Change name of dictionary file.
         args_bGMYC.add_argument(
-                '--bGMYC_params', type=str, help=(
-                        'Name of the file containing additional arguments for '
+                '--bGMYC_params', help=(
+                        'If you wish to specify additional arguments for '
                         'the bGMYC, if applicable. These parameters should be '
                         'specified in a tab delimited format along with the '
                         'taxon name, where the taxon name corresponds to the '
@@ -1050,12 +1051,13 @@ class bGMYC(BEAST):
                         '\\tstart2=0\\tstart3=0.5. Notice how each value of '
                         'start vector must be specified seperately.'
                         ),
+                actions='store_true'
                 )
     # }}}
 
     # {{{ r_bgmyc_parameters
     @staticmethod
-    def r_bgmyc_parameters(bgmyc_parameters_file):
+    def r_bgmyc_parameters():
 
         """ {{{ Docstrings
 
@@ -1080,7 +1082,7 @@ class bGMYC(BEAST):
         # Initialize empty dicitonary to store parameters
         bgmyc_parameters = {}
         # Open bGMYC parameters file in read mode
-        with open(bgmyc_parameters_file, 'r') as param_file:
+        with open('bGMYC_parameters.txt', 'r') as param_file:
             # Read into list
             param_file = param_file.readlines()
         # Strip values of leading and trailing whitespace characters
