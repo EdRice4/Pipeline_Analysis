@@ -307,9 +307,7 @@ class Garli(jModelTest):
 
         """ {{{ Docstrings
 
-        Reads in garli.conf template file as a list. Method is static because
-        only necessary to run once; do not need to run upon every
-        instantiation of Garli class.
+        Reads in garli.conf template file as a list.
 
         }}} """
 
@@ -567,9 +565,7 @@ class BEAST(Garli):
 
         """ {{{ Docstrings
 
-        Parses BEAST XML input file utilizing "lxml" python module. Method is
-        static because only necessary to run once; do not need to run upon
-        every instantiation of BEAST class.
+        Parses BEAST XML input file utilizing "lxml" python module.
 
         }}} """
 
@@ -1058,7 +1054,7 @@ class bGMYC(BEAST):
 
     # {{{ r_bgmyc_parameters
     @staticmethod
-    def r_bgmyc_parameters(self):
+    def r_bgmyc_parameters():
 
         """ {{{ Docstrings
 
