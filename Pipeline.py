@@ -1058,7 +1058,7 @@ class bGMYC(BEAST):
 
     # {{{ r_bgmyc_parameters
     @staticmethod
-    def r_bgmyc_parameters():
+    def r_bgmyc_parameters(self):
 
         """ {{{ Docstrings
 
@@ -1266,10 +1266,10 @@ args = arg_parser.parse_args()
 
 
 # {{{ Run non "add_args" staticmethods
-# If user specified name of bGMYC parameter file, do:
+# If user specified additional bGMYC parameters, do:
 if args.bGMYC_params:
     # Read bGMYC parameters
-    bGMYC_parameters = NexusFile.r_bgmyc_parameters(args.bGMYC_params)
+    bGMYC_parameters = bGMYC.r_bgmyc_parameters()
 # Else, do:
 else:
     # Initiate empty dictionary
