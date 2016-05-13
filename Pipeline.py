@@ -19,7 +19,7 @@ from numpy import genfromtxt
 from acor import acor
 from re import sub
 from shutil import move
-from io import StringIO
+from StringIO import StringIO
 from glob import glob
 import argparse
 import os
