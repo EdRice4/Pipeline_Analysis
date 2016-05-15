@@ -255,7 +255,7 @@ class Garli(jModelTest):
             'TVMef': ['(0 1 2 3 1 4)', 'equal'],
             'TVM': ['(0 1 2 3 1 4)', 'estimate'],
             'SYM': ['6rate', 'equal'],
-            'GTR': ['6rate', 'estimate']
+            'TR': ['6rate', 'estimate']  # Remove 'G' for translate
             }
     # }}}
 
