@@ -443,12 +443,14 @@ class Garli(jModelTest):
                     'Garli -{0}'
                     ).format(args.no_proc)
         # Spawn child process
-        Popen(garli.split(), stderr=PIPE, stdout=PIPE, universal_newlines=True)
+        garli_run = Popen(
+                garli.split(), stderr=PIPE, stdout=PIPE,
+                universal_newlines=True
+                )
         # NOTE: Do not need to write standard output to file as garli
         # automatically handles this
-        # NOTE: Will not wait for process to complete to continue as can run
-        # garli and BEAST analysis concurrently.
-        # garli_run.communicate()
+        # Communicate with PIPE to get standard output and errors, respectively
+        garli_run.communicate()
     # }}}
 # }}}
 
